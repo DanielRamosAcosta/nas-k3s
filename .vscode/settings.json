@@ -1,8 +1,0 @@
-{
-    "jsonnet.languageServer.pathToBinary": "/usr/local/bin/jsonnet-language-server",
-    "jsonnet.debugger.pathToBinary": "/usr/local/bin/jsonnet-debugger",
-    "editor.defaultFormatter": "vscode.typescript-language-features",
-    "[json]": {
-        "editor.defaultFormatter": "vscode.json-language-features"
-    }
-}

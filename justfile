@@ -1,33 +1,26 @@
-mod tanka
+build-databases:
+  tk export dist/databases environments/databases --merge-strategy replace-envs
 
-# Build documentation PDF from Typst source
-docs:
-  typst compile "docs/NAS DIY.typ"
+build-media:
+  tk export dist/media environments/media --merge-strategy replace-envs
 
-# Deploy to NAS host
-deploy-nas:
-  nixos-rebuild switch \
-    --fast \
-    --flake .#nas \
-    --use-remote-sudo \
-    --build-host nas \
-    --target-host nas
+build-auth:
+  tk export dist/auth environments/auth --merge-strategy replace-envs
 
-# Port-forward to Kubernetes dashboard
-dashboard:
-  kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443
+build-monitoring:
+  tk export dist/monitoring environments/monitoring --merge-strategy replace-envs
 
-# Install NixOS on target host using nixos-anywhere
-install:
-  nix run github:nix-community/nixos-anywhere -- \
-    --flake .#nas \
-    --generate-hardware-config nixos-generate-config ./hosts/nas/hardware-configuration.nix \
-    --target-host root@192.168.1.41
+build-arr:
+  tk export dist/arr environments/arr --merge-strategy replace-envs
 
-# Build ISO image
-iso:
-  nix build .#nixosConfigurations.iso.config.system.build.isoImage
+encrypt-secrets:
+  age --encrypt --recipients-file ../id_dani.pub --output ./lib/secrets.json.age ./lib/secrets.json
 
-# Run tests
-test:
-  nix eval --impure --expr 'import ./utilities/utilities.test.nix {}'
+decrypt-secrets:
+  age --decrypt --identity ~/.ssh/id_ed25519 --output ./lib/secrets.json ./lib/secrets.json.age
+
+deploy:
+  tk apply environments/databases
+
+deploy-arr:
+  tk apply environments/arr

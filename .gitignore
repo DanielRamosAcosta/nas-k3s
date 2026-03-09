@@ -6,10 +6,10 @@ temp.*
 *.pdf
 
 *.priv.yaml
-tanka/vendor
-tanka/dist
-tanka/dist-reference
-tanka/charts
-tanka/lib/secrets.json
-tanka/dist-*
+vendor
+dist
+dist-reference
+charts
+lib/secrets.json
+dist-*
 .playwright-mcp
