@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'media/gitea.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -7,10 +7,8 @@ local versions = import 'versions.json';
   local statefulSet = k.apps.v1.statefulSet,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
-  local secret = k.core.v1.secret,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
-  local configMap = k.core.v1.configMap,
   local role = k.rbac.v1.role,
   local roleBinding = k.rbac.v1.roleBinding,
   local subject = k.rbac.v1.subject,
@@ -26,7 +24,8 @@ local versions = import 'versions.json';
                    ]) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSecret(self.secretsEnv),
+                     u.envVars.fromSealedSecret(self.sealed_secret) +
+                     u.envVars.fromSealedSecret(self.sealed_secret_shared),
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/data'),
@@ -76,13 +75,8 @@ local versions = import 'versions.json';
       GITEA__server__START_SSH_SERVER: 'true',
     }),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      GITEA__database__PASSWD: s.POSTGRES_PASSWORD_GITEA,
-      GITEA__mailer__PASSWD: s.SMTP_PASSWORD,
-      GITEA__security__SECRET_KEY: s.GITEA_SECRET_KEY,
-      GITEA__security__INTERNAL_TOKEN: s.GITEA_INTERNAL_TOKEN,
-      GITEA__metrics__TOKEN: s.GITEA_METRICS_TOKEN,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.gitea),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('gitea-shared-sealed-secret', secrets.shared),
 
     ingressRoute: u.ingressRoute.from(self.service, {
       '3000': 'git.danielramos.me',
