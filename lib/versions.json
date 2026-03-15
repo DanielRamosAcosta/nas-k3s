@@ -65,7 +65,7 @@
   },
   "jellyfin": {
     "image": "docker.io/jellyfin/jellyfin",
-    "version": "10.11.5"
+    "version": "10.11.6"
   },
   "jdownloader": {
     "image": "docker.io/jlesage/jdownloader-2",
