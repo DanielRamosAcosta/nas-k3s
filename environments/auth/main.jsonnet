@@ -4,9 +4,11 @@ local satph = import 'auth/satph.libsonnet';
 
 {
   authelia: authelia.new(
-    version=versions.authelia.version
+    image=versions.authelia.image,
+    version=versions.authelia.version,
   ),
   satph: satph.new(
-    version='main-d35382b'
+    image=versions.satph.image,
+    version=versions.satph.version,
   ),
 }

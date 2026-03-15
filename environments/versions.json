@@ -1,110 +1,130 @@
 {
   "immich": {
-    "repo": "immich-app/immich",
+    "image": "ghcr.io/immich-app/immich-server",
+    "version": "v2.5.6"
+  },
+  "immichMl": {
+    "image": "ghcr.io/immich-app/immich-machine-learning",
     "version": "v2.5.6"
   },
   "navidrome": {
-    "repo": "deluan/navidrome",
+    "image": "docker.io/deluan/navidrome",
     "version": "0.60.3"
   },
   "sftpgo": {
-    "repo": "drakkan/sftpgo",
-    "version": "v2.7.0"
+    "image": "docker.io/drakkan/sftpgo",
+    "version": "v2.7.0-alpine"
   },
   "gitea": {
-    "repo": "go-gitea/gitea",
+    "image": "docker.gitea.com/gitea",
     "version": "1.25.0"
   },
   "authelia": {
-    "repo": "authelia/authelia",
+    "image": "ghcr.io/authelia/authelia",
     "version": "4.39.13"
   },
   "valkey": {
-    "repo": "valkey-io/valkey",
-    "version": "7.2.10"
+    "image": "valkey/valkey",
+    "version": "7.2.10-alpine"
   },
   "grafana": {
-    "repo": "grafana/grafana",
+    "image": "docker.io/grafana/grafana-oss",
     "version": "12.3.1"
   },
   "loki": {
-    "repo": "grafana/loki",
+    "image": "docker.io/grafana/loki",
     "version": "3.5.7"
   },
   "promtail": {
-    "repo": "grafana/loki",
+    "image": "docker.io/grafana/promtail",
     "version": "3.5.7"
   },
   "prometheus": {
-    "repo": "prometheus/prometheus",
+    "image": "docker.io/prom/prometheus",
     "version": "v3.7.3"
   },
   "nodeExporter": {
-    "repo": "prometheus/node_exporter",
+    "image": "quay.io/prometheus/node-exporter",
     "version": "v1.10.2"
   },
   "smartctlExporter": {
-    "repo": "prometheus-community/smartctl_exporter",
+    "image": "quay.io/prometheuscommunity/smartctl-exporter",
     "version": "v0.14.0"
   },
   "nutExporter": {
-    "repo": "DRuggeri/nut_exporter",
+    "image": "ghcr.io/druggeri/nut_exporter",
     "version": "3.2.2"
   },
   "cloudflare": {
-    "repo": "favonia/cloudflare-ddns",
+    "image": "docker.io/favonia/cloudflare-ddns",
     "version": "1.15.1"
   },
   "booklore": {
-    "repo": "booklore-app/booklore",
+    "image": "booklore/booklore",
     "version": "v2.0.6"
   },
   "jellyfin": {
-    "repo": "jellyfin/jellyfin",
+    "image": "docker.io/jellyfin/jellyfin",
     "version": "10.11.5"
   },
   "jdownloader": {
-    "repo": "jlesage/docker-jdownloader-2",
+    "image": "docker.io/jlesage/jdownloader-2",
     "version": "v26.01.1"
   },
   "sonarr": {
-    "repo": "ghcr.io/hotio/sonarr",
+    "image": "ghcr.io/hotio/sonarr",
     "version": "release-4.0.16.2944"
   },
   "radarr": {
-    "repo": "ghcr.io/hotio/radarr",
+    "image": "ghcr.io/hotio/radarr",
     "version": "release-6.0.4.10291"
   },
   "lidarr": {
-    "repo": "ghcr.io/hotio/lidarr",
+    "image": "ghcr.io/hotio/lidarr",
     "version": "release-3.1.0.4875"
   },
   "slskd": {
-    "repo": "slskd/slskd",
+    "image": "slskd/slskd",
     "version": "0.24.3"
   },
   "deluge": {
-    "repo": "linuxserver/deluge",
+    "image": "docker.io/linuxserver/deluge",
     "version": "2.2.0"
   },
   "invidious": {
-    "repo": "iv-org/invidious",
-    "version": "latest"
+    "image": "quay.io/invidious/invidious",
+    "version": "2.20260207.0"
   },
   "invidiousCompanion": {
-    "repo": "iv-org/invidious",
-    "version": "latest"
+    "image": "quay.io/invidious/invidious-companion",
+    "version": "master-5c372ba"
   },
   "beets": {
-    "repo": "linuxserver/docker-beets",
+    "image": "lscr.io/linuxserver/beets",
     "version": "2.6.1-ls311"
   },
-  "amule": {
-    "repo": "ngosang/amule",
-    "version": "2.3.3-20"
-  },
   "gluetun": {
-    "repo": "qdm12/gluetun",
+    "image": "ghcr.io/qdm12/gluetun",
     "version": "v3.41.1"
+  },
+  "norznab": {
+    "image": "ghcr.io/danielramosacosta/norznab",
+    "version": "main-dc95fd6"
+  },
+  "satph": {
+    "image": "ghcr.io/danielramosacosta/satph",
+    "version": "main-d35382b"
+  },
+  "postgres": {
+    "image": "ghcr.io/immich-app/postgres",
+    "version": "17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0"
+  },
+  "mariadb": {
+    "image": "lscr.io/linuxserver/mariadb",
+    "version": "11.4.8-r0-ls201"
+  },
+  "heartbeat": {
+    "image": "busybox",
+    "version": "1.37.0"
   }
 }

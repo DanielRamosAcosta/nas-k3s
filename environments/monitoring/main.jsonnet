@@ -9,24 +9,31 @@ local smartctlExporter = import 'monitoring/smartctl-exporter.libsonnet';
 
 {
   grafana: grafana.new(
-    version=versions.grafana.version
+    image=versions.grafana.image,
+    version=versions.grafana.version,
   ),
   loki: loki.new(
-    version=versions.loki.version
+    image=versions.loki.image,
+    version=versions.loki.version,
   ),
   promtail: promtail.new(
-    version=versions.promtail.version
+    image=versions.promtail.image,
+    version=versions.promtail.version,
   ),
   prometheus: prometheus.new(
-    version=versions.prometheus.version
+    image=versions.prometheus.image,
+    version=versions.prometheus.version,
   ),
   nodeExporter: nodeExporter.new(
-    version=versions.nodeExporter.version
+    image=versions.nodeExporter.image,
+    version=versions.nodeExporter.version,
   ),
   smartctlExporter: smartctlExporter.new(
-    version=versions.smartctlExporter.version
+    image=versions.smartctlExporter.image,
+    version=versions.smartctlExporter.version,
   ),
   nutExporter: nutExporter.new(
-    version=versions.nutExporter.version
+    image=versions.nutExporter.image,
+    version=versions.nutExporter.version,
   ),
 }

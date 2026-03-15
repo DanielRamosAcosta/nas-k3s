@@ -5,10 +5,15 @@ local heartbeat = import 'system/heartbeat.libsonnet';
 
 {
   cloudflare: cloudflare.new(
-    version=versions.cloudflare.version
+    image=versions.cloudflare.image,
+    version=versions.cloudflare.version,
   ),
   gluetun: gluetun.new(
-    version=versions.gluetun.version
+    image=versions.gluetun.image,
+    version=versions.gluetun.version,
   ),
-  heartbeat: heartbeat.new(),
+  heartbeat: heartbeat.new(
+    image=versions.heartbeat.image,
+    version=versions.heartbeat.version,
+  ),
 }

@@ -5,12 +5,15 @@ local valkey = import 'databases/valkey.libsonnet';
 
 {
   postgres: postgres.new(
-    version='17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0'
+    image=versions.postgres.image,
+    version=versions.postgres.version,
   ),
   valkey: valkey.new(
-    version=versions.valkey.version + '-alpine'
+    image=versions.valkey.image,
+    version=versions.valkey.version,
   ),
   mariadb: mariadb.new(
-    version='11.4.8-r0-ls201'
+    image=versions.mariadb.image,
+    version=versions.mariadb.version,
   ),
 }
