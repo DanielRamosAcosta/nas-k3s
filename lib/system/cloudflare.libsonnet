@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'system/cloudflare.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -13,7 +13,7 @@ local versions = import 'versions.json';
       container.new('cloudflare-ddns', u.image(versions.cloudflare.image, versions.cloudflare.version)) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv) +
-        u.envVars.fromSecret(self.secretsEnv),
+        u.envVars.fromSealedSecret(self.sealed_secret),
       ),
     ]),
 
@@ -22,8 +22,6 @@ local versions = import 'versions.json';
       PROXIED: 'true',
     }),
 
-    secretsEnv: u.secret.forEnv(self.deployment, {
-      CLOUDFLARE_API_TOKEN: s.CLOUDFLARE_API_TOKEN,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.cloudflare),
   },
 }
