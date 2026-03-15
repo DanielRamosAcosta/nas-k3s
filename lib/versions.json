@@ -111,10 +111,6 @@
     "image": "ghcr.io/danielramosacosta/norznab",
     "version": "main-dc95fd6"
   },
-  "satph": {
-    "image": "ghcr.io/danielramosacosta/satph",
-    "version": "main-d35382b"
-  },
   "postgres": {
     "image": "ghcr.io/immich-app/postgres",
     "version": "17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0"
