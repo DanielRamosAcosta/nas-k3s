@@ -1,19 +1,15 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'media/navidrome.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
-
-local immichConfig = importstr './immich.config.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
   local service = k.core.v1.service,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
-  local secret = k.core.v1.secret,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
-  local configMap = k.core.v1.configMap,
 
   new():: {
     statefulSet: statefulSet.new('navidrome', replicas=1, containers=[
@@ -23,7 +19,7 @@ local immichConfig = importstr './immich.config.json';
                    ) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSecret(self.secretsEnv)
+                     u.envVars.fromSealedSecret(self.sealed_secret)
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('library', '/library', true),
@@ -41,12 +37,7 @@ local immichConfig = importstr './immich.config.json';
       ND_BASEURL: 'https://music.danielramos.me',
     }),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      ND_SPOTIFY_ID: s.ND_SPOTIFY_ID,
-      ND_SPOTIFY_SECRET: s.ND_SPOTIFY_SECRET,
-      ND_LASTFM_APIKEY: s.ND_LASTFM_APIKEY,
-      ND_LASTFM_SECRET: s.ND_LASTFM_SECRET,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.navidrome),
 
     ingressRoute: u.ingressRoute.from(self.service, 'music.danielramos.me'),
   },
