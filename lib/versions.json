@@ -53,7 +53,7 @@
   },
   "nutExporter": {
     "image": "ghcr.io/druggeri/nut_exporter",
-    "version": "3.2.2"
+    "version": "3.2.5"
   },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
