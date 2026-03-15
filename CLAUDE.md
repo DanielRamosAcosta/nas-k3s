@@ -17,9 +17,9 @@ just decrypt-secrets    # Decrypt lib/secrets.json.age → lib/secrets.json
 jb install              # Install jsonnet-bundler dependencies into vendor/
 
 # Tanka workflow
-tk eval environments/<category>                    # Compile Jsonnet to JSON
-tk apply environments/<category>                   # Deploy to cluster
-tk export dist/ environments/<category>            # Export manifests to dist/
+tk eval environments/<category>                        # Compile Jsonnet to JSON
+tk apply environments/<category> --auto-approve=always # Deploy to cluster
+tk export dist/ environments/<category>                # Export manifests to dist/
 ```
 
 ## Architecture
