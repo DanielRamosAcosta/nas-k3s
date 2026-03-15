@@ -1,10 +1,10 @@
 ---
 id: NASKS-21
 title: Desplegar ArgoCD para GitOps continuo
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-15 21:06'
-updated_date: '2026-03-15 21:41'
+updated_date: '2026-03-15 23:45'
 labels:
   - infrastructure
   - gitops
@@ -106,14 +106,14 @@ ArgoCD se instala en su propio namespace `argocd` con:
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 ArgoCD instalado en namespace `argocd` via Helm chart + Jsonnet overlays
-- [ ] #2 CI genera manifiestos YAML con `tk export` y los pushea a rama `manifests`
-- [ ] #3 8 Applications creadas (7 environments + argocd mismo) leyendo de rama `manifests`
-- [ ] #4 syncPolicy en modo manual (no auto-sync) — ArgoCD detecta drift pero NO aplica cambios automáticamente
-- [ ] #5 Webhook de GitHub configurado para notificar a ArgoCD en cada push (sync rápido sin esperar polling)
-- [ ] #6 IngressRoute configurado para acceso via argocd.danielramos.me
-- [ ] #7 OIDC con Authelia para login en ArgoCD (grupo admins = role:admin)
-- [ ] #8 ArgoCD usa Valkey externo (no Redis propio)
+- [x] #1 ArgoCD instalado en namespace `argocd` via Helm chart + Jsonnet overlays
+- [x] #2 CI genera manifiestos YAML con `tk export` y los pushea a rama `manifests`
+- [x] #3 8 Applications creadas (7 environments + argocd mismo) leyendo de rama `manifests`
+- [x] #4 syncPolicy en modo manual (no auto-sync) — ArgoCD detecta drift pero NO aplica cambios automáticamente
+- [x] #5 Webhook de GitHub configurado para notificar a ArgoCD en cada push (sync rápido sin esperar polling)
+- [x] #6 IngressRoute configurado para acceso via argocd.danielramos.me
+- [x] #7 OIDC con Authelia para login en ArgoCD (grupo admins = role:admin)
+- [x] #8 ArgoCD usa Valkey externo (no Redis propio)
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -510,3 +510,31 @@ La Fase 1 (CI + Helm chart + OIDC) es 100% autónoma. En la Fase 2 se necesita i
 - Verificar que el login OIDC con Authelia funciona
 - Revisar el diff de las Applications y hacer el primer Sync manual
 <!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## ArgoCD GitOps deployment complete
+
+### What was done
+- ArgoCD v3.3.3 installed via Helm chart with Jsonnet overlays
+- CI workflow exports manifests to `manifests` branch on push to main
+- 28 per-service Applications generated dynamically from environment imports
+- Auto-sync with prune + selfHeal enabled (except argocd itself which is manual)
+- GitHub webhook for instant sync (~22s from merge to cluster updated)
+- OIDC SSO via Authelia (group admins = role:admin)
+- External Valkey instead of bundled Redis
+- IngressRoute at argocd.danielramos.me
+- All secrets managed via SealedSecrets (OIDC, webhook, server.secretkey)
+- Cleaned up all legacy age-encrypted secrets, orphan resources, and dead imports
+- Removed satph service (unused WebDAV bridge)
+- Added `app` label system with recursive `labelApp()` helper for per-service export
+- README.md with full project documentation
+
+### Key decisions
+- `tk apply` is no longer used — all deployments go through ArgoCD
+- `argocd app delete` must always use `--cascade=false` to avoid deleting cluster resources
+- ArgoCD app stays manual sync to prevent self-destructive loops
+- Server-side apply for argocd app (applicationsets CRD > 262KB)
+- Prometheus exporters grouped under `prometheus`, promtail under `loki`
+<!-- SECTION:FINAL_SUMMARY:END -->
