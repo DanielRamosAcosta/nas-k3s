@@ -1,17 +1,17 @@
 ---
-id: nasks-10
+id: NASKS-10
 title: Fix Invidious Companion PO token validation failure
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-09 16:57'
-updated_date: '2026-03-09 17:12'
+updated_date: '2026-03-15 16:52'
 labels:
   - media
   - bugfix
   - blocked
 dependencies: []
 priority: medium
-ordinal: 500
+ordinal: 1000
 ---
 
 ## Description
