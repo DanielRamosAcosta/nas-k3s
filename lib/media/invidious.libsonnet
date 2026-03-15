@@ -1,9 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'media/invidious.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
-
-local invidiousConfig = import './invidious.config.json';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -20,22 +18,14 @@ local invidiousConfig = import './invidious.config.json';
                   container.new('invidious', u.image(versions.invidious.image, versions.invidious.version)) +
                   container.withPorts([containerPort.new('http', 3000)]) +
                   container.withEnv(
-                    u.envVars.fromSecret(self.secretEnv)
+                    u.envVars.fromSealedSecret(self.sealed_secret)
                   ),
                 ]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
     service: k.util.serviceFor(self.deployment),
 
-    secretEnv: u.secret.forEnv(self.deployment, {
-      INVIDIOUS_CONFIG: std.manifestYamlDoc(invidiousConfig {
-        db+: {
-          password: s.POSTGRES_PASSWORD_INVIDIOUS,
-        },
-        invidious_companion_key: s.INVIDIOUS_COMPANION_KEY,
-        hmac_key: s.INVIDIOUS_HMAC_KEY,
-      }),
-    }),
+    sealed_secret: u.sealedSecret.wide.forEnv(self.deployment, secrets.invidious),
 
     ingressRoute: u.ingressRoute.from(self.service, 'invidious.danielramos.me'),
 
@@ -43,7 +33,7 @@ local invidiousConfig = import './invidious.config.json';
                            container.new('invidious-companion', u.image(versions.invidiousCompanion.image, versions.invidiousCompanion.version)) +
                            container.withPorts([containerPort.new('http', 8282)]) +
                            container.withEnv(
-                             u.envVars.fromSecret(self.companionSecretEnv)
+                             u.envVars.fromSealedSecret(self.companion_sealed_secret)
                            ) +
                            container.withVolumeMounts([
                              volumeMount.new('cache', '/var/tmp/youtubei.js'),
@@ -56,8 +46,6 @@ local invidiousConfig = import './invidious.config.json';
 
     companionService: k.util.serviceFor(self.companionDeployment),
 
-    companionSecretEnv: u.secret.forEnv(self.companionDeployment, {
-      SERVER_SECRET_KEY: s.INVIDIOUS_COMPANION_KEY,
-    }),
+    companion_sealed_secret: u.sealedSecret.forEnv(self.companionDeployment, secrets.companion),
   },
 }
