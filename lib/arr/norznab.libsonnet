@@ -1,7 +1,7 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local versions = import '../versions.json';
-local s = import 'secrets.json';
+local secrets = import 'arr/norznab.secrets.json';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -16,7 +16,7 @@ local s = import 'secrets.json';
         containerPort.new('http', 3000),
       ]) +
       container.withEnv(
-        u.envVars.fromSecret(self.secrets) +
+        u.envVars.fromSealedSecret(self.sealed_secret) +
         u.envVars.fromConfigMap(self.config)
       ),
     ]) +
@@ -34,8 +34,6 @@ local s = import 'secrets.json';
       NODE_USE_ENV_PROXY: '1',
     }),
 
-    secrets: u.secret.forEnv(self.statefulSet, {
-      TMDB_API_KEY: s.NORZNAB_TMDB_API_KEY,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.norznab),
   },
 }
