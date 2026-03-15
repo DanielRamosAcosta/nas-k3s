@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: auth
+  namespace: argocd
+spec:
+  destination:
+    namespace: auth
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    directory:
+      recurse: false
+    path: auth
+    repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
+    targetRevision: manifests
+  syncPolicy: {}

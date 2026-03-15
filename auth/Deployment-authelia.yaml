@@ -27,6 +27,21 @@ spec:
             secretKeyRef:
               key: AUTHELIA_STORAGE_ENCRYPTION_KEY
               name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLI_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLI_CLIENT_ID
+              name: authelia-sealed-secret
         - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_BOOKLORE_CLIENT_ID
           valueFrom:
             secretKeyRef:
