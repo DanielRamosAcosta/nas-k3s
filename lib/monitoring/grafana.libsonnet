@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'monitoring/grafana.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -17,7 +17,8 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
                   container.withPorts([containerPort.new('http', 3000)]) +
                   container.withEnv(
                     u.envVars.fromConfigMap(self.configEnv) +
-                    u.envVars.fromSecret(self.secretEnv)
+                    u.envVars.fromSealedSecret(self.sealed_secret) +
+                    u.envVars.fromSealedSecret(self.sealed_secret_shared)
                   ) +
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.lokiDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
@@ -61,11 +62,8 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
       GF_LOG_CONSOLE_FORMAT: 'json',
     }),
 
-    secretEnv: u.secret.forEnv(self.deployment, {
-      GF_DATABASE_PASSWORD: s.POSTGRES_PASSWORD_GRAFANA,
-      GF_AUTH_GENERIC_OAUTH_CLIENT_ID: s.AUTHELIA_OIDC_GRAFANA_CLIENT_ID,
-      GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET: s.AUTHELIA_OIDC_GRAFANA_CLIENT_SECRET,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.grafana),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('grafana-shared-sealed-secret', secrets.shared),
 
     lokiDatasource: u.configMap.forFile('loki.yaml', lokiDatasource),
     prometheusDatasource: u.configMap.forFile('prometheus.yaml', prometheusDatasource),
