@@ -18,8 +18,13 @@ jb install              # Install jsonnet-bundler dependencies into vendor/
 
 # Tanka workflow
 tk eval environments/<category>                        # Compile Jsonnet to JSON
-tk apply environments/<category> --auto-approve=always # Deploy to cluster
-tk export dist/ environments/ --recursive --format '{{env.spec.namespace}}/{{.kind}}-{{.metadata.name}}'  # Export all manifests
+tk export dist/ environments/ --recursive --format '{{index .metadata.labels "app"}}/{{.kind}}-{{.metadata.name}}'  # Export all manifests
+
+# Deployment (GitOps via ArgoCD — NEVER use tk apply directly)
+# 1. Commit + push to main
+# 2. CI exports manifests to 'manifests' branch
+# 3. ArgoCD detects changes → sync manually from UI or CLI
+argocd app sync <app-name> --grpc-web                  # Sync a single app
 ```
 
 ## Architecture
