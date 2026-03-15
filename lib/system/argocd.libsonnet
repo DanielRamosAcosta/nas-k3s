@@ -26,7 +26,6 @@ local helm = tanka.helm.new(std.thisFile);
           cm: {
             url: 'https://argocd.danielramos.me',
             'admin.enabled': 'false',
-            'resource.customizations.useServerSideApply.apiextensions.k8s.io_CustomResourceDefinition': 'true',
             'oidc.config': std.manifestYamlDoc({
               name: 'Authelia',
               issuer: 'https://auth.danielramos.me',
@@ -113,6 +112,12 @@ local helm = tanka.helm.new(std.thisFile);
     app_media: makeApp('media', 'media', 'media'),
     app_monitoring: makeApp('monitoring', 'monitoring', 'monitoring'),
     app_system: makeApp('system', 'system', 'system'),
-    app_argocd: makeApp('argocd', 'argocd', 'argocd'),
+    app_argocd: makeApp('argocd', 'argocd', 'argocd') {
+      spec+: {
+        syncPolicy+: {
+          syncOptions: ['ServerSideApply=true'],
+        },
+      },
+    },
   },
 }
