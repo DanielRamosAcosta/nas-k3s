@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'databases/mariadb.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -21,7 +21,12 @@ local versions = import 'versions.json';
         [containerPort.new('mariadb', 3306)]
       ) +
       container.withEnv(
-        u.envVars.fromSecret(self.secretsEnv)
+        [
+          k.core.v1.envVar.new('PUID', '1000'),
+          k.core.v1.envVar.new('PGID', '1000'),
+          k.core.v1.envVar.new('TZ', 'Atlantic/Canary'),
+        ] +
+        u.envVars.fromSealedSecret(self.sealed_secret)
       ) +
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/config'),
@@ -32,14 +37,9 @@ local versions = import 'versions.json';
 
     service: k.util.serviceFor(self.statefulSet),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      MYSQL_ROOT_PASSWORD: s.MARIADB_ROOT_PASSWORD,
-      PUID: '1000',
-      PGID: '1000',
-      TZ: 'Atlantic/Canary',
-    }),
+    sealed_secret: u.sealedSecret.wide.forEnv(self.statefulSet, secrets.mariadb),
 
-    userBooklore: self.createUser('booklore', s.MARIADB_PASSWORD_BOOKLORE, self.createUserMigration, self.secretsEnv),
+    userBooklore: self.createUser('booklore', secrets.userBooklore, self.createUserMigration, self.sealed_secret),
 
     createUserMigration: u.configMap.forFile('mariadb.create-user.sh', createUserMigration),
 
@@ -54,8 +54,8 @@ local versions = import 'versions.json';
                       container.withCommand(['/bin/bash', '/mnt/scripts/mariadb.create-user.sh']) +
                       container.withEnv(
                         [k.core.v1.envVar.new('USER_NAME', name)] +
-                        u.envVars.fromSecret(self.userSecret) +
-                        u.envVars.fromSecret(secret)
+                        u.envVars.fromSealedSecret(self.userSecret) +
+                        u.envVars.fromSealedSecret(secret)
                       ) +
                       container.withVolumeMounts([
                         u.volumeMount.fromFile(configMap, '/mnt/scripts'),
@@ -65,7 +65,7 @@ local versions = import 'versions.json';
                       u.volume.fromConfigMap(configMap),
                     ]),
 
-      userSecret: u.secret.forEnv(self.migrationJob, {
+      userSecret: u.sealedSecret.wide.forEnv(self.migrationJob, {
         USER_PASSWORD: password,
       }),
     },

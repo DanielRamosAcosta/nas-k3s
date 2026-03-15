@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'databases/postgres.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -28,7 +28,7 @@ local versions = import 'versions.json';
         [containerPort.new('postgres', 5432)]
       ) +
       container.withEnv(
-        u.envVars.fromSecret(self.secretsEnv)
+        u.envVars.fromSealedSecret(self.sealed_secret)
       ) +
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/var/lib/postgresql/data'),
@@ -52,17 +52,15 @@ local versions = import 'versions.json';
 
     service: k.util.serviceFor(self.statefulSet),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      POSTGRES_PASSWORD: s.POSTGRES_PASSWORD,
-    }),
+    sealed_secret: u.sealedSecret.wide.forEnv(self.statefulSet, secrets.postgres),
 
-    userImmich: self.createUser('immich', s.POSTGRES_PASSWORD_IMMICH, self.createUserMigration, self.secretsEnv),
-    userAuthelia: self.createUser('authelia', s.POSTGRES_PASSWORD_AUTHELIA, self.createUserMigration, self.secretsEnv),
-    userSftpgo: self.createUser('sftpgo', s.POSTGRES_PASSWORD_SFTPGO, self.createUserMigration, self.secretsEnv),
-    userGrafana: self.createUser('grafana', s.POSTGRES_PASSWORD_GRAFANA, self.createUserMigration, self.secretsEnv),
-    userGitea: self.createUser('gitea', s.POSTGRES_PASSWORD_GITEA, self.createUserMigration, self.secretsEnv),
-    userPiped: self.createUser('piped', s.POSTGRES_PASSWORD_PIPED, self.createUserMigration, self.secretsEnv),
-    userInvidious: self.createUser('invidious', s.POSTGRES_PASSWORD_INVIDIOUS, self.createUserMigration, self.secretsEnv),
+    userImmich: self.createUser('immich', secrets.userImmich, self.createUserMigration, self.sealed_secret),
+    userAuthelia: self.createUser('authelia', secrets.userAuthelia, self.createUserMigration, self.sealed_secret),
+    userSftpgo: self.createUser('sftpgo', secrets.userSftpgo, self.createUserMigration, self.sealed_secret),
+    userGrafana: self.createUser('grafana', secrets.userGrafana, self.createUserMigration, self.sealed_secret),
+    userGitea: self.createUser('gitea', secrets.userGitea, self.createUserMigration, self.sealed_secret),
+    userPiped: self.createUser('piped', secrets.userPiped, self.createUserMigration, self.sealed_secret),
+    userInvidious: self.createUser('invidious', secrets.userInvidious, self.createUserMigration, self.sealed_secret),
 
     createUserMigration: u.configMap.forFile('postgres.create-user.sh', createUserMigration),
 
@@ -81,10 +79,10 @@ local versions = import 'versions.json';
     backupPv: u.pv.atLocal('postgres-backup-pv', '100Gi', '/cold-data/postgres-backups'),
     backupPvc: u.pvc.from(self.backupPv),
 
-    // Secrets for backup CronJobs (different name to avoid conflicts with secretsEnv)
-    backupSecrets: k.core.v1.secret.new('postgres-backup-secret-env', u.base64Keys({
-      PGPASSWORD: s.POSTGRES_PASSWORD,
-    })),
+    // Sealed secret for backup CronJobs
+    backupSecrets: u.sealedSecret.wide.forEnvNamed('postgres-backup-sealed-secret', {
+      PGPASSWORD: secrets.postgres.POSTGRES_PASSWORD,
+    }),
 
     // Base Backup CronJob - runs daily at 2 AM
     baseBackupCron: cronJob.new(
@@ -94,7 +92,7 @@ local versions = import 'versions.json';
                         container.new('backup', u.image(versions.postgres.image, versions.postgres.version)) +
                         container.withCommand(['/bin/bash', '/mnt/scripts/postgres.backup.sh']) +
                         container.withEnv(
-                          u.envVars.fromSecret(self.backupSecrets)
+                          u.envVars.fromSealedSecret(self.backupSecrets)
                         ) +
                         container.withVolumeMounts([
                           volumeMount.new('backup-storage', '/backups'),
@@ -139,8 +137,8 @@ local versions = import 'versions.json';
                       container.withCommand(['/bin/bash', '/mnt/scripts/postgres.create-user.sh']) +
                       container.withEnv(
                         [k.core.v1.envVar.new('USER_NAME', name)] +
-                        u.envVars.fromSecret(self.userSecret) +
-                        u.envVars.fromSecret(secret)
+                        u.envVars.fromSealedSecret(self.userSecret) +
+                        u.envVars.fromSealedSecret(secret)
                       ) +
                       container.withVolumeMounts([
                         u.volumeMount.fromFile(configMap, '/mnt/scripts'),
@@ -150,7 +148,7 @@ local versions = import 'versions.json';
                       u.volume.fromConfigMap(configMap),
                     ]),
 
-      userSecret: u.secret.forEnv(self.migrationJob, {
+      userSecret: u.sealedSecret.wide.forEnv(self.migrationJob, {
         USER_PASSWORD: password,
       }),
     },
