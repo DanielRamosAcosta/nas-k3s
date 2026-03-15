@@ -134,3 +134,34 @@ invidiousConfigSecret: u.sealedSecret.wide.forFile('invidious-config-secret.json
 #### Legacy (age-encrypted secrets.json) — DEPRECATED
 
 `lib/secrets.json` still exists (gitignored) but is no longer used by any service. All services have been migrated to Sealed Secrets. The file will be removed once ArgoCD prune cleans up the legacy Secret resources in the cluster.
+
+### ArgoCD
+
+ArgoCD manages all deployments via GitOps. It lives in `environments/argocd/` with namespace `argocd`.
+
+#### Architecture
+- **CI** exports manifests to `manifests` branch on push to main
+- **ArgoCD** reads YAMLs from `manifests` branch (no plugins/sidecars)
+- **Webhook** notifies ArgoCD on push for instant detection (no polling)
+- **Manual sync** — ArgoCD detects drift but does NOT auto-apply
+
+#### Applications
+One Application per service (not per namespace). Generated dynamically in `argocd/main.jsonnet` by importing all other environments and extracting `app` labels from resources. When adding a new service, just add it to the environment's `main.jsonnet` with `u.labelApp()` and ArgoCD picks it up automatically.
+
+#### OIDC
+ArgoCD uses Authelia for SSO. Client IDs and secret are stored in SealedSecret `argocd-oidc-secret` and referenced from `argocd-cm` via `$argocd-oidc-secret:key-name` syntax. The `argocd-secret` (with `server.secretkey` and `webhook.github.secret`) is also a SealedSecret — the Helm chart's `createSecret` is disabled.
+
+#### CRITICAL: Deleting ArgoCD Applications
+
+**NEVER use `argocd app delete <name>` without `--cascade=false`**. By default, deleting an Application also deletes ALL cluster resources it manages (prune). This will take down services.
+
+```bash
+# WRONG — deletes all resources managed by the app from the cluster:
+argocd app delete myapp -y
+
+# CORRECT — only removes the Application resource, keeps cluster resources:
+argocd app delete myapp --cascade=false
+```
+
+#### Server-Side Apply
+The `argocd` Application uses `syncOptions: [ServerSideApply=true]` because the `applicationsets` CRD exceeds the 262KB annotation limit for client-side apply.
