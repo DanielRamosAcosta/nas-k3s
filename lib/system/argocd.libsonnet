@@ -46,9 +46,13 @@ local helm = tanka.helm.new(std.thisFile);
     }),
 
     oidc_sealed_secret: u.sealedSecret.forEnvNamed('argocd-oidc-secret', secrets.argocd) {
-      metadata+: {
-        labels+: {
-          'app.kubernetes.io/part-of': 'argocd',
+      spec+: {
+        template+: {
+          metadata+: {
+            labels+: {
+              'app.kubernetes.io/part-of': 'argocd',
+            },
+          },
         },
       },
     },
