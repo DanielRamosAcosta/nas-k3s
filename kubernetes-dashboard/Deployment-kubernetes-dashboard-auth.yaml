@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 046753dea3417792d938652b080dffa70a60d777dbc33183b7947b8b72b5c92c
+        checksum/config: c71654f6d15abe1bc813031f8813b0ab6bfd1144206a5daa8472d93e9806a3a7
       labels:
         app.kubernetes.io/component: auth
         app.kubernetes.io/instance: kubernetes-dashboard
