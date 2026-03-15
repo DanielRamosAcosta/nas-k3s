@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'media/sftpgo.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -9,10 +9,8 @@ local sftpgoConfig = importstr './sftpgo.config.json';
   local statefulSet = k.apps.v1.statefulSet,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
-  local secret = k.core.v1.secret,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
-  local configMap = k.core.v1.configMap,
 
   new():: {
     statefulSet: statefulSet.new('sftpgo', replicas=1, containers=[
@@ -22,7 +20,8 @@ local sftpgoConfig = importstr './sftpgo.config.json';
                      containerPort.new('metrics', 9219),
                    ]) +
                    container.withEnv(
-                     u.envVars.fromSecret(self.secretsEnv),
+                     u.envVars.fromSealedSecret(self.sealed_secret) +
+                     u.envVars.fromSealedSecret(self.sealed_secret_shared),
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/srv/sftpgo'),
@@ -41,11 +40,8 @@ local sftpgoConfig = importstr './sftpgo.config.json';
 
     configuration: u.configMap.forFile('sftpgo.json', sftpgoConfig),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      SFTPGO_DATA_PROVIDER__PASSWORD: s.POSTGRES_PASSWORD_SFTPGO,
-      SFTPGO_HTTPD__BINDINGS__0__OIDC__CLIENT_ID: s.AUTHELIA_OIDC_SFTPGO_CLIENT_ID,
-      SFTPGO_HTTPD__BINDINGS__0__OIDC__CLIENT_SECRET: s.AUTHELIA_OIDC_SFTPGO_CLIENT_SECRET,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.sftpgo),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('sftpgo-shared-sealed-secret', secrets.shared),
 
     pv: u.pv.localPathFor(self.statefulSet, '40Gi', '/cold-data/sftpgo/data'),
     pvc: u.pvc.from(self.pv),
