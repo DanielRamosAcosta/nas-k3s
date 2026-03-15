@@ -103,6 +103,18 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     }),
     forEnv(component, content):: k.core.v1.secret.new(component.metadata.name + '-secret-env', u.base64Keys(content)),
   },
+  sealedSecret: {
+    forEnv(component, encryptedData):: {
+      apiVersion: 'bitnami.com/v1alpha1',
+      kind: 'SealedSecret',
+      metadata: {
+        name: component.metadata.name + '-sealed-secret',
+      },
+      spec: {
+        encryptedData: encryptedData,
+      },
+    },
+  },
   configMap: {
     forFile(fileName, content):: k.core.v1.configMap.new(u.normalizeName(fileName), {
       [fileName]: content,
@@ -112,6 +124,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   envVars: {
     fromConfigMap(configMap):: u.extractConfig(configMap.metadata.name, std.objectFieldsAll(configMap.data)),
     fromSecret(secret):: u.extractSecrets(secret.metadata.name, u.keysFromSecret(secret)),
+    fromSealedSecret(sealedSecret):: u.extractSecrets(sealedSecret.metadata.name, std.objectFields(sealedSecret.spec.encryptedData)),
   },
   ingressRoute: {
     from(service, hostOrMap, middlewares=[])::
