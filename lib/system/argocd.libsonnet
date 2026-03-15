@@ -18,15 +18,11 @@ local makeApp(name, path, namespace) = {
       repoURL: 'https://github.com/DanielRamosAcosta/nas-k3s.git',
       targetRevision: 'manifests',
       path: path,
-      directory: {
-        recurse: false,
-      },
     },
     destination: {
       server: 'https://kubernetes.default.svc',
       namespace: namespace,
     },
-    syncPolicy: {},
   },
 };
 
