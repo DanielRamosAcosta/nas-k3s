@@ -26,6 +26,7 @@ local helm = tanka.helm.new(std.thisFile);
           cm: {
             url: 'https://argocd.danielramos.me',
             'admin.enabled': 'false',
+            'resource.customizations.useServerSideApply.apiextensions.k8s.io_CustomResourceDefinition': 'true',
             'oidc.config': std.manifestYamlDoc({
               name: 'Authelia',
               issuer: 'https://auth.danielramos.me',
