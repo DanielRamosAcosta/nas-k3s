@@ -14,4 +14,6 @@ spec:
     path: argocd
     repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
     targetRevision: manifests
-  syncPolicy: {}
+  syncPolicy:
+    syncOptions:
+    - ServerSideApply=true
