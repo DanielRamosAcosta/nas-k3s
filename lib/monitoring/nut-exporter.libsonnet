@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'monitoring/nut-exporter.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -18,7 +18,7 @@ local versions = import 'versions.json';
                  ]) +
                  container.withPorts(containerPort.new('nut', 9199)) +
                  container.withEnv(
-                   u.envVars.fromSecret(self.secretEnv)
+                   u.envVars.fromSealedSecret(self.sealed_secret)
                  ),
                ]) +
                daemonSet.spec.template.spec.withHostNetwork(true) +
@@ -26,8 +26,6 @@ local versions = import 'versions.json';
 
     service: k.util.serviceFor(self.daemonSet),
 
-    secretEnv: u.secret.forEnv(self.daemonSet, {
-      NUT_EXPORTER_PASSWORD: s.NUT_EXPORTER_PASSWORD,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.daemonSet, secrets.nutExporter),
   },
 }
