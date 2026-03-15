@@ -9,9 +9,9 @@ K3s homelab infrastructure-as-code using **Jsonnet + Tanka** for declarative Kub
 ## Key Commands
 
 ```bash
-# Secret management
-just encrypt-secrets    # Encrypt lib/secrets.json → lib/secrets.json.age (age + Ed25519)
-just decrypt-secrets    # Decrypt lib/secrets.json.age → lib/secrets.json
+# Sealed Secrets
+echo -n 'value' | ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>  # Strict scope
+echo -n 'value' | ./scripts/encrypt-secret.sh --cluster-wide                     # Cluster-wide scope
 
 # Jsonnet dependencies
 jb install              # Install jsonnet-bundler dependencies into vendor/
@@ -19,7 +19,7 @@ jb install              # Install jsonnet-bundler dependencies into vendor/
 # Tanka workflow
 tk eval environments/<category>                        # Compile Jsonnet to JSON
 tk apply environments/<category> --auto-approve=always # Deploy to cluster
-tk export dist/ environments/<category>                # Export manifests to dist/
+tk export dist/ environments/ --recursive --format '{{env.spec.namespace}}/{{.kind}}-{{.metadata.name}}'  # Export all manifests
 ```
 
 ## Architecture
@@ -46,16 +46,17 @@ tk export dist/ environments/<category>                # Export manifests to dis
 Every app in `lib/` follows this pattern:
 
 ```jsonnet
+local secrets = import 'category/appname.secrets.json';
 {
-  new(version):: {
+  new():: {
     local this = self,
     statefulset: /* or deployment */,
     service: /* ClusterIP service */,
     config_map: /* app config via importstr */,
-    secret: /* from lib/secrets.json */,
-    pv: utils.pv.localPathFor(this.statefulset, '10Gi', '/data/appname'),
-    pvc: utils.pvc.from(self.pv),
-    ingress_route: utils.ingressRoute.from(this.service, 'app.domain.com'),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulset, secrets.appname),
+    pv: u.pv.localPathFor(this.statefulset, '10Gi', '/data/appname'),
+    pvc: u.pvc.from(self.pv),
+    ingress_route: u.ingressRoute.from(this.service, 'app.domain.com'),
   }
 }
 ```
@@ -71,32 +72,65 @@ Environments compose these modules in `main.jsonnet`, passing versions from `ver
 - All PVs use `local-path` storage class with `hostPath` mounts from NAS paths (`/data/*`, `/cold-data/*`)
 - `Retain` reclaim policy on all persistent volumes
 
-### Secrets
+### Secrets (Sealed Secrets)
 
-#### Sealed Secrets (preferred)
-- **Bitnami Sealed Secrets** controller runs in `kube-system`, encrypting secrets with a cluster-side key
-- Encrypted data lives in `<appname>.secrets.json` files alongside each `.libsonnet`, with the structure:
-  ```json
-  {
-    "container1": {
-      "SECRET_NAME": "kubeseal-encrypted-value"
-    }
+All services use **Bitnami Sealed Secrets**. The controller runs in `kube-system` and decrypts `SealedSecret` resources into regular `Secret` resources in the cluster.
+
+#### Encryption scopes
+
+| Scope | When to use | Encrypt command |
+|-------|-------------|-----------------|
+| **strict** | Service-specific secrets (API keys, OIDC client secrets) | `echo -n 'value' \| ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>` |
+| **cluster-wide** | Shared secrets (DB passwords, SMTP) reused across namespaces | `echo -n 'value' \| ./scripts/encrypt-secret.sh --cluster-wide` |
+
+**Important**: You cannot mix strict and cluster-wide encrypted values in the same SealedSecret resource. Use separate resources (e.g. `sealed_secret` + `sealed_secret_shared`).
+
+#### Secret file structure
+
+Encrypted data lives in `<appname>.secrets.json` files alongside each `.libsonnet`:
+```json
+{
+  "serviceName": {
+    "SECRET_KEY": "kubeseal-encrypted-value"
+  },
+  "shared": {
+    "DB_PASSWORD": "kubeseal-encrypted-value-cluster-wide"
   }
-  ```
-- The `.libsonnet` imports the secrets file and passes the relevant key to the utility:
-  ```jsonnet
-  local secrets = import 'system/heartbeat.secrets.json';
-  // ...
-  sealed_secret: u.sealedSecret.forEnv(self.cron, secrets.heartbeat),
-  ```
-- Encrypt new values with: `echo -n 'value' | ./scripts/encrypt-secret.sh <namespace> <secret-name> <key>`
-- The controller decrypts `SealedSecret` resources and creates regular `Secret` resources in the cluster
-- `u.sealedSecret.forEnv(component, encryptedData)` creates the SealedSecret resource
-- `u.envVars.fromSealedSecret(sealedSecret)` generates env var references from it
+}
+```
 
-#### Legacy (age-encrypted secrets.json)
-- `lib/secrets.json` holds all secrets in plain JSON (gitignored)
-- Encrypted with age to `lib/secrets.json.age` (committed)
-- Public key: `id_dani.pub`, decryption key: `~/.ssh/id_ed25519`
-- Secrets are injected into K8s Secret resources via `u.secret.forEnv()` and referenced via env vars
-- Being migrated to Sealed Secrets incrementally, service by service
+#### Utils API
+
+**Strict scope** (service-specific):
+- `u.sealedSecret.forEnv(component, encryptedData)` — SealedSecret with name derived from component
+- `u.sealedSecret.forEnvNamed(name, encryptedData)` — SealedSecret with explicit name
+- `u.sealedSecret.forFile(fileName, encryptedValue)` — SealedSecret for file mount
+
+**Cluster-wide scope** (shared across namespaces):
+- `u.sealedSecret.wide.forEnv(component, encryptedData)`
+- `u.sealedSecret.wide.forEnvNamed(name, encryptedData)`
+- `u.sealedSecret.wide.forFile(fileName, encryptedValue)`
+
+**Referencing secrets**:
+- `u.envVars.fromSealedSecret(sealedSecret)` — generates env var references
+- `u.volumeMount.fromSealedSecretFile(sealedSecret, path)` — mount a file from SealedSecret
+- `u.volume.fromSealedSecret(sealedSecret)` — volume referencing the decrypted Secret
+
+#### Pattern: Config with embedded secrets (jq merge)
+
+For apps that need a config file mixing public config + secrets (e.g. invidious, immich):
+
+1. **ConfigMap** with public config (visible in git)
+2. **SealedSecret** with only the secret fields as a JSON file
+3. **Init container** with `jq` that deep-merges both: `jq -s '.[0] * .[1]' public.json secret.json > merged.json`
+4. **Main container** reads the merged result
+
+```jsonnet
+invidiousConfigPublic: u.configMap.forFile('invidious-config.json', std.manifestJsonEx(config, '  ')),
+invidiousConfigSecret: u.sealedSecret.wide.forFile('invidious-config-secret.json', secrets.configSecretFile),
+// init container merges both, main container reads via env var or file mount
+```
+
+#### Legacy (age-encrypted secrets.json) — DEPRECATED
+
+`lib/secrets.json` still exists (gitignored) but is no longer used by any service. All services have been migrated to Sealed Secrets. The file will be removed once ArgoCD prune cleans up the legacy Secret resources in the cluster.
