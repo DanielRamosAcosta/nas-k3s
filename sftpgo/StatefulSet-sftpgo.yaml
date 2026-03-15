@@ -32,7 +32,7 @@ spec:
             secretKeyRef:
               key: SFTPGO_DATA_PROVIDER__PASSWORD
               name: sftpgo-shared-sealed-secret
-        image: docker.io/drakkan/sftpgo:v2.7.0-alpine
+        image: docker.io/drakkan/sftpgo:v2.7.1-alpine
         imagePullPolicy: IfNotPresent
         name: sftpgo
         ports:
