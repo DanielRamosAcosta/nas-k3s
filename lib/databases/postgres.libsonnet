@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -20,9 +21,9 @@ local u = import 'utils.libsonnet';
   local cleanupScript = importstr './postgres.cleanup.sh',
   local pgHbaContent = importstr './postgres.hba.conf',
 
-  new(image='ghcr.io/immich-app/postgres', version):: {
+  new():: {
     statefulSet: statefulSet.new('postgres', replicas=1, containers=[
-      container.new('postgres', u.image(image, version)) +
+      container.new('postgres', u.image(versions.postgres.image, versions.postgres.version)) +
       container.withPorts(
         [containerPort.new('postgres', 5432)]
       ) +
@@ -90,7 +91,7 @@ local u = import 'utils.libsonnet';
                       name='postgres-base-backup',
                       schedule='0 2 * * *',
                       containers=[
-                        container.new('backup', u.image(image, version)) +
+                        container.new('backup', u.image(versions.postgres.image, versions.postgres.version)) +
                         container.withCommand(['/bin/bash', '/mnt/scripts/postgres.backup.sh']) +
                         container.withEnv(
                           u.envVars.fromSecret(self.backupSecrets)
@@ -134,7 +135,7 @@ local u = import 'utils.libsonnet';
       migrationJob: k.batch.v1.job.new('postgres-create-user-' + name) +
                     k.batch.v1.job.spec.template.spec.withRestartPolicy('OnFailure') +
                     k.batch.v1.job.spec.template.spec.withContainers([
-                      container.new('create-user', u.image(image, version)) +
+                      container.new('create-user', u.image(versions.postgres.image, versions.postgres.version)) +
                       container.withCommand(['/bin/bash', '/mnt/scripts/postgres.create-user.sh']) +
                       container.withEnv(
                         [k.core.v1.envVar.new('USER_NAME', name)] +

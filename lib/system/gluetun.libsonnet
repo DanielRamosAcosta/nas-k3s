@@ -1,15 +1,16 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local deployment = k.apps.v1.deployment,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
 
-  new(image='ghcr.io/qdm12/gluetun', version='v3.41.1'):: {
+  new():: {
     deployment: deployment.new('gluetun', replicas=1, containers=[
-      container.new('gluetun', u.image(image, version)) +
+      container.new('gluetun', u.image(versions.gluetun.image, versions.gluetun.version)) +
       container.securityContext.withPrivileged(true) +
       container.withPorts([
         containerPort.new('http-proxy', 8888),

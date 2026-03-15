@@ -1,5 +1,6 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -8,9 +9,9 @@ local u = import 'utils.libsonnet';
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='docker.io/jellyfin/jellyfin', version):: {
+  new():: {
     statefulSet: statefulSet.new('jellyfin', replicas=1, containers=[
-                   container.new('jellyfin', u.image(image, version)) +
+                   container.new('jellyfin', u.image(versions.jellyfin.image, versions.jellyfin.version)) +
                    container.withPorts([containerPort.new('http', 8096)]) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv)

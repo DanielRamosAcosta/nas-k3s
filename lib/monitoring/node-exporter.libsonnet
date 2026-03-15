@@ -1,5 +1,6 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local daemonSet = k.apps.v1.daemonSet,
@@ -8,9 +9,9 @@ local u = import 'utils.libsonnet';
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='quay.io/prometheus/node-exporter', version):: {
+  new():: {
     daemonSet: daemonSet.new('node-exporter', containers=[
-                 container.new('node-exporter', u.image(image, version)) +
+                 container.new('node-exporter', u.image(versions.nodeExporter.image, versions.nodeExporter.version)) +
                  container.withArgs([
                    '--path.rootfs=/host',
                    '--path.procfs=/host/proc',

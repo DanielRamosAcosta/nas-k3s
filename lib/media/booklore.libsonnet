@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 local logbackConfig = importstr './booklore.logback-spring.xml';
 
 {
@@ -10,9 +11,9 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='booklore/booklore', version):: {
+  new():: {
     statefulSet: statefulSet.new('booklore', replicas=1, containers=[
-      container.new('booklore', u.image(image, version)) +
+      container.new('booklore', u.image(versions.booklore.image, versions.booklore.version)) +
       container.withPorts([containerPort.new('server', 6060)]) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv) +

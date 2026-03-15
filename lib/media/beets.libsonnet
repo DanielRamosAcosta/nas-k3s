@@ -1,5 +1,6 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local versions = import '../versions.json';
 
 local beetsConfig = import './beets.config.json';
 
@@ -9,9 +10,9 @@ local beetsConfig = import './beets.config.json';
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='lscr.io/linuxserver/beets', version):: {
+  new():: {
     statefulSet: statefulSet.new('beets', replicas=1, containers=[
-                   container.new('beets', u.image(image, version)) +
+                   container.new('beets', u.image(versions.beets.image, versions.beets.version)) +
                    container.withPorts([
                      containerPort.new('http', 8337),
                    ]) +

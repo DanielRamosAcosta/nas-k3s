@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local invidiousConfig = import './invidious.config.json';
 
@@ -12,16 +13,11 @@ local invidiousConfig = import './invidious.config.json';
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(
-    invidiousImage='quay.io/invidious/invidious',
-    invidiousCompanionImage='quay.io/invidious/invidious-companion',
-    invidiousVersion,
-    invidiousCompanionVersion
-  ):: {
+  new():: {
     local this = self,
 
     deployment: deployment.new('invidious', replicas=1, containers=[
-                  container.new('invidious', u.image(invidiousImage, invidiousVersion)) +
+                  container.new('invidious', u.image(versions.invidious.image, versions.invidious.version)) +
                   container.withPorts([containerPort.new('http', 3000)]) +
                   container.withEnv(
                     u.envVars.fromSecret(self.secretEnv)
@@ -44,7 +40,7 @@ local invidiousConfig = import './invidious.config.json';
     ingressRoute: u.ingressRoute.from(self.service, 'invidious.danielramos.me'),
 
     companionDeployment: deployment.new('invidious-companion', replicas=1, containers=[
-                           container.new('invidious-companion', u.image(invidiousCompanionImage, invidiousCompanionVersion)) +
+                           container.new('invidious-companion', u.image(versions.invidiousCompanion.image, versions.invidiousCompanion.version)) +
                            container.withPorts([containerPort.new('http', 8282)]) +
                            container.withEnv(
                              u.envVars.fromSecret(self.companionSecretEnv)

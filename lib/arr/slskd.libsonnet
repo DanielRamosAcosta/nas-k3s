@@ -1,5 +1,6 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local versions = import '../versions.json';
 
 local s = import 'secrets.json';
 local slskdConfig = import './slskd.config.json';
@@ -10,9 +11,9 @@ local slskdConfig = import './slskd.config.json';
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='slskd/slskd', version):: {
+  new():: {
     statefulSet: statefulSet.new('slskd', replicas=1, containers=[
-                   container.new('slskd', u.image(image, version)) +
+                   container.new('slskd', u.image(versions.slskd.image, versions.slskd.version)) +
                    container.withPorts([
                      containerPort.new('http', 5030),
                      containerPort.new('https', 5031),

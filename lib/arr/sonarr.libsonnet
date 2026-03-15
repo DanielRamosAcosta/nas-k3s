@@ -1,5 +1,6 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local versions = import '../versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -7,9 +8,9 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='ghcr.io/hotio/sonarr', version):: {
+  new():: {
     statefulSet: statefulSet.new('sonarr', replicas=1, containers=[
-                   container.new('sonarr', u.image(image, version)) +
+                   container.new('sonarr', u.image(versions.sonarr.image, versions.sonarr.version)) +
                    container.withPorts([
                      containerPort.new('http', 8989),
                    ]) +

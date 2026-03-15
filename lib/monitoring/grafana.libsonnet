@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local lokiDatasource = importstr './grafana.datasource.loki.yml';
 local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
@@ -10,9 +11,9 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
 
-  new(image='docker.io/grafana/grafana-oss', version):: {
+  new():: {
     deployment: deployment.new('grafana', replicas=1, containers=[
-                  container.new('grafana', u.image(image, version)) +
+                  container.new('grafana', u.image(versions.grafana.image, versions.grafana.version)) +
                   container.withPorts([containerPort.new('http', 3000)]) +
                   container.withEnv(
                     u.envVars.fromConfigMap(self.configEnv) +

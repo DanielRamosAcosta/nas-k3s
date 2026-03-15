@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -16,9 +17,9 @@ local u = import 'utils.libsonnet';
   local serviceAccount = k.core.v1.serviceAccount,
   local policyRule = k.rbac.v1.policyRule,
 
-  new(image='docker.io/gitea/gitea', version):: {
+  new():: {
     statefulSet: statefulSet.new('gitea', replicas=1, containers=[
-                   container.new('gitea', u.image(image, version)) +
+                   container.new('gitea', u.image(versions.gitea.image, versions.gitea.version)) +
                    container.withPorts([
                      containerPort.new('server', 3000),
                      containerPort.new('ssh', 2222),

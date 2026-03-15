@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local daemonSet = k.apps.v1.daemonSet,
@@ -9,9 +10,9 @@ local u = import 'utils.libsonnet';
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='ghcr.io/druggeri/nut_exporter', version):: {
+  new():: {
     daemonSet: daemonSet.new('nut-exporter', containers=[
-                 container.new('nut-exporter', u.image(image, version)) +
+                 container.new('nut-exporter', u.image(versions.nutExporter.image, versions.nutExporter.version)) +
                  container.withArgs([
                    '--nut.username=monuser',
                  ]) +

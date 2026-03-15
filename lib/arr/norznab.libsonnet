@@ -1,5 +1,6 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local versions = import '../versions.json';
 local s = import 'secrets.json';
 
 {
@@ -8,9 +9,9 @@ local s = import 'secrets.json';
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='ghcr.io/danielramosacosta/norznab', version):: {
+  new():: {
     statefulSet: deployment.new('norznab', replicas=1, containers=[
-      container.new('norznab', u.image(image, version)) +
+      container.new('norznab', u.image(versions.norznab.image, versions.norznab.version)) +
       container.withPorts([
         containerPort.new('http', 3000),
       ]) +

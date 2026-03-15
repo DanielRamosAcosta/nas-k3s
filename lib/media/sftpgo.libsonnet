@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local sftpgoConfig = importstr './sftpgo.config.json';
 
@@ -13,9 +14,9 @@ local sftpgoConfig = importstr './sftpgo.config.json';
   local volumeMount = k.core.v1.volumeMount,
   local configMap = k.core.v1.configMap,
 
-  new(image='docker.io/drakkan/sftpgo', version):: {
+  new():: {
     statefulSet: statefulSet.new('sftpgo', replicas=1, containers=[
-                   container.new('sftpgo', u.image(image, version)) +
+                   container.new('sftpgo', u.image(versions.sftpgo.image, versions.sftpgo.version)) +
                    container.withPorts([
                      containerPort.new('server', 8080),
                      containerPort.new('metrics', 9219),

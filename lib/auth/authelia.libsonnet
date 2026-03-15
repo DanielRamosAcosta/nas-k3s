@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local autheliaConfig = importstr './authelia.config.yml';
 
@@ -9,9 +10,9 @@ local autheliaConfig = importstr './authelia.config.yml';
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
 
-  new(image='ghcr.io/authelia/authelia', version):: {
+  new():: {
     deployment: deployment.new('authelia', replicas=1, containers=[
-                  container.new('authelia', u.image(image, version)) +
+                  container.new('authelia', u.image(versions.authelia.image, versions.authelia.version)) +
                   container.withPorts([containerPort.new('http', 9091)]) +
                   container.withEnv(
                     u.envVars.fromSecret(self.secrets) +

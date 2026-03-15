@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -15,9 +16,9 @@ local u = import 'utils.libsonnet';
 
   local configuration = importstr './loki.config.yml',
 
-  new(image='docker.io/grafana/loki', version):: {
+  new():: {
     statefulSet: statefulSet.new('loki', replicas=1, containers=[
-                   container.new('loki', u.image(image, version)) +
+                   container.new('loki', u.image(versions.loki.image, versions.loki.version)) +
                    container.withPorts(
                      [containerPort.new('loki', 3100)]
                    ) + container.withVolumeMounts([

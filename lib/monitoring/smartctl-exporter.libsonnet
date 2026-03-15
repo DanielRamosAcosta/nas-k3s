@@ -1,5 +1,6 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local daemonSet = k.apps.v1.daemonSet,
@@ -8,9 +9,9 @@ local u = import 'utils.libsonnet';
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='quay.io/prometheuscommunity/smartctl-exporter', version):: {
+  new():: {
     daemonSet: daemonSet.new('smartctl-exporter', containers=[
-                 container.new('smartctl-exporter', u.image(image, version)) +
+                 container.new('smartctl-exporter', u.image(versions.smartctlExporter.image, versions.smartctlExporter.version)) +
                  container.withPorts(containerPort.new('smartctl', 9633)) +
                  container.securityContext.withPrivileged(true) +
                  container.securityContext.withRunAsUser(0) +

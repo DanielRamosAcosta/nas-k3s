@@ -1,5 +1,6 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local versions = import '../versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -8,9 +9,9 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='docker.io/jlesage/jdownloader-2', version):: {
+  new():: {
     statefulSet: statefulSet.new('jdownloader', replicas=1, containers=[
-                   container.new('jdownloader', u.image(image, version)) +
+                   container.new('jdownloader', u.image(versions.jdownloader.image, versions.jdownloader.version)) +
                    container.withPorts([
                      containerPort.new('web', 5800),
                      containerPort.new('myjd', 3129),

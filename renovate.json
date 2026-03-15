@@ -4,7 +4,7 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["environments/versions\\.json$"],
+      "fileMatch": ["lib/versions\\.json$"],
       "matchStrings": [
         "\"image\":\\s*\"(?<packageName>[^\"]+)\",\\s*\"version\":\\s*\"(?<currentValue>[^\"]+)\""
       ],

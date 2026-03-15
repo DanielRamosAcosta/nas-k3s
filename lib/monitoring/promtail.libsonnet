@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local configuration = importstr './promtail.config.yml';
 
@@ -12,9 +13,9 @@ local configuration = importstr './promtail.config.yml';
   local clusterRole = k.rbac.v1.clusterRole,
   local policyRule = k.rbac.v1.policyRule,
 
-  new(image='docker.io/grafana/promtail', version):: {
+  new():: {
     daemonSet: daemonSet.new('promtail', containers=[
-                 container.new('promtail', u.image(image, version)) +
+                 container.new('promtail', u.image(versions.promtail.image, versions.promtail.version)) +
                  container.withEnv([
                    k.core.v1.envVar.fromFieldPath('HOSTNAME', 'spec.nodeName'),
                  ]) +

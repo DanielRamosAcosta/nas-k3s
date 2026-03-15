@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local autheliaConfig = importstr './authelia.config.yml';
 
@@ -9,9 +10,9 @@ local autheliaConfig = importstr './authelia.config.yml';
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
 
-  new(image='ghcr.io/danielramosacosta/satph', version):: {
+  new():: {
     deployment: deployment.new('satph', replicas=1, containers=[
-      container.new('satph', u.image(image, version)) +
+      container.new('satph', u.image(versions.satph.image, versions.satph.version)) +
       container.withPorts([containerPort.new('http', 3000)]) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv)

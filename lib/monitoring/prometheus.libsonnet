@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -16,9 +17,9 @@ local u = import 'utils.libsonnet';
 
   local configuration = importstr './prometheus.yml',
 
-  new(image='docker.io/prom/prometheus', version):: {
+  new():: {
     statefulSet: statefulSet.new('prometheus', replicas=1, containers=[
-                   container.new('prometheus', u.image(image, version)) +
+                   container.new('prometheus', u.image(versions.prometheus.image, versions.prometheus.version)) +
                    container.withPorts(
                      [containerPort.new('prometheus', 9090)]
                    ) + container.withVolumeMounts([

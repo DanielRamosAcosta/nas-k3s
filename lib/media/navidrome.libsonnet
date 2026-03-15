@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local immichConfig = importstr './immich.config.json';
 
@@ -14,9 +15,9 @@ local immichConfig = importstr './immich.config.json';
   local volumeMount = k.core.v1.volumeMount,
   local configMap = k.core.v1.configMap,
 
-  new(image='docker.io/deluan/navidrome', version):: {
+  new():: {
     statefulSet: statefulSet.new('navidrome', replicas=1, containers=[
-                   container.new('navidrome', u.image(image, version)) +
+                   container.new('navidrome', u.image(versions.navidrome.image, versions.navidrome.version)) +
                    container.withPorts(
                      [containerPort.new('server', 4533)]
                    ) +

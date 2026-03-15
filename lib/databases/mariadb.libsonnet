@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -13,9 +14,9 @@ local u = import 'utils.libsonnet';
 
   local createUserMigration = importstr './mariadb.create-user.sh',
 
-  new(image='lscr.io/linuxserver/mariadb', version):: {
+  new():: {
     statefulSet: statefulSet.new('mariadb', replicas=1, containers=[
-      container.new('mariadb', u.image(image, version)) +
+      container.new('mariadb', u.image(versions.mariadb.image, versions.mariadb.version)) +
       container.withPorts(
         [containerPort.new('mariadb', 3306)]
       ) +
@@ -49,7 +50,7 @@ local u = import 'utils.libsonnet';
       migrationJob: k.batch.v1.job.new('mariadb-create-user-' + name) +
                     k.batch.v1.job.spec.template.spec.withRestartPolicy('OnFailure') +
                     k.batch.v1.job.spec.template.spec.withContainers([
-                      container.new('create-user', u.image(image, version)) +
+                      container.new('create-user', u.image(versions.mariadb.image, versions.mariadb.version)) +
                       container.withCommand(['/bin/bash', '/mnt/scripts/mariadb.create-user.sh']) +
                       container.withEnv(
                         [k.core.v1.envVar.new('USER_NAME', name)] +

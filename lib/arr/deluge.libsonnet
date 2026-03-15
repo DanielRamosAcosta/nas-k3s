@@ -1,5 +1,6 @@
 local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local versions = import '../versions.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
@@ -7,9 +8,9 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
-  new(image='docker.io/linuxserver/deluge', version):: {
+  new():: {
     statefulSet: statefulSet.new('deluge', replicas=1, containers=[
-                   container.new('deluge', u.image(image, version)) +
+                   container.new('deluge', u.image(versions.deluge.image, versions.deluge.version)) +
                    container.withPorts([
                      containerPort.new('web', 8112),
                      containerPort.new('daemon', 58846),

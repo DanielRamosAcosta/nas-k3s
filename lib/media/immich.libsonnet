@@ -1,6 +1,7 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local s = import 'secrets.json';
 local u = import 'utils.libsonnet';
+local versions = import 'versions.json';
 
 local immichConfig = importstr './immich.config.json';
 
@@ -15,9 +16,9 @@ local immichConfig = importstr './immich.config.json';
   local volumeMount = k.core.v1.volumeMount,
   local configMap = k.core.v1.configMap,
 
-  new(image='ghcr.io/immich-app/immich-server', version, mlImage='ghcr.io/immich-app/immich-machine-learning'):: {
+  new():: {
     statefulSet: statefulSet.new('immich', replicas=1, containers=[
-                   container.new('immich', u.image(image, version)) +
+                   container.new('immich', u.image(versions.immich.image, versions.immich.version)) +
                    container.withPorts(
                      [containerPort.new('server', 2283)]
                    ) +
@@ -85,7 +86,7 @@ local immichConfig = importstr './immich.config.json';
 
     // Machine Learning Service
     mlDeployment: deployment.new('immich-machine-learning', replicas=1, containers=[
-                    container.new('immich-machine-learning', u.image(mlImage, version)) +
+                    container.new('immich-machine-learning', u.image(versions.immichMl.image, versions.immichMl.version)) +
                     container.withPorts([
                       containerPort.new('http', 3003),
                     ]) +
