@@ -23,6 +23,12 @@ local makeApp(name, path, namespace) = {
       server: 'https://kubernetes.default.svc',
       namespace: namespace,
     },
+    syncPolicy: {
+      automated: {
+        prune: true,
+        selfHeal: true,
+      },
+    },
   },
 };
 
@@ -130,7 +136,7 @@ local makeApp(name, path, namespace) = {
     // argocd manages itself with ServerSideApply (applicationsets CRD > 262KB)
     app_argocd: makeApp('argocd', 'argocd', 'argocd') {
       spec+: {
-        syncPolicy+: {
+        syncPolicy: {
           syncOptions: ['ServerSideApply=true'],
         },
       },
