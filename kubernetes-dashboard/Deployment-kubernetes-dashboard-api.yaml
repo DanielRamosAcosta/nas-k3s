@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/config: 02a31e8b72c29f05b5a2468715fb6a1d149ec93941c05e7f9288ed8caea6d78d
+        checksum/config: ab5f8fca4b67af0099697e3b027b597883aad71d50586414b4d1cbf7519eabcc
       labels:
         app.kubernetes.io/component: api
         app.kubernetes.io/instance: kubernetes-dashboard
