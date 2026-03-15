@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'system/gluetun.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -16,7 +16,7 @@ local versions = import 'versions.json';
         containerPort.new('http-proxy', 8888),
       ]) +
       container.withEnv(
-        u.envVars.fromSecret(self.secrets) +
+        u.envVars.fromSealedSecret(self.sealed_secret) +
         u.envVars.fromConfigMap(self.config)
       ),
     ]) +
@@ -31,9 +31,6 @@ local versions = import 'versions.json';
       HTTPPROXY: 'on',
     }),
 
-    secrets: u.secret.forEnv(self.deployment, {
-      OPENVPN_USER: s.PROTONVPN_OPENVPN_USER,
-      OPENVPN_PASSWORD: s.PROTONVPN_OPENVPN_PASSWORD,
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.gluetun),
   },
 }
