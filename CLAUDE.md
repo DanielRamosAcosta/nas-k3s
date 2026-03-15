@@ -72,7 +72,31 @@ Environments compose these modules in `main.jsonnet`, passing versions from `ver
 - `Retain` reclaim policy on all persistent volumes
 
 ### Secrets
+
+#### Sealed Secrets (preferred)
+- **Bitnami Sealed Secrets** controller runs in `kube-system`, encrypting secrets with a cluster-side key
+- Encrypted data lives in `<appname>.secrets.json` files alongside each `.libsonnet`, with the structure:
+  ```json
+  {
+    "container1": {
+      "SECRET_NAME": "kubeseal-encrypted-value"
+    }
+  }
+  ```
+- The `.libsonnet` imports the secrets file and passes the relevant key to the utility:
+  ```jsonnet
+  local secrets = import 'system/heartbeat.secrets.json';
+  // ...
+  sealed_secret: u.sealedSecret.forEnv(self.cron, secrets.heartbeat),
+  ```
+- Encrypt new values with: `echo -n 'value' | ./scripts/encrypt-secret.sh <namespace> <secret-name> <key>`
+- The controller decrypts `SealedSecret` resources and creates regular `Secret` resources in the cluster
+- `u.sealedSecret.forEnv(component, encryptedData)` creates the SealedSecret resource
+- `u.envVars.fromSealedSecret(sealedSecret)` generates env var references from it
+
+#### Legacy (age-encrypted secrets.json)
 - `lib/secrets.json` holds all secrets in plain JSON (gitignored)
 - Encrypted with age to `lib/secrets.json.age` (committed)
 - Public key: `id_dani.pub`, decryption key: `~/.ssh/id_ed25519`
-- Secrets are injected into K8s Secret resources and referenced via env vars or volume mounts
+- Secrets are injected into K8s Secret resources via `u.secret.forEnv()` and referenced via env vars
+- Being migrated to Sealed Secrets incrementally, service by service
