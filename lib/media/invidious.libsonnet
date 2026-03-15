@@ -26,7 +26,7 @@ local invidiousConfig = import './invidious.config.json';
                 ]) +
                 deployment.spec.template.spec.withInitContainers(
                   container.new('merge-config', u.image(versions.jq.image, versions.jq.version)) +
-                  u.command.jq.merge('/data/invidious-config.json', '/data/config-secret.json', '/output/config.json') +
+                  u.command.jq.merge('/data/invidious-config.json', '/data/invidious-config-secret.json', '/output/config.json') +
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.invidiousConfigPublic, '/data'),
                     u.volumeMount.fromSealedSecretFile(self.invidiousConfigSecret, '/data'),
