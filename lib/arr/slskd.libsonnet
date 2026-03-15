@@ -2,7 +2,7 @@ local u = import '../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local versions = import '../versions.json';
 
-local s = import 'secrets.json';
+local secrets = import 'arr/slskd.secrets.json';
 local slskdConfig = import './slskd.config.json';
 
 {
@@ -21,7 +21,7 @@ local slskdConfig = import './slskd.config.json';
                    ]) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSecret(self.secretsEnv)
+                     u.envVars.fromSealedSecret(self.sealed_secret)
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/app/data'),
@@ -49,11 +49,7 @@ local slskdConfig = import './slskd.config.json';
       TZ: 'Atlantic/Canary',
     }),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      SLSKD_SLSK_USERNAME: s.SLSKD_SLSK_USERNAME,
-      SLSKD_SLSK_PASSWORD: s.SLSKD_SLSK_PASSWORD,
-      SLSKD_API_KEY: s.SLSKD_API_KEY
-    }),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.slskd),
 
     configFile: u.configMap.forFile('slskd.yml', std.manifestYamlDoc(u.withoutSchema(slskdConfig))),
   },
