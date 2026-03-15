@@ -29,14 +29,14 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   keysFromSecret(secret):: std.objectFieldsAll(secret.data),
   fromFile(configMapOrSecret, path):: k.core.v1.volumeMount.new(configMapOrSecret.metadata.name, path + '/' + std.objectFieldsAll(configMapOrSecret.data)[0]) + k.core.v1.volumeMount.withSubPath(std.objectFieldsAll(configMapOrSecret.data)[0]),
   injectFiles(configMapOrSecrets):: k.apps.v1.deployment.spec.template.spec.withVolumes([
-    if resource.kind == 'Secret' then
+    if resource.kind == 'Secret' || resource.kind == 'SealedSecret' then
       k.core.v1.volume.fromSecret(resource.metadata.name, resource.metadata.name)
     else
       k.core.v1.volume.fromConfigMap(resource.metadata.name, resource.metadata.name)
     for resource in configMapOrSecrets
   ]),
   injectFile(resource)::
-    if resource.kind == 'Secret' then
+    if resource.kind == 'Secret' || resource.kind == 'SealedSecret' then
       k.core.v1.volume.fromSecret(resource.metadata.name, resource.metadata.name)
     else
       k.core.v1.volume.fromConfigMap(resource.metadata.name, resource.metadata.name)
@@ -91,10 +91,12 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   },
   volumeMount: {
     fromFile(configMapOrSecret, path):: k.core.v1.volumeMount.new(configMapOrSecret.metadata.name, path + '/' + std.objectFieldsAll(configMapOrSecret.data)[0]) + k.core.v1.volumeMount.withSubPath(std.objectFieldsAll(configMapOrSecret.data)[0]),
+    fromSealedSecretFile(sealedSecret, path):: k.core.v1.volumeMount.new(sealedSecret.metadata.name, path + '/' + std.objectFields(sealedSecret.spec.encryptedData)[0]) + k.core.v1.volumeMount.withSubPath(std.objectFields(sealedSecret.spec.encryptedData)[0]),
   },
   volume: {
     fromConfigMap(configMap):: k.core.v1.volume.fromConfigMap(configMap.metadata.name, configMap.metadata.name),
     fromSecret(secret):: k.core.v1.volume.fromSecret(secret.metadata.name, secret.metadata.name),
+    fromSealedSecret(sealedSecret):: k.core.v1.volume.fromSecret(sealedSecret.metadata.name, sealedSecret.metadata.name),
     fromHostPath(name, path):: k.core.v1.volume.fromHostPath(name, path),
   },
   secret: {
@@ -104,6 +106,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     forEnv(component, content):: k.core.v1.secret.new(component.metadata.name + '-secret-env', u.base64Keys(content)),
   },
   sealedSecret: {
+    // Strict scope (default) — secrets bound to namespace+name
     forEnv(component, encryptedData):: {
       apiVersion: 'bitnami.com/v1alpha1',
       kind: 'SealedSecret',
@@ -112,6 +115,73 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       },
       spec: {
         encryptedData: encryptedData,
+      },
+    },
+    forEnvNamed(name, encryptedData):: {
+      apiVersion: 'bitnami.com/v1alpha1',
+      kind: 'SealedSecret',
+      metadata: {
+        name: name,
+      },
+      spec: {
+        encryptedData: encryptedData,
+      },
+    },
+    forFile(fileName, encryptedValue):: {
+      apiVersion: 'bitnami.com/v1alpha1',
+      kind: 'SealedSecret',
+      metadata: {
+        name: u.normalizeName(fileName) + '-sealed-secret',
+      },
+      spec: {
+        encryptedData: {
+          [fileName]: encryptedValue,
+        },
+      },
+    },
+
+    // Cluster-wide scope — shared secrets (DB passwords, SMTP, etc.)
+    wide: {
+      forEnv(component, encryptedData):: {
+        apiVersion: 'bitnami.com/v1alpha1',
+        kind: 'SealedSecret',
+        metadata: {
+          name: component.metadata.name + '-sealed-secret',
+          annotations: {
+            'sealedsecrets.bitnami.com/cluster-wide': 'true',
+          },
+        },
+        spec: {
+          encryptedData: encryptedData,
+        },
+      },
+      forEnvNamed(name, encryptedData):: {
+        apiVersion: 'bitnami.com/v1alpha1',
+        kind: 'SealedSecret',
+        metadata: {
+          name: name,
+          annotations: {
+            'sealedsecrets.bitnami.com/cluster-wide': 'true',
+          },
+        },
+        spec: {
+          encryptedData: encryptedData,
+        },
+      },
+      forFile(fileName, encryptedValue):: {
+        apiVersion: 'bitnami.com/v1alpha1',
+        kind: 'SealedSecret',
+        metadata: {
+          name: u.normalizeName(fileName) + '-sealed-secret',
+          annotations: {
+            'sealedsecrets.bitnami.com/cluster-wide': 'true',
+          },
+        },
+        spec: {
+          encryptedData: {
+            [fileName]: encryptedValue,
+          },
+        },
       },
     },
   },
