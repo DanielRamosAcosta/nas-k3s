@@ -16,7 +16,7 @@ local u = import 'utils.libsonnet';
   local serviceAccount = k.core.v1.serviceAccount,
   local policyRule = k.rbac.v1.policyRule,
 
-  new(image='docker.gitea.com/gitea', version):: {
+  new(image='docker.io/gitea/gitea', version):: {
     statefulSet: statefulSet.new('gitea', replicas=1, containers=[
                    container.new('gitea', u.image(image, version)) +
                    container.withPorts([

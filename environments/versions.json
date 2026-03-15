@@ -16,7 +16,7 @@
     "version": "v2.7.0-alpine"
   },
   "gitea": {
-    "image": "docker.gitea.com/gitea",
+    "image": "docker.io/gitea/gitea",
     "version": "1.25.0"
   },
   "authelia": {
