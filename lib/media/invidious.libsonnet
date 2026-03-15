@@ -44,7 +44,7 @@ local invidiousConfig = import './invidious.config.json';
 
     invidiousConfigPublic: u.configMap.forFile('invidious-config.json', std.manifestJsonEx(u.withoutSchema(invidiousConfig), '  ')),
 
-    invidiousConfigSecret: u.sealedSecret.wide.forFile('config-secret.json', secrets.configSecretFile),
+    invidiousConfigSecret: u.sealedSecret.wide.forFile('invidious-config-secret.json', secrets.configSecretFile),
 
     ingressRoute: u.ingressRoute.from(self.service, 'invidious.danielramos.me'),
 
