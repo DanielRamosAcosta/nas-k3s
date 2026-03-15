@@ -3,6 +3,8 @@ local secrets = import 'media/invidious.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
+local invidiousConfig = import './invidious.config.json';
+
 {
   local deployment = k.apps.v1.deployment,
   local statefulSet = k.apps.v1.statefulSet,
@@ -17,15 +19,32 @@ local versions = import 'versions.json';
     deployment: deployment.new('invidious', replicas=1, containers=[
                   container.new('invidious', u.image(versions.invidious.image, versions.invidious.version)) +
                   container.withPorts([containerPort.new('http', 3000)]) +
-                  container.withEnv(
-                    u.envVars.fromSealedSecret(self.sealed_secret)
-                  ),
+                  container.withCommand(['sh', '-c', 'export INVIDIOUS_CONFIG="$(cat /merged-config/config.json)" && exec /invidious/invidious']) +
+                  container.withVolumeMounts([
+                    volumeMount.new('merged-config', '/merged-config', true),
+                  ]),
+                ]) +
+                deployment.spec.template.spec.withInitContainers(
+                  container.new('merge-config', u.image(versions.jq.image, versions.jq.version)) +
+                  u.command.jq.merge('/data/invidious-config.json', '/data/config-secret.json', '/output/config.json') +
+                  container.withVolumeMounts([
+                    u.volumeMount.fromFile(self.invidiousConfigPublic, '/data'),
+                    u.volumeMount.fromSealedSecretFile(self.invidiousConfigSecret, '/data'),
+                    volumeMount.new('merged-config', '/output'),
+                  ])
+                ) +
+                deployment.spec.template.spec.withVolumes([
+                  u.volume.fromConfigMap(self.invidiousConfigPublic),
+                  u.volume.fromSealedSecret(self.invidiousConfigSecret),
+                  volume.fromEmptyDir('merged-config'),
                 ]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
     service: k.util.serviceFor(self.deployment),
 
-    sealed_secret: u.sealedSecret.wide.forEnv(self.deployment, secrets.invidious),
+    invidiousConfigPublic: u.configMap.forFile('invidious-config.json', std.manifestJsonEx(u.withoutSchema(invidiousConfig), '  ')),
+
+    invidiousConfigSecret: u.sealedSecret.wide.forFile('config-secret.json', secrets.configSecretFile),
 
     ingressRoute: u.ingressRoute.from(self.service, 'invidious.danielramos.me'),
 

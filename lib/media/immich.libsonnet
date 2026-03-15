@@ -30,7 +30,7 @@ local immichConfig = importstr './immich.config.json';
                    ]),
                  ]) +
                  statefulSet.spec.template.spec.withInitContainers(
-                   container.new('merge-config', u.image('ghcr.io/danielramosacosta/jq', 'main-5231ab6')) +
+                   container.new('merge-config', u.image(versions.jq.image, versions.jq.version)) +
                    u.command.jq.merge('/data/config.json', '/data/config-secret.json', '/output/immich.json') +
                    container.withVolumeMounts([
                      u.volumeMount.fromFile(self.immichConfigPublic, '/data'),

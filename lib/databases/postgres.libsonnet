@@ -35,7 +35,7 @@ local versions = import 'versions.json';
         volumeMount.new('backup-storage', '/backups'),
       ]),
     ]) + statefulSet.spec.template.spec.withInitContainers([
-      container.new('setup-postgres-config', 'busybox:latest') +
+      container.new('setup-postgres-config', u.image(versions.busybox.image, versions.busybox.version)) +
       container.withCommand(['/bin/sh', '-c', 'cat /config/postgresql.auto.conf > /var/lib/postgresql/data/postgresql.auto.conf && cat /pg_hba/pg_hba.conf > /var/lib/postgresql/data/pg_hba.conf']) +
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/var/lib/postgresql/data'),
@@ -114,7 +114,7 @@ local versions = import 'versions.json';
                    name='postgres-backup-cleanup',
                    schedule='0 3 * * *',
                    containers=[
-                     container.new('cleanup', 'busybox:latest') +
+                     container.new('cleanup', u.image(versions.busybox.image, versions.busybox.version)) +
                      container.withCommand(['sh', '/mnt/scripts/postgres.cleanup.sh']) +
                      container.withVolumeMounts([
                        volumeMount.new('backup-storage', '/backups'),

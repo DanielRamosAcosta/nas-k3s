@@ -126,5 +126,13 @@
   "heartbeat": {
     "image": "busybox",
     "version": "1.37.0"
+  },
+  "jq": {
+    "image": "ghcr.io/danielramosacosta/jq",
+    "version": "main-5231ab6"
+  },
+  "busybox": {
+    "image": "busybox",
+    "version": "1.37.0"
   }
 }
