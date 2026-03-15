@@ -13,7 +13,7 @@
   },
   "sftpgo": {
     "image": "docker.io/drakkan/sftpgo",
-    "version": "v2.7.0-alpine"
+    "version": "v2.7.1-alpine"
   },
   "gitea": {
     "image": "docker.io/gitea/gitea",
