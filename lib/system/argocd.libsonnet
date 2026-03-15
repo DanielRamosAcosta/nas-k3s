@@ -41,9 +41,29 @@ local helm = tanka.helm.new(std.thisFile);
             'policy.csv': 'g, admins, role:admin',
             scopes: '[groups]',
           },
+          secret: {
+            createSecret: false,
+          },
         },
       },
     }),
+
+    argocd_secret: u.sealedSecret.forEnvNamed('argocd-secret', secrets.argocdSecret) {
+      metadata+: {
+        labels+: {
+          'app.kubernetes.io/part-of': 'argocd',
+        },
+      },
+      spec+: {
+        template+: {
+          metadata+: {
+            labels+: {
+              'app.kubernetes.io/part-of': 'argocd',
+            },
+          },
+        },
+      },
+    },
 
     oidc_sealed_secret: u.sealedSecret.forEnvNamed('argocd-oidc-secret', secrets.argocd) {
       spec+: {
