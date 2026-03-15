@@ -22,6 +22,7 @@ local invidiousConfig = import './invidious.config.json';
 
     deployment: deployment.new('invidious', replicas=1, containers=[
                   container.new('invidious', u.image(invidiousImage, invidiousVersion)) +
+                  container.withImagePullPolicy('Always') +
                   container.withPorts([containerPort.new('http', 3000)]) +
                   container.withEnv(
                     u.envVars.fromSecret(self.secretEnv)
@@ -45,6 +46,7 @@ local invidiousConfig = import './invidious.config.json';
 
     companionDeployment: deployment.new('invidious-companion', replicas=1, containers=[
                            container.new('invidious-companion', u.image(invidiousCompanionImage, invidiousCompanionVersion)) +
+                           container.withImagePullPolicy('Always') +
                            container.withPorts([containerPort.new('http', 8282)]) +
                            container.withEnv(
                              u.envVars.fromSecret(self.companionSecretEnv)
