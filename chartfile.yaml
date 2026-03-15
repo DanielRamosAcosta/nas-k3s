@@ -8,6 +8,8 @@ repositories:
   url: https://helm.traefik.io/traefik
 - name: sealed-secrets
   url: https://bitnami-labs.github.io/sealed-secrets
+- name: argo-cd
+  url: https://argoproj.github.io/argo-helm
 requires:
 - chart: k8s-dashboard/kubernetes-dashboard
   version: 7.13.0
@@ -15,4 +17,6 @@ requires:
   version: 36.3.0
 - chart: sealed-secrets/sealed-secrets
   version: 2.18.4
+- chart: argo-cd/argo-cd
+  version: 9.4.10
 version: 1
