@@ -35,7 +35,7 @@ spec:
       - command:
         - sh
         - -c
-        - jq -s '.[0] * .[1]' /data/invidious-config.json /data/config-secret.json
+        - jq -s '.[0] * .[1]' /data/invidious-config.json /data/invidious-config-secret.json
           > /output/config.json
         image: ghcr.io/danielramosacosta/jq:main-5231ab6
         imagePullPolicy: IfNotPresent
