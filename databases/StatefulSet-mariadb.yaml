@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mariadb
+  namespace: databases
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: mariadb
+  template:
+    metadata:
+      labels:
+        name: mariadb
+    spec:
+      containers:
+      - env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: Atlantic/Canary
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: mariadb-sealed-secret
+        image: lscr.io/linuxserver/mariadb:11.4.8-r0-ls201
+        imagePullPolicy: IfNotPresent
+        name: mariadb
+        ports:
+        - containerPort: 3306
+          name: mariadb
+        volumeMounts:
+        - mountPath: /config
+          name: data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: mariadb-pvc
+  updateStrategy:
+    type: RollingUpdate

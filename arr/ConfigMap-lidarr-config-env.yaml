@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  LIDARR__LOG__CONSOLEFORMAT: Clef
+  PGID: "100"
+  PUID: "1000"
+  TZ: Atlantic/Canary
+  UMASK: "002"
+kind: ConfigMap
+metadata:
+  name: lidarr-config-env
+  namespace: arr

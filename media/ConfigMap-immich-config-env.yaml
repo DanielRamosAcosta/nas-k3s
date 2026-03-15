@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  DB_HOSTNAME: postgres.databases.svc.cluster.local
+  DB_USERNAME: immich
+  IMMICH_CONFIG_FILE: /app/config/immich.json
+  IMMICH_LOG_FORMAT: json
+  IMMICH_PORT: "2283"
+  IMMICH_TELEMETRY_INCLUDE: all
+  REDIS_HOSTNAME: valkey.databases.svc.cluster.local
+kind: ConfigMap
+metadata:
+  name: immich-config-env
+  namespace: media

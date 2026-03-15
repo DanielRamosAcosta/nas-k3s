@@ -1,0 +1,29 @@
+apiVersion: v1
+data:
+  GITEA__database__DB_TYPE: postgres
+  GITEA__database__HOST: postgres.databases.svc.cluster.local:5432
+  GITEA__database__NAME: gitea
+  GITEA__database__USER: gitea
+  GITEA__mailer__ENABLED: "true"
+  GITEA__mailer__FROM: NAS <nas@mail.danielramos.me>
+  GITEA__mailer__PROTOCOL: smtps
+  GITEA__mailer__SMTP_ADDR: smtp.eu.mailgun.org
+  GITEA__mailer__SMTP_PORT: "587"
+  GITEA__mailer__USER: nas@mail.danielramos.me
+  GITEA__metrics__ENABLED: "true"
+  GITEA__openid__ENABLE_OPENID_SIGNIN: "false"
+  GITEA__openid__ENABLE_OPENID_SIGNUP: "true"
+  GITEA__openid__WHITELISTED_URIS: auth.danielramos.me
+  GITEA__server__DOMAIN: git.danielramos.me
+  GITEA__server__SSH_DOMAIN: ssh.danielramos.me
+  GITEA__server__SSH_LISTEN_PORT: "2222"
+  GITEA__server__SSH_PORT: "22"
+  GITEA__server__START_SSH_SERVER: "true"
+  GITEA__service__ALLOW_ONLY_EXTERNAL_REGISTRATION: "true"
+  GITEA__service__DISABLE_REGISTRATION: "false"
+  GITEA__service__ENABLE_PASSWORD_SIGNIN_FORM: "false"
+  GITEA__service__SHOW_REGISTRATION_BUTTON: "false"
+kind: ConfigMap
+metadata:
+  name: gitea-config-env
+  namespace: media

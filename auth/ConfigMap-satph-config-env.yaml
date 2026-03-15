@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  AUTHELIA_BASE_URL: https://auth.danielramos.me
+kind: ConfigMap
+metadata:
+  name: satph-config-env
+  namespace: auth

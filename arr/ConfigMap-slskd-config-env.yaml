@@ -1,0 +1,9 @@
+apiVersion: v1
+data:
+  SLSKD_REMOTE_CONFIGURATION: "false"
+  SLSKD_SHARED_DIR: /music
+  TZ: Atlantic/Canary
+kind: ConfigMap
+metadata:
+  name: slskd-config-env
+  namespace: arr

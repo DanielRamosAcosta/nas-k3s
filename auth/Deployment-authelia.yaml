@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authelia
+  namespace: auth
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: authelia
+  template:
+    metadata:
+      labels:
+        name: authelia
+    spec:
+      containers:
+      - env:
+        - name: AUTHELIA_SESSION_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: AUTHELIA_SESSION_SECRET
+              name: authelia-sealed-secret
+        - name: AUTHELIA_STORAGE_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: AUTHELIA_STORAGE_ENCRYPTION_KEY
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_BOOKLORE_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_BOOKLORE_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_GITEA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_GITEA_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_GITEA_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_GITEA_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRAFANA_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRAFANA_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRAFANA_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRAFANA_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_SFTPGO_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_SFTPGO_CLIENT_ID
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_SFTPGO_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_SFTPGO_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: AUTHELIA_NOTIFIER_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: AUTHELIA_NOTIFIER_SMTP_PASSWORD
+              name: authelia-shared-sealed-secret
+        - name: AUTHELIA_STORAGE_POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: AUTHELIA_STORAGE_POSTGRES_PASSWORD
+              name: authelia-shared-sealed-secret
+        - name: X_AUTHELIA_CONFIG_FILTERS
+          valueFrom:
+            configMapKeyRef:
+              key: X_AUTHELIA_CONFIG_FILTERS
+              name: authelia-config-env
+        image: ghcr.io/authelia/authelia:4.39.13
+        imagePullPolicy: IfNotPresent
+        name: authelia
+        ports:
+        - containerPort: 9091
+          name: http
+        volumeMounts:
+        - mountPath: /config/configuration.yml
+          name: configuration-yml
+          subPath: configuration.yml
+        - mountPath: /config/users_database.yml
+          name: users-database-yml-sealed-secret
+          subPath: users_database.yml
+        - mountPath: /config/secrets/oidc/jwks/rsa.2048.key
+          name: rsa-2048-key-sealed-secret
+          subPath: rsa.2048.key
+      enableServiceLinks: false
+      volumes:
+      - configMap:
+          name: configuration-yml
+        name: configuration-yml
+      - name: users-database-yml-sealed-secret
+        secret:
+          secretName: users-database-yml-sealed-secret
+      - name: rsa-2048-key-sealed-secret
+        secret:
+          secretName: rsa-2048-key-sealed-secret

@@ -1,0 +1,13 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: git-ssh-exec-binding
+  namespace: media
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: git-ssh-exec
+subjects:
+- kind: ServiceAccount
+  name: git-ssh
+  namespace: media

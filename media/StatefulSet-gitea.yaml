@@ -1,0 +1,176 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gitea
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gitea
+  template:
+    metadata:
+      labels:
+        name: gitea
+    spec:
+      containers:
+      - env:
+        - name: GITEA__database__DB_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__database__DB_TYPE
+              name: gitea-config-env
+        - name: GITEA__database__HOST
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__database__HOST
+              name: gitea-config-env
+        - name: GITEA__database__NAME
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__database__NAME
+              name: gitea-config-env
+        - name: GITEA__database__USER
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__database__USER
+              name: gitea-config-env
+        - name: GITEA__mailer__ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__mailer__ENABLED
+              name: gitea-config-env
+        - name: GITEA__mailer__FROM
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__mailer__FROM
+              name: gitea-config-env
+        - name: GITEA__mailer__PROTOCOL
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__mailer__PROTOCOL
+              name: gitea-config-env
+        - name: GITEA__mailer__SMTP_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__mailer__SMTP_ADDR
+              name: gitea-config-env
+        - name: GITEA__mailer__SMTP_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__mailer__SMTP_PORT
+              name: gitea-config-env
+        - name: GITEA__mailer__USER
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__mailer__USER
+              name: gitea-config-env
+        - name: GITEA__metrics__ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__metrics__ENABLED
+              name: gitea-config-env
+        - name: GITEA__openid__ENABLE_OPENID_SIGNIN
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__openid__ENABLE_OPENID_SIGNIN
+              name: gitea-config-env
+        - name: GITEA__openid__ENABLE_OPENID_SIGNUP
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__openid__ENABLE_OPENID_SIGNUP
+              name: gitea-config-env
+        - name: GITEA__openid__WHITELISTED_URIS
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__openid__WHITELISTED_URIS
+              name: gitea-config-env
+        - name: GITEA__server__DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__server__DOMAIN
+              name: gitea-config-env
+        - name: GITEA__server__SSH_DOMAIN
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__server__SSH_DOMAIN
+              name: gitea-config-env
+        - name: GITEA__server__SSH_LISTEN_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__server__SSH_LISTEN_PORT
+              name: gitea-config-env
+        - name: GITEA__server__SSH_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__server__SSH_PORT
+              name: gitea-config-env
+        - name: GITEA__server__START_SSH_SERVER
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__server__START_SSH_SERVER
+              name: gitea-config-env
+        - name: GITEA__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__service__ALLOW_ONLY_EXTERNAL_REGISTRATION
+              name: gitea-config-env
+        - name: GITEA__service__DISABLE_REGISTRATION
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__service__DISABLE_REGISTRATION
+              name: gitea-config-env
+        - name: GITEA__service__ENABLE_PASSWORD_SIGNIN_FORM
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__service__ENABLE_PASSWORD_SIGNIN_FORM
+              name: gitea-config-env
+        - name: GITEA__service__SHOW_REGISTRATION_BUTTON
+          valueFrom:
+            configMapKeyRef:
+              key: GITEA__service__SHOW_REGISTRATION_BUTTON
+              name: gitea-config-env
+        - name: GITEA__metrics__TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: GITEA__metrics__TOKEN
+              name: gitea-sealed-secret
+        - name: GITEA__security__INTERNAL_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: GITEA__security__INTERNAL_TOKEN
+              name: gitea-sealed-secret
+        - name: GITEA__security__SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: GITEA__security__SECRET_KEY
+              name: gitea-sealed-secret
+        - name: GITEA__database__PASSWD
+          valueFrom:
+            secretKeyRef:
+              key: GITEA__database__PASSWD
+              name: gitea-shared-sealed-secret
+        - name: GITEA__mailer__PASSWD
+          valueFrom:
+            secretKeyRef:
+              key: GITEA__mailer__PASSWD
+              name: gitea-shared-sealed-secret
+        image: docker.io/gitea/gitea:1.25.0
+        imagePullPolicy: IfNotPresent
+        name: gitea
+        ports:
+        - containerPort: 3000
+          name: server
+        - containerPort: 2222
+          name: ssh
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      serviceAccount: git-ssh
+      volumes:
+      - hostPath:
+          path: /cold-data/gitea/data
+          type: DirectoryOrCreate
+        name: data
+  updateStrategy:
+    type: RollingUpdate

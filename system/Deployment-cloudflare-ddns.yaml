@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cloudflare-ddns
+  namespace: system
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: cloudflare-ddns
+  template:
+    metadata:
+      labels:
+        name: cloudflare-ddns
+    spec:
+      containers:
+      - env:
+        - name: DOMAINS
+          valueFrom:
+            configMapKeyRef:
+              key: DOMAINS
+              name: cloudflare-ddns-config-env
+        - name: PROXIED
+          valueFrom:
+            configMapKeyRef:
+              key: PROXIED
+              name: cloudflare-ddns-config-env
+        - name: CLOUDFLARE_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: CLOUDFLARE_API_TOKEN
+              name: cloudflare-ddns-sealed-secret
+        image: docker.io/favonia/cloudflare-ddns:1.15.1
+        imagePullPolicy: IfNotPresent
+        name: cloudflare-ddns

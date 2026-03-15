@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: immich
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: immich
+  template:
+    metadata:
+      labels:
+        name: immich
+    spec:
+      containers:
+      - env:
+        - name: DB_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: DB_HOSTNAME
+              name: immich-config-env
+        - name: DB_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: DB_USERNAME
+              name: immich-config-env
+        - name: IMMICH_CONFIG_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: IMMICH_CONFIG_FILE
+              name: immich-config-env
+        - name: IMMICH_LOG_FORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: IMMICH_LOG_FORMAT
+              name: immich-config-env
+        - name: IMMICH_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: IMMICH_PORT
+              name: immich-config-env
+        - name: IMMICH_TELEMETRY_INCLUDE
+          valueFrom:
+            configMapKeyRef:
+              key: IMMICH_TELEMETRY_INCLUDE
+              name: immich-config-env
+        - name: REDIS_HOSTNAME
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_HOSTNAME
+              name: immich-config-env
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASSWORD
+              name: immich-shared-sealed-secret
+        image: ghcr.io/immich-app/immich-server:v2.5.6
+        imagePullPolicy: IfNotPresent
+        name: immich
+        ports:
+        - containerPort: 2283
+          name: server
+        volumeMounts:
+        - mountPath: /usr/src/app/upload
+          name: upload
+        - mountPath: /app/config
+          name: merged-config
+          readOnly: true
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - jq -s '.[0] * .[1]' /data/config.json /data/config-secret.json > /output/immich.json
+        image: ghcr.io/danielramosacosta/jq:main-5231ab6
+        imagePullPolicy: IfNotPresent
+        name: merge-config
+        volumeMounts:
+        - mountPath: /data/config.json
+          name: config-json
+          subPath: config.json
+        - mountPath: /data/config-secret.json
+          name: config-secret-json-sealed-secret
+          subPath: config-secret.json
+        - mountPath: /output
+          name: merged-config
+      volumes:
+      - name: upload
+        persistentVolumeClaim:
+          claimName: immich-pvc
+      - configMap:
+          name: config-json
+        name: config-json
+      - name: config-secret-json-sealed-secret
+        secret:
+          secretName: config-secret-json-sealed-secret
+      - emptyDir: {}
+        name: merged-config
+  updateStrategy:
+    type: RollingUpdate

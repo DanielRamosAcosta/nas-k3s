@@ -1,0 +1,174 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: grafana
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: grafana
+  template:
+    metadata:
+      labels:
+        name: grafana
+    spec:
+      containers:
+      - env:
+        - name: GF_AUTH_DISABLE_LOGIN_FORM
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_DISABLE_LOGIN_FORM
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_API_URL
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_API_URL
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_AUTH_URL
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_AUTH_URL
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_EMPTY_SCOPES
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_ENABLED
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_GROUPS_ATTRIBUTE_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_GROUPS_ATTRIBUTE_PATH
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_ICON
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_ICON
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_LOGIN_ATTRIBUTE_PATH
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_NAME
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_NAME_ATTRIBUTE_PATH
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_PATH
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_ROLE_ATTRIBUTE_STRICT
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_SCOPES
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_SCOPES
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_TOKEN_URL
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_TOKEN_URL
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_USE_PKCE
+          valueFrom:
+            configMapKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_USE_PKCE
+              name: grafana-config-env
+        - name: GF_DATABASE_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: GF_DATABASE_HOST
+              name: grafana-config-env
+        - name: GF_DATABASE_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: GF_DATABASE_NAME
+              name: grafana-config-env
+        - name: GF_DATABASE_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: GF_DATABASE_TYPE
+              name: grafana-config-env
+        - name: GF_DATABASE_USER
+          valueFrom:
+            configMapKeyRef:
+              key: GF_DATABASE_USER
+              name: grafana-config-env
+        - name: GF_EXPLORE_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: GF_EXPLORE_ENABLED
+              name: grafana-config-env
+        - name: GF_LOG_CONSOLE_FORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: GF_LOG_CONSOLE_FORMAT
+              name: grafana-config-env
+        - name: GF_LOG_MODE
+          valueFrom:
+            configMapKeyRef:
+              key: GF_LOG_MODE
+              name: grafana-config-env
+        - name: GF_PATHS_PROVISIONING
+          valueFrom:
+            configMapKeyRef:
+              key: GF_PATHS_PROVISIONING
+              name: grafana-config-env
+        - name: GF_SERVER_ROOT_URL
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SERVER_ROOT_URL
+              name: grafana-config-env
+        - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
+              name: grafana-sealed-secret
+        - name: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: GF_AUTH_GENERIC_OAUTH_CLIENT_SECRET
+              name: grafana-sealed-secret
+        - name: GF_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: GF_DATABASE_PASSWORD
+              name: grafana-shared-sealed-secret
+        image: docker.io/grafana/grafana-oss:12.3.1
+        imagePullPolicy: IfNotPresent
+        name: grafana
+        ports:
+        - containerPort: 3000
+          name: http
+        volumeMounts:
+        - mountPath: /usr/share/grafana/conf/provisioning/datasources/loki.yaml
+          name: loki-yaml
+          subPath: loki.yaml
+        - mountPath: /usr/share/grafana/conf/provisioning/datasources/prometheus.yaml
+          name: prometheus-yaml
+          subPath: prometheus.yaml
+      volumes:
+      - configMap:
+          name: loki-yaml
+        name: loki-yaml
+      - configMap:
+          name: prometheus-yaml
+        name: prometheus-yaml

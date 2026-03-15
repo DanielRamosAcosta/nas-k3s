@@ -1,0 +1,12 @@
+apiVersion: v1
+data:
+  DISPLAY_HEIGHT: "1080"
+  DISPLAY_WIDTH: "1920"
+  GROUP_ID: "100"
+  KEEP_APP_RUNNING: "1"
+  TZ: Atlantic/Canary
+  USER_ID: "1000"
+kind: ConfigMap
+metadata:
+  name: jdownloader-config-env
+  namespace: arr

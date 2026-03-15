@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app.kubernetes.io/component: metrics-scraper
+    app.kubernetes.io/instance: kubernetes-dashboard
+    app.kubernetes.io/managed-by: Helmraiser
+    app.kubernetes.io/name: kubernetes-dashboard-metrics-scraper
+    app.kubernetes.io/part-of: kubernetes-dashboard
+    app.kubernetes.io/version: 1.2.2
+    helm.sh/chart: kubernetes-dashboard-7.13.0
+  name: kubernetes-dashboard-metrics-scraper
+  namespace: dashboard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: kubernetes-dashboard
+      app.kubernetes.io/name: kubernetes-dashboard-metrics-scraper
+      app.kubernetes.io/part-of: kubernetes-dashboard
+  template:
+    metadata:
+      annotations: null
+      labels:
+        app.kubernetes.io/component: metrics-scraper
+        app.kubernetes.io/instance: kubernetes-dashboard
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: kubernetes-dashboard-metrics-scraper
+        app.kubernetes.io/part-of: kubernetes-dashboard
+        app.kubernetes.io/version: 1.2.2
+        helm.sh/chart: kubernetes-dashboard-7.13.0
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - env:
+        - name: GOMAXPROCS
+          valueFrom:
+            resourceFieldRef:
+              divisor: "1"
+              resource: limits.cpu
+        - name: GOMEMLIMIT
+          valueFrom:
+            resourceFieldRef:
+              divisor: "1"
+              resource: limits.memory
+        image: docker.io/kubernetesui/dashboard-metrics-scraper:1.2.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 30
+        name: kubernetes-dashboard-metrics-scraper
+        ports:
+        - containerPort: 8000
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 250m
+            memory: 400Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 2001
+          runAsUser: 1001
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: kubernetes-dashboard-metrics-scraper
+      volumes:
+      - emptyDir: {}
+        name: tmp-volume

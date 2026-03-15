@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: slskd
+  namespace: arr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: slskd
+  template:
+    metadata:
+      labels:
+        name: slskd
+    spec:
+      containers:
+      - env:
+        - name: SLSKD_REMOTE_CONFIGURATION
+          valueFrom:
+            configMapKeyRef:
+              key: SLSKD_REMOTE_CONFIGURATION
+              name: slskd-config-env
+        - name: SLSKD_SHARED_DIR
+          valueFrom:
+            configMapKeyRef:
+              key: SLSKD_SHARED_DIR
+              name: slskd-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: slskd-config-env
+        - name: SLSKD_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SLSKD_API_KEY
+              name: slskd-sealed-secret
+        - name: SLSKD_SLSK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SLSKD_SLSK_PASSWORD
+              name: slskd-sealed-secret
+        - name: SLSKD_SLSK_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: SLSKD_SLSK_USERNAME
+              name: slskd-sealed-secret
+        image: slskd/slskd:0.24.3
+        imagePullPolicy: IfNotPresent
+        name: slskd
+        ports:
+        - containerPort: 5030
+          name: http
+        - containerPort: 5031
+          name: https
+        - containerPort: 50300
+          name: slsk
+        securityContext:
+          runAsGroup: 100
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /app/data
+          name: data
+        - mountPath: /music
+          name: music
+        - mountPath: /downloads
+          name: downloads
+        - mountPath: /incomplete
+          name: incomplete
+        - mountPath: /app/slskd.yml
+          name: slskd-yml
+          subPath: slskd.yml
+      volumes:
+      - hostPath:
+          path: /data/arr/slskd/data
+        name: data
+      - hostPath:
+          path: /cold-data/media/music/library/all
+        name: music
+      - hostPath:
+          path: /cold-data/media/music/downloads
+        name: downloads
+      - hostPath:
+          path: /cold-data/media/music/incomplete
+        name: incomplete
+      - configMap:
+          name: slskd-yml
+        name: slskd-yml
+  updateStrategy:
+    type: RollingUpdate

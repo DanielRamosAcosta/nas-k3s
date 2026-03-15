@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: promtail
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      name: promtail
+  template:
+    metadata:
+      labels:
+        name: promtail
+    spec:
+      containers:
+      - args:
+        - -config.file=/etc/promtail/promtail.yaml
+        env:
+        - name: HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        image: docker.io/grafana/promtail:3.5.7
+        imagePullPolicy: IfNotPresent
+        name: promtail
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: true
+          runAsGroup: 0
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /etc/promtail/promtail.yaml
+          name: promtail-yaml
+          subPath: promtail.yaml
+        - mountPath: /host/var/log
+          name: logs
+        - mountPath: /etc/machine-id
+          name: machineid
+          readOnly: true
+      serviceAccount: promtail
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      volumes:
+      - configMap:
+          name: promtail-yaml
+        name: promtail-yaml
+      - hostPath:
+          path: /var/log
+        name: logs
+      - hostPath:
+          path: /etc/machine-id
+          type: File
+        name: machineid
+  updateStrategy:
+    type: RollingUpdate

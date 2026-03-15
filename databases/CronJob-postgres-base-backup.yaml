@@ -1,0 +1,44 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: postgres-base-backup
+  namespace: databases
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: postgres-base-backup
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - /mnt/scripts/postgres.backup.sh
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: PGPASSWORD
+                  name: postgres-backup-sealed-secret
+            image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0
+            imagePullPolicy: IfNotPresent
+            name: backup
+            volumeMounts:
+            - mountPath: /backups
+              name: backup-storage
+            - mountPath: /mnt/scripts/postgres.backup.sh
+              name: postgres-backup-sh
+              subPath: postgres.backup.sh
+          restartPolicy: OnFailure
+          volumes:
+          - name: backup-storage
+            persistentVolumeClaim:
+              claimName: postgres-backup-pvc
+          - configMap:
+              name: postgres-backup-sh
+            name: postgres-backup-sh
+  schedule: 0 2 * * *
+  successfulJobsHistoryLimit: 3
