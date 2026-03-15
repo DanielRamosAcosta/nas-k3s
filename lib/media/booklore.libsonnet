@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'media/booklore.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 local logbackConfig = importstr './booklore.logback-spring.xml';
@@ -17,7 +17,7 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       container.withPorts([containerPort.new('server', 6060)]) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv) +
-        u.envVars.fromSecret(self.secretsEnv),
+        u.envVars.fromSealedSecret(self.sealed_secret),
       ) +
       container.withVolumeMounts([
         volumeMount.new('data', '/app/data'),
@@ -46,9 +46,7 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       SPRINGDOC_SWAGGER_UI_ENABLED: 'false',
     }),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      DATABASE_PASSWORD: s.MARIADB_PASSWORD_BOOKLORE,
-    }),
+    sealed_secret: u.sealedSecret.wide.forEnvNamed('booklore-shared-sealed-secret', secrets.shared),
 
     logbackConfiguration: u.configMap.forFile('logback-spring.xml', logbackConfig),
 
