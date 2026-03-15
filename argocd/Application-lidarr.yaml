@@ -11,9 +11,6 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    directory:
-      recurse: false
     path: lidarr
     repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
     targetRevision: manifests
-  syncPolicy: {}
