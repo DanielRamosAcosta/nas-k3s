@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: write
+
 jobs:
   validate:
     name: Validate Tanka environments
@@ -42,3 +45,15 @@ jobs:
             echo "::endgroup::"
           done
           exit $failed
+
+      - name: Export manifests
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: tk export dist/ environments/ --recursive --format '{{env.spec.namespace}}/{{.kind}}-{{.metadata.name}}'
+
+      - name: Publish to manifests branch
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: manifests
