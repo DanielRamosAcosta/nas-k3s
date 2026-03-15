@@ -1,5 +1,5 @@
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local s = import 'secrets.json';
+local secrets = import 'media/immich.secrets.json';
 local u = import 'utils.libsonnet';
 local versions = import 'versions.json';
 
@@ -11,10 +11,8 @@ local immichConfig = importstr './immich.config.json';
   local service = k.core.v1.service,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
-  local secret = k.core.v1.secret,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
-  local configMap = k.core.v1.configMap,
 
   new():: {
     statefulSet: statefulSet.new('immich', replicas=1, containers=[
@@ -24,7 +22,7 @@ local immichConfig = importstr './immich.config.json';
                    ) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSecret(self.secretsEnv),
+                     u.envVars.fromSealedSecret(self.sealed_secret_shared),
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('upload', '/usr/src/app/upload'),
@@ -36,14 +34,14 @@ local immichConfig = importstr './immich.config.json';
                    u.command.jq.merge('/data/config.json', '/data/config-secret.json', '/output/immich.json') +
                    container.withVolumeMounts([
                      u.volumeMount.fromFile(self.immichConfigPublic, '/data'),
-                     u.volumeMount.fromFile(self.immichConfigSecret, '/data'),
+                     u.volumeMount.fromSealedSecretFile(self.immichConfigSecret, '/data'),
                      volumeMount.new('merged-config', '/output'),
                    ])
                  ) +
                  statefulSet.spec.template.spec.withVolumes([
                    volume.fromPersistentVolumeClaim('upload', self.pvc.metadata.name),
                    u.volume.fromConfigMap(self.immichConfigPublic),
-                   u.volume.fromSecret(self.immichConfigSecret),
+                   u.volume.fromSealedSecret(self.immichConfigSecret),
                    volume.fromEmptyDir('merged-config'),
                  ]),
 
@@ -59,25 +57,11 @@ local immichConfig = importstr './immich.config.json';
       IMMICH_PORT: '2283',
     }),
 
-    secretsEnv: u.secret.forEnv(self.statefulSet, {
-      DB_PASSWORD: s.POSTGRES_PASSWORD_IMMICH,
-    }),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('immich-shared-sealed-secret', secrets.shared),
 
     immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
 
-    immichConfigSecret: u.secret.forFile('config-secret.json', u.jsonStringify({
-      oauth: {
-        clientId: s.AUTHELIA_OIDC_IMMICH_CLIENT_ID,
-        clientSecret: s.AUTHELIA_OIDC_IMMICH_CLIENT_SECRET,
-      },
-      notifications: {
-        smtp: {
-          transport: {
-            password: s.SMTP_PASSWORD,
-          },
-        },
-      },
-    })),
+    immichConfigSecret: u.sealedSecret.forFile('config-secret.json', secrets.configSecretFile),
 
     pv: u.pv.localPathFor(self.statefulSet, '40Gi', '/cold-data/immich/upload'),
     pvc: u.pvc.from(self.pv),
