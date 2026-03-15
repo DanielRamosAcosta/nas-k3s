@@ -1,0 +1,36 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: Validate Tanka environments
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Tanka
+        uses: unfunco/setup-tanka@v1
+        with:
+          tanka-version: "0.36.2"
+
+      - name: Validate all environments
+        run: |
+          failed=0
+          for env in environments/*/; do
+            env="${env%/}"
+            echo "::group::tk eval $env"
+            if tk eval "$env" > /dev/null 2>&1; then
+              echo "✓ $env"
+            else
+              echo "::error::tk eval failed for $env"
+              tk eval "$env"
+              failed=1
+            fi
+            echo "::endgroup::"
+          done
+          exit $failed
