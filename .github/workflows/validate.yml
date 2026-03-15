@@ -13,18 +13,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Setup Jsonnet & jsonnet-bundler
+        uses: kobtea/setup-jsonnet-action@v2
+
       - name: Setup Tanka
         uses: unfunco/setup-tanka@1.0.0-alpha.1
         with:
           tanka-version: "0.36.2"
 
-      - name: Install jsonnet-bundler
-        run: |
-          go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
-          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
-
       - name: Install dependencies
-        run: jb install
+        run: |
+          jb install
+          tk tool charts vendor
 
       - name: Validate all environments
         run: |
