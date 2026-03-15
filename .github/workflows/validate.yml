@@ -18,6 +18,12 @@ jobs:
         with:
           tanka-version: "0.36.2"
 
+      - name: Install jsonnet-bundler
+        run: go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
+
+      - name: Install dependencies
+        run: jb install
+
       - name: Validate all environments
         run: |
           failed=0
