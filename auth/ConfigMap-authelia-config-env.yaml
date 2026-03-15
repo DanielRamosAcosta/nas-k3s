@@ -1,7 +1,0 @@
-apiVersion: v1
-data:
-  X_AUTHELIA_CONFIG_FILTERS: template
-kind: ConfigMap
-metadata:
-  name: authelia-config-env
-  namespace: auth

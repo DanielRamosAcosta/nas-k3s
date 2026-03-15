@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: postgres
+  name: postgres
+  namespace: databases
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: postgres
+  template:
+    metadata:
+      labels:
+        name: postgres
+    spec:
+      containers:
+      - env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_PASSWORD
+              name: postgres-sealed-secret
+        image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0
+        imagePullPolicy: IfNotPresent
+        name: postgres
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: data
+        - mountPath: /backups
+          name: backup-storage
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - cat /config/postgresql.auto.conf > /var/lib/postgresql/data/postgresql.auto.conf
+          && cat /pg_hba/pg_hba.conf > /var/lib/postgresql/data/pg_hba.conf
+        image: busybox:1.37.0
+        imagePullPolicy: IfNotPresent
+        name: setup-postgres-config
+        securityContext:
+          runAsGroup: 999
+          runAsUser: 999
+        volumeMounts:
+        - mountPath: /var/lib/postgresql/data
+          name: data
+        - mountPath: /config
+          name: backup-config-vol
+        - mountPath: /pg_hba
+          name: pg-hba-vol
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: postgres-pvc
+      - name: backup-storage
+        persistentVolumeClaim:
+          claimName: postgres-backup-pvc
+      - configMap:
+          name: postgresql-auto-conf
+        name: backup-config-vol
+      - configMap:
+          name: pg-hba-conf
+        name: pg-hba-vol
+  updateStrategy:
+    type: RollingUpdate

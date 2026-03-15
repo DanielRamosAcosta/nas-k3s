@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: satph
+  name: satph
+  namespace: auth
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: satph
+  template:
+    metadata:
+      labels:
+        name: satph
+    spec:
+      containers:
+      - env:
+        - name: AUTHELIA_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: AUTHELIA_BASE_URL
+              name: satph-config-env
+        image: ghcr.io/danielramosacosta/satph:main-d35382b
+        imagePullPolicy: IfNotPresent
+        name: satph
+        ports:
+        - containerPort: 3000
+          name: http

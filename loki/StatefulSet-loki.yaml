@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: loki
+  name: loki
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: loki
+  template:
+    metadata:
+      labels:
+        name: loki
+    spec:
+      containers:
+      - image: docker.io/grafana/loki:3.5.7
+        imagePullPolicy: IfNotPresent
+        name: loki
+        ports:
+        - containerPort: 3100
+          name: loki
+        volumeMounts:
+        - mountPath: /var/lib/loki
+          name: data
+        - mountPath: /etc/loki/local-config.yaml
+          name: local-config-yaml
+          subPath: local-config.yaml
+      securityContext:
+        fsGroup: 10001
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+      - configMap:
+          name: local-config-yaml
+        name: local-config-yaml
+      - name: data
+        persistentVolumeClaim:
+          claimName: loki-pvc
+  updateStrategy:
+    type: RollingUpdate

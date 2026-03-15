@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: immich
+  name: immich-ingressroute
+  namespace: media
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`photos.danielramos.me`)
+    middlewares: null
+    services:
+    - name: immich
+      port: 2283
+  tls:
+    certResolver: le

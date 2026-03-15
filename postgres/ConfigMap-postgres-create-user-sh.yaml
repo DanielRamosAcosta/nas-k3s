@@ -1,0 +1,45 @@
+apiVersion: v1
+data:
+  postgres.create-user.sh: "#!/usr/bin/env bash\nset -euo pipefail\n\necho \"\U0001F3D7️
+    \ Creando usuario y base de datos individual...\"\n\n# Validar variables requeridas\n:
+    \"${USER_NAME:?Variable USER_NAME es requerida}\"\n: \"${USER_PASSWORD:?Variable
+    USER_PASSWORD es requerida}\"\n: \"${POSTGRES_PASSWORD:?Variable POSTGRES_PASSWORD
+    es requerida}\"\n\n# Configuración de conexión (con valores por defecto)\nPOSTGRES_HOST=\"${POSTGRES_HOST:-postgres.databases.svc.cluster.local}\"\nPOSTGRES_PORT=\"5432\"\nPOSTGRES_USER=\"${POSTGRES_USER:-postgres}\"\n\necho
+    \"\U0001F510 Creando role y BBDD para '$USER_NAME'...\"\n\n# Crear el usuario/role
+    con LOGIN\nPGPASSWORD=\"$POSTGRES_PASSWORD\" psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\"
+    -U \"$POSTGRES_USER\" -v ON_ERROR_STOP=1 <<SQL\nDO \\$\\$\nBEGIN\n    IF NOT EXISTS
+    (SELECT 1 FROM pg_roles WHERE rolname = '$USER_NAME') THEN\n        CREATE ROLE
+    \"$USER_NAME\" LOGIN PASSWORD '$USER_PASSWORD';\n        RAISE NOTICE 'Role %
+    creado exitosamente', '$USER_NAME';\n    ELSE\n        RAISE NOTICE 'Role % ya
+    existe', '$USER_NAME';\n    END IF;\nEND\n\\$\\$;\nSQL\n\n# Verificar si la base
+    de datos ya existe y está configurada\nDB_EXISTS=$(PGPASSWORD=\"$POSTGRES_PASSWORD\"
+    psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -tAc \"SELECT
+    1 FROM pg_database WHERE datname = '$USER_NAME'\")\n\nif [ \"$DB_EXISTS\" = \"1\"
+    ]; then\n    echo \"✅  La base de datos '$USER_NAME' ya existe y está configurada.
+    No se requiere ninguna acción.\"\n    exit 0\nfi\n\n# Crear base de datos dedicada
+    con el usuario como owner\necho \"\U0001F4E6 Creando base de datos '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
+    psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -v ON_ERROR_STOP=1
+    <<SQL\nCREATE DATABASE \"$USER_NAME\" OWNER \"$USER_NAME\" TEMPLATE template0;\nSQL\n\n#
+    Revocar acceso público y dar acceso exclusivo al owner\necho \"\U0001F512 Configurando
+    permisos exclusivos para '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
+    psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -v ON_ERROR_STOP=1
+    <<SQL\nREVOKE CONNECT ON DATABASE \"$USER_NAME\" FROM PUBLIC;\nGRANT  CONNECT
+    ON DATABASE \"$USER_NAME\" TO \"$USER_NAME\";\nSQL\n\n# Revocar acceso del usuario
+    a la base de datos \"postgres\" y otras bases del sistema\necho \"\U0001F6AB Revocando
+    acceso a bases de datos del sistema para '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
+    psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -v ON_ERROR_STOP=1
+    <<SQL\nREVOKE CONNECT ON DATABASE \"postgres\" FROM \"$USER_NAME\";\nREVOKE CONNECT
+    ON DATABASE \"template0\" FROM \"$USER_NAME\";\nREVOKE CONNECT ON DATABASE \"template1\"
+    FROM \"$USER_NAME\";\nSQL\n\n# Instalar extensiones útiles en la nueva base de
+    datos\necho \"\U0001F527 Instalando extensiones en la base de datos '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
+    psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -d \"$USER_NAME\"
+    -v ON_ERROR_STOP=1 <<'SQL'\nCREATE EXTENSION IF NOT EXISTS vector;\nCREATE EXTENSION
+    IF NOT EXISTS vchord;\nCREATE EXTENSION IF NOT EXISTS cube;\nCREATE EXTENSION
+    IF NOT EXISTS earthdistance;\nSQL\n\necho \"✅  Usuario '$USER_NAME' y base de
+    datos creados exitosamente con acceso exclusivo.\"\n"
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres
+  name: postgres-create-user-sh
+  namespace: databases

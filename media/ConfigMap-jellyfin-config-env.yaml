@@ -1,7 +1,0 @@
-apiVersion: v1
-data:
-  JELLYFIN_PublishedServerUrl: https://media.danielramos.me
-kind: ConfigMap
-metadata:
-  name: jellyfin-config-env
-  namespace: media

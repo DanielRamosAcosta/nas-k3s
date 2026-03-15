@@ -1,0 +1,26 @@
+apiVersion: v1
+data:
+  mariadb.create-user.sh: "#!/usr/bin/env bash\nset -euo pipefail\n\necho \"\U0001F3D7️
+    \ Creando usuario y base de datos en MariaDB...\"\n\n# Validar variables requeridas\n:
+    \"${USER_NAME:?Variable USER_NAME es requerida}\"\n: \"${USER_PASSWORD:?Variable
+    USER_PASSWORD es requerida}\"\n: \"${MYSQL_ROOT_PASSWORD:?Variable MYSQL_ROOT_PASSWORD
+    es requerida}\"\n\n# Configuración de conexión (con valores por defecto)\nMYSQL_HOST=\"${MYSQL_HOST:-mariadb.databases.svc.cluster.local}\"\nMYSQL_PORT=\"3306\"\nMYSQL_USER=\"${MYSQL_USER:-root}\"\n\necho
+    \"⏳ Esperando que MariaDB esté disponible en $MYSQL_HOST:$MYSQL_PORT...\"\n\n#
+    Esperar a que MariaDB esté listo\nRETRIES=30\nWAIT=2\nuntil [ $RETRIES -eq 0 ];
+    do\n    if mysql -h\"$MYSQL_HOST\" -P\"$MYSQL_PORT\" -u\"$MYSQL_USER\" -p\"$MYSQL_ROOT_PASSWORD\"
+    -e \"SELECT 1\" &>/dev/null; then\n        echo \"✅ MariaDB está disponible\"\n
+    \       break\n    fi\n    echo \"⏳ Esperando... ($RETRIES intentos restantes)\"\n
+    \   RETRIES=$((RETRIES - 1))\n    sleep $WAIT\ndone\n\nif [ $RETRIES -eq 0 ];
+    then\n    echo \"❌ MariaDB no está disponible después de varios intentos\"\n    exit
+    1\nfi\n\necho \"\U0001F510 Creando base de datos y usuario para '$USER_NAME'...\"\n\n#
+    Crear base de datos y usuario\nmysql -h\"$MYSQL_HOST\" -P\"$MYSQL_PORT\" -u\"$MYSQL_USER\"
+    -p\"$MYSQL_ROOT_PASSWORD\" <<SQL\nCREATE DATABASE IF NOT EXISTS \\`${USER_NAME}\\`;\nCREATE
+    USER IF NOT EXISTS '${USER_NAME}'@'%' IDENTIFIED BY '${USER_PASSWORD}';\nGRANT
+    ALL PRIVILEGES ON \\`${USER_NAME}\\`.* TO '${USER_NAME}'@'%';\nFLUSH PRIVILEGES;\nSQL\n\necho
+    \"✅ Usuario '$USER_NAME' y base de datos creados exitosamente.\"\n"
+kind: ConfigMap
+metadata:
+  labels:
+    app: mariadb
+  name: mariadb-create-user-sh
+  namespace: databases

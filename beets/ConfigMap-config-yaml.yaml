@@ -1,0 +1,63 @@
+apiVersion: v1
+data:
+  config.yaml: |-
+    "$schema": "./beets.config.schema.json"
+    "art_filename": "albumart"
+    "convert":
+      "auto": false
+      "ffmpeg": "/usr/bin/ffmpeg"
+      "max_bitrate": 320
+      "opts": "-ab 320k -ac 2 -ar 48000"
+      "threads": 1
+    "directory": "/music"
+    "embedart":
+      "auto": true
+    "fetchart":
+      "auto": true
+    "import":
+      "copy": false
+      "incremental": true
+      "log": "/data/beet.log"
+      "move": false
+      "quiet_fallback": "skip"
+      "resume": "ask"
+      "timid": true
+      "write": true
+    "lastgenre":
+      "auto": false
+      "source": "album"
+    "library": "/data/musiclibrary.blb"
+    "original_date": false
+    "paths":
+      "albumtype:single": "$albumartist/Single/$album ($year)/$albumartist - $album - $track - $title"
+      "comp": "$albumartist/$albumtype/$album ($year)/$albumartist - $album - $track - $title"
+      "default": "$albumartist/Album/$album ($year)/$albumartist - $album - $track - $title"
+      "singleton": "$albumartist/Single/$album ($year)/$albumartist - $album - $track - $title"
+    "per_disc_numbering": false
+    "plugins": "musicbrainz fetchart embedart convert scrub replaygain lastgenre chroma web missing"
+    "replace":
+      "[<>:\"\\?\\*\\|]": "_"
+      "[\\x00-\\x1f]": "_"
+      "[\\xE2-\\xE6]": "a"
+      "[\\xE8-\\xEB]": "e"
+      "[\\xEC-\\xEF]": "i"
+      "[\\xF2-\\xF6]": "o"
+      "[\\xF8]": "o"
+      "\\.$": "_"
+      "\\s+$": ""
+      "^\\.": "_"
+    "replaygain":
+      "auto": false
+      "command": "mp3gain"
+    "scrub":
+      "auto": true
+    "threaded": true
+    "web":
+      "host": "0.0.0.0"
+      "port": 8337
+kind: ConfigMap
+metadata:
+  labels:
+    app: beets
+  name: config-yaml
+  namespace: media

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: immich
+  name: immich-pv
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: 40Gi
+  hostPath:
+    path: /cold-data/immich/upload
+    type: DirectoryOrCreate
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-path

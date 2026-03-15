@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: grafana
+  name: grafana-ingressroute
+  namespace: monitoring
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`grafana.danielramos.me`)
+    middlewares: null
+    services:
+    - name: grafana
+      port: 3000
+  tls:
+    certResolver: le

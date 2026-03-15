@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: postgres
+  name: postgres-create-user-immich
+  namespace: databases
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - /bin/bash
+        - /mnt/scripts/postgres.create-user.sh
+        env:
+        - name: USER_NAME
+          value: immich
+        - name: USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_PASSWORD
+              name: postgres-create-user-immich-sealed-secret
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: POSTGRES_PASSWORD
+              name: postgres-sealed-secret
+        image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0
+        imagePullPolicy: IfNotPresent
+        name: create-user
+        volumeMounts:
+        - mountPath: /mnt/scripts/postgres.create-user.sh
+          name: postgres-create-user-sh
+          subPath: postgres.create-user.sh
+      restartPolicy: OnFailure
+      volumes:
+      - configMap:
+          name: postgres-create-user-sh
+        name: postgres-create-user-sh

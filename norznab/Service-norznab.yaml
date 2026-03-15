@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: norznab
+    name: norznab
+  name: norznab
+  namespace: arr
+spec:
+  ports:
+  - name: norznab-http
+    port: 3000
+    targetPort: 3000
+  selector:
+    name: norznab

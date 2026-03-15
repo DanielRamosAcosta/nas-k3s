@@ -4,6 +4,7 @@ metadata:
   annotations:
     helm.sh/resource-policy: keep
   labels:
+    app: argocd
     app.kubernetes.io/managed-by: Helmraiser
     app.kubernetes.io/name: applications.argoproj.io
     app.kubernetes.io/part-of: argocd

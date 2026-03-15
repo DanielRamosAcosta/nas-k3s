@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: heartbeat
+  name: heartbeat
+  namespace: system
+spec:
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: heartbeat
+        spec:
+          containers:
+          - command:
+            - sh
+            - -c
+            - wget -qO- "https://hc-ping.com/$UUID" >/dev/null 2>&1 || exit 1
+            env:
+            - name: UUID
+              valueFrom:
+                secretKeyRef:
+                  key: UUID
+                  name: heartbeat-sealed-secret
+            image: busybox:1.37.0
+            imagePullPolicy: IfNotPresent
+            name: ping
+          restartPolicy: OnFailure
+  schedule: '*/5 * * * *'

@@ -1,7 +1,0 @@
-apiVersion: v1
-data:
-  ND_BASEURL: https://music.danielramos.me
-kind: ConfigMap
-metadata:
-  name: navidrome-config-env
-  namespace: media

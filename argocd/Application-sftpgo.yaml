@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    app: argocd
+  name: sftpgo
+  namespace: argocd
+spec:
+  destination:
+    namespace: media
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    directory:
+      recurse: false
+    path: sftpgo
+    repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
+    targetRevision: manifests
+  syncPolicy: {}

@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: radarr
+  name: radarr
+  namespace: arr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: radarr
+  template:
+    metadata:
+      labels:
+        name: radarr
+    spec:
+      containers:
+      - env:
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              key: PGID
+              name: radarr-config-env
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              key: PUID
+              name: radarr-config-env
+        - name: RADARR__LOG__CONSOLEFORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: RADARR__LOG__CONSOLEFORMAT
+              name: radarr-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: radarr-config-env
+        - name: UMASK
+          valueFrom:
+            configMapKeyRef:
+              key: UMASK
+              name: radarr-config-env
+        image: ghcr.io/hotio/radarr:release-6.0.4.10291
+        imagePullPolicy: IfNotPresent
+        name: radarr
+        ports:
+        - containerPort: 7878
+          name: http
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /data
+          name: data
+      volumes:
+      - hostPath:
+          path: /data/arr/radarr
+        name: config
+      - hostPath:
+          path: /cold-data/media
+        name: data
+  updateStrategy:
+    type: RollingUpdate

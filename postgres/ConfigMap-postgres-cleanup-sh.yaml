@@ -1,0 +1,39 @@
+apiVersion: v1
+data:
+  postgres.cleanup.sh: |
+    #!/bin/sh
+    set -e
+
+    BACKUP_DIR="/backups/base"
+    RETENTION=7
+
+    echo "Starting backup cleanup (keeping $RETENTION backups)"
+
+    # Count existing backups
+    BACKUP_COUNT=$(ls -1d $BACKUP_DIR/backup-* 2>/dev/null | wc -l)
+    echo "Found $BACKUP_COUNT backups"
+
+    if [ "$BACKUP_COUNT" -gt "$RETENTION" ]; then
+      # Remove oldest backups beyond retention
+      TO_DELETE=$((BACKUP_COUNT - RETENTION))
+      echo "Removing $TO_DELETE old backups"
+
+      ls -1td $BACKUP_DIR/backup-* | tail -n "$TO_DELETE" | while read backup; do
+        echo "Deleting: $backup"
+        rm -rf "$backup"
+      done
+
+      echo "Cleanup completed"
+    else
+      echo "No cleanup needed (backups: $BACKUP_COUNT, retention: $RETENTION)"
+    fi
+
+    # Show remaining backups
+    echo "Current backups:"
+    ls -lh $BACKUP_DIR/
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres
+  name: postgres-cleanup-sh
+  namespace: databases

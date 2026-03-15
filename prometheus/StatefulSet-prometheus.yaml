@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: prometheus
+  name: prometheus
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: prometheus
+  template:
+    metadata:
+      labels:
+        name: prometheus
+    spec:
+      containers:
+      - image: docker.io/prom/prometheus:v3.7.3
+        imagePullPolicy: IfNotPresent
+        name: prometheus
+        ports:
+        - containerPort: 9090
+          name: prometheus
+        volumeMounts:
+        - mountPath: /prometheus
+          name: data
+        - mountPath: /etc/prometheus/prometheus.yml
+          name: prometheus-yml
+          subPath: prometheus.yml
+      securityContext:
+        fsGroup: 65534
+        fsGroupChangePolicy: OnRootMismatch
+      serviceAccount: prometheus
+      volumes:
+      - configMap:
+          name: prometheus-yml
+        name: prometheus-yml
+      - name: data
+        persistentVolumeClaim:
+          claimName: prometheus-pvc
+  updateStrategy:
+    type: RollingUpdate

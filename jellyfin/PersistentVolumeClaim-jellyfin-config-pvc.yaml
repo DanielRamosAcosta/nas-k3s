@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  labels:
+    app: jellyfin
+  name: jellyfin-config-pvc
+  namespace: media
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 25Gi
+  storageClassName: local-path
+  volumeName: jellyfin-config-pv

@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: jdownloader
+  name: jdownloader
+  namespace: arr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: jdownloader
+  template:
+    metadata:
+      labels:
+        name: jdownloader
+    spec:
+      containers:
+      - env:
+        - name: DISPLAY_HEIGHT
+          valueFrom:
+            configMapKeyRef:
+              key: DISPLAY_HEIGHT
+              name: jdownloader-config-env
+        - name: DISPLAY_WIDTH
+          valueFrom:
+            configMapKeyRef:
+              key: DISPLAY_WIDTH
+              name: jdownloader-config-env
+        - name: GROUP_ID
+          valueFrom:
+            configMapKeyRef:
+              key: GROUP_ID
+              name: jdownloader-config-env
+        - name: KEEP_APP_RUNNING
+          valueFrom:
+            configMapKeyRef:
+              key: KEEP_APP_RUNNING
+              name: jdownloader-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: jdownloader-config-env
+        - name: USER_ID
+          valueFrom:
+            configMapKeyRef:
+              key: USER_ID
+              name: jdownloader-config-env
+        image: docker.io/jlesage/jdownloader-2:v26.01.1
+        imagePullPolicy: IfNotPresent
+        name: jdownloader
+        ports:
+        - containerPort: 5800
+          name: web
+        - containerPort: 3129
+          name: myjd
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /output
+          name: downloads
+      volumes:
+      - hostPath:
+          path: /data/jdownloader/config
+        name: config
+      - hostPath:
+          path: /cold-data/downloads
+        name: downloads
+  updateStrategy:
+    type: RollingUpdate

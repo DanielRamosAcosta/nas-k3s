@@ -5,8 +5,8 @@ data:
   application.sync.impersonation.enabled: "false"
   exec.enabled: "false"
   oidc.config: |-
-    "cliClientID": "T2qqr-u2jcUAt04xyLD2Oz.7ialdW5NdF21VOFYub1kW3AkxAWh~6mU4EHcufhdpXig77yhH"
-    "clientID": "yYqSsmaevMLFs5iCoYtDwjLdZ~DZ-g~5rYMEtdIrR82WxNhVectjCoCd1EgncpKiMrDdmI0T"
+    "cliClientID": "$argocd-oidc-secret:cli-client-id"
+    "clientID": "$argocd-oidc-secret:client-id"
     "clientSecret": "$argocd-oidc-secret:client-secret"
     "enableUserInfoGroups": true
     "issuer": "https://auth.danielramos.me"
@@ -117,6 +117,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
+    app: argocd
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: argocd
     app.kubernetes.io/managed-by: Helmraiser

@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: prometheus
+  name: smartctl-exporter
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      name: smartctl-exporter
+  template:
+    metadata:
+      labels:
+        name: smartctl-exporter
+    spec:
+      containers:
+      - image: quay.io/prometheuscommunity/smartctl-exporter:v0.14.0
+        imagePullPolicy: IfNotPresent
+        name: smartctl-exporter
+        ports:
+        - containerPort: 9633
+          name: smartctl
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: true
+          runAsGroup: 0
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /dev
+          name: dev
+        - mountPath: /run/udev
+          name: run-udev
+          readOnly: true
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /dev
+          type: Directory
+        name: dev
+      - hostPath:
+          path: /run/udev
+          type: Directory
+        name: run-udev
+  updateStrategy:
+    type: RollingUpdate

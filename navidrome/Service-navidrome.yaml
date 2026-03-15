@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8081"
+    prometheus.io/scrape: "true"
+  labels:
+    app: navidrome
+    name: navidrome
+  name: navidrome
+  namespace: media
+spec:
+  ports:
+  - name: navidrome-server
+    port: 4533
+    targetPort: 4533
+  selector:
+    name: navidrome

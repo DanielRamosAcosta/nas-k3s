@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: prometheus
+    name: nut-exporter
+  name: nut-exporter
+  namespace: monitoring
+spec:
+  ports:
+  - name: nut-exporter-nut
+    port: 9199
+    targetPort: 9199
+  selector:
+    name: nut-exporter

@@ -1,0 +1,28 @@
+apiVersion: v1
+data:
+  postgresql.auto.conf: |
+    # PostgreSQL Backup Configuration
+    # This file is included automatically by PostgreSQL 17+ when placed in /etc/postgresql/conf.d/
+
+    # Enable WAL archiving for PITR (Point-In-Time Recovery)
+    archive_mode = on
+
+    # Archive command: copy WAL segments to backup storage
+    # The test prevents overwriting existing archived files
+    archive_command = 'test ! -f /backups/wal_archive/%f && cp %p /backups/wal_archive/%f'
+
+    # Force WAL segment switch after this many seconds
+    # This ensures maximum 5 minutes of potential data loss in worst case
+    archive_timeout = 300
+
+    # WAL level needed for pg_basebackup and PITR
+    wal_level = replica
+
+    # Maximum number of WAL sender processes for pg_basebackup
+    max_wal_senders = 3
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres
+  name: postgresql-auto-conf
+  namespace: databases

@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
+    app: argocd
     app.kubernetes.io/component: repo-server
     app.kubernetes.io/instance: argocd
     app.kubernetes.io/managed-by: Helmraiser
@@ -21,7 +22,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cm: ea70893be8a6b10cb6ad75452756af71359cfd3b9b2028e6708ec8428da97a3c
+        checksum/cm: 2726c6b4bf736f12fea5228c1eaae9cb7ba84e34497e94b9eff5f7f3aad79029
         checksum/cmd-params: 0cc850a17f0681fe1edb7c0e204d0f4b4611cfe33c4fff90d1a68d66c90bd2d2
       labels:
         app.kubernetes.io/component: repo-server

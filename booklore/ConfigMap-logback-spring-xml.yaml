@@ -1,0 +1,42 @@
+apiVersion: v1
+data:
+  logback-spring.xml: |
+    <?xml version="1.0" encoding="UTF-8"?>
+    <configuration>
+        <!-- Console appender with native JSON encoder from logback-classic 1.5.21 -->
+        <appender name="CONSOLE_JSON" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder class="ch.qos.logback.classic.encoder.JsonEncoder">
+                <!-- Native JSON encoder - produces one JSON object per log line -->
+                <!-- Fields included by default: timestamp, level, thread, logger, message, context -->
+            </encoder>
+        </appender>
+
+        <!-- Root logger -->
+        <root level="${ROOT_LOG_LEVEL:-INFO}">
+            <appender-ref ref="CONSOLE_JSON" />
+        </root>
+
+        <!-- Booklore application logger -->
+        <logger name="com.adityachandel.booklore" level="${LOG_LEVEL:-INFO}" additivity="false">
+            <appender-ref ref="CONSOLE_JSON" />
+        </logger>
+
+        <!-- Reduce framework noise -->
+        <logger name="org.springframework" level="WARN" />
+        <logger name="org.springframework.security" level="WARN" />
+        <logger name="org.springframework.web" level="WARN" />
+        <logger name="org.hibernate" level="WARN" />
+        <logger name="org.apache.fontbox" level="ERROR" />
+        <logger name="org.apache.pdfbox" level="ERROR" />
+        <logger name="org.quartz.core.QuartzScheduler" level="WARN" />
+        <logger name="org.quartz.simpl.SimpleThreadPool" level="WARN" />
+        <logger name="org.quartz.simpl.RAMJobStore" level="WARN" />
+        <logger name="org.hibernate.orm.connections.pooling" level="WARN" />
+        <logger name="org.springframework.security.config.annotation.authentication.configuration.InitializeUserDetailsBeanManagerConfigurer" level="ERROR" />
+    </configuration>
+kind: ConfigMap
+metadata:
+  labels:
+    app: booklore
+  name: logback-spring-xml
+  namespace: media

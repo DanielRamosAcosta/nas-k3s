@@ -1,0 +1,39 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: mariadb
+  name: mariadb-create-user-booklore
+  namespace: databases
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - /bin/bash
+        - /mnt/scripts/mariadb.create-user.sh
+        env:
+        - name: USER_NAME
+          value: booklore
+        - name: USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_PASSWORD
+              name: mariadb-create-user-booklore-sealed-secret
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: mariadb-sealed-secret
+        image: lscr.io/linuxserver/mariadb:11.4.8-r0-ls201
+        imagePullPolicy: IfNotPresent
+        name: create-user
+        volumeMounts:
+        - mountPath: /mnt/scripts/mariadb.create-user.sh
+          name: mariadb-create-user-sh
+          subPath: mariadb.create-user.sh
+      restartPolicy: OnFailure
+      volumes:
+      - configMap:
+          name: mariadb-create-user-sh
+        name: mariadb-create-user-sh

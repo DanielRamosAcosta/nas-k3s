@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: kubernetes-dashboard
+    app.kubernetes.io/component: auth
+    app.kubernetes.io/instance: kubernetes-dashboard
+    app.kubernetes.io/managed-by: Helmraiser
+    app.kubernetes.io/name: kubernetes-dashboard-auth
+    app.kubernetes.io/part-of: kubernetes-dashboard
+    app.kubernetes.io/version: 1.13.0
+    helm.sh/chart: kubernetes-dashboard-7.13.0
+  name: kubernetes-dashboard-auth
+  namespace: dashboard
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: kubernetes-dashboard
+      app.kubernetes.io/name: kubernetes-dashboard-auth
+      app.kubernetes.io/part-of: kubernetes-dashboard
+  template:
+    metadata:
+      annotations:
+        checksum/config: bb65351a31ca9f92bf0b2a9728e4d66d0cc10aff8f52adcfd14e34a4654c3db8
+      labels:
+        app.kubernetes.io/component: auth
+        app.kubernetes.io/instance: kubernetes-dashboard
+        app.kubernetes.io/managed-by: Helm
+        app.kubernetes.io/name: kubernetes-dashboard-auth
+        app.kubernetes.io/part-of: kubernetes-dashboard
+        app.kubernetes.io/version: 1.3.0
+        helm.sh/chart: kubernetes-dashboard-7.13.0
+    spec:
+      automountServiceAccountToken: true
+      containers:
+      - args: null
+        env:
+        - name: CSRF_KEY
+          valueFrom:
+            secretKeyRef:
+              key: private.key
+              name: kubernetes-dashboard-csrf
+        - name: GOMAXPROCS
+          valueFrom:
+            resourceFieldRef:
+              divisor: "1"
+              resource: limits.cpu
+        - name: GOMEMLIMIT
+          valueFrom:
+            resourceFieldRef:
+              divisor: "1"
+              resource: limits.memory
+        image: docker.io/kubernetesui/dashboard-auth:1.3.0
+        imagePullPolicy: IfNotPresent
+        name: kubernetes-dashboard-auth
+        ports:
+        - containerPort: 8000
+          name: auth
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 250m
+            memory: 400Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 2001
+          runAsUser: 1001
+        volumeMounts:
+        - mountPath: /tmp
+          name: tmp-volume
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+      - emptyDir: {}
+        name: tmp-volume

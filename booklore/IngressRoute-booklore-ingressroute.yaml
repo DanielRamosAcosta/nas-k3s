@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: booklore
+  name: booklore-ingressroute
+  namespace: media
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`books.danielramos.me`)
+    middlewares: null
+    services:
+    - name: booklore
+      port: 6060
+  tls:
+    certResolver: le

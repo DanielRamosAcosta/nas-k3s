@@ -18,6 +18,7 @@ data:
 kind: ConfigMap
 metadata:
   labels:
+    app: argocd
     app.kubernetes.io/instance: argocd
     app.kubernetes.io/managed-by: Helmraiser
     app.kubernetes.io/name: argocd-ssh-known-hosts-cm

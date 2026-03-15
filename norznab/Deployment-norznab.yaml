@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: norznab
+  name: norznab
+  namespace: arr
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: norznab
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        name: norznab
+    spec:
+      containers:
+      - env:
+        - name: TMDB_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: TMDB_API_KEY
+              name: norznab-sealed-secret
+        - name: DON_TORRENT_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: DON_TORRENT_BASE_URL
+              name: norznab-config-env
+        - name: HTTPS_PROXY
+          valueFrom:
+            configMapKeyRef:
+              key: HTTPS_PROXY
+              name: norznab-config-env
+        - name: HTTP_PROXY
+          valueFrom:
+            configMapKeyRef:
+              key: HTTP_PROXY
+              name: norznab-config-env
+        - name: MARCIANO_TORRENT_BASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: MARCIANO_TORRENT_BASE_URL
+              name: norznab-config-env
+        - name: NODE_USE_ENV_PROXY
+          valueFrom:
+            configMapKeyRef:
+              key: NODE_USE_ENV_PROXY
+              name: norznab-config-env
+        - name: NO_PROXY
+          valueFrom:
+            configMapKeyRef:
+              key: NO_PROXY
+              name: norznab-config-env
+        - name: REQUEST_TIMEOUT_MS
+          valueFrom:
+            configMapKeyRef:
+              key: REQUEST_TIMEOUT_MS
+              name: norznab-config-env
+        image: ghcr.io/danielramosacosta/norznab:main-dc95fd6
+        imagePullPolicy: IfNotPresent
+        name: norznab
+        ports:
+        - containerPort: 3000
+          name: http

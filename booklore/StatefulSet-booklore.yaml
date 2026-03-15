@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: booklore
+  name: booklore
+  namespace: media
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: booklore
+  template:
+    metadata:
+      labels:
+        name: booklore
+    spec:
+      containers:
+      - env:
+        - name: BOOKLORE_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: BOOKLORE_PORT
+              name: booklore-config-env
+        - name: DATABASE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_URL
+              name: booklore-config-env
+        - name: DATABASE_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: DATABASE_USERNAME
+              name: booklore-config-env
+        - name: GROUP_ID
+          valueFrom:
+            configMapKeyRef:
+              key: GROUP_ID
+              name: booklore-config-env
+        - name: LOGGING_CONFIG
+          valueFrom:
+            configMapKeyRef:
+              key: LOGGING_CONFIG
+              name: booklore-config-env
+        - name: SPRINGDOC_API_DOCS_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: SPRINGDOC_API_DOCS_ENABLED
+              name: booklore-config-env
+        - name: SPRINGDOC_SWAGGER_UI_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: SPRINGDOC_SWAGGER_UI_ENABLED
+              name: booklore-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: booklore-config-env
+        - name: USER_ID
+          valueFrom:
+            configMapKeyRef:
+              key: USER_ID
+              name: booklore-config-env
+        - name: DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DATABASE_PASSWORD
+              name: booklore-shared-sealed-secret
+        image: booklore/booklore:v2.0.6
+        imagePullPolicy: IfNotPresent
+        name: booklore
+        ports:
+        - containerPort: 6060
+          name: server
+        volumeMounts:
+        - mountPath: /app/data
+          name: data
+        - mountPath: /books
+          name: books
+        - mountPath: /bookdrop
+          name: bookdrop
+        - mountPath: /config/logback-spring.xml
+          name: logback-spring-xml
+          subPath: logback-spring.xml
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: booklore-data-pvc
+      - name: books
+        persistentVolumeClaim:
+          claimName: booklore-books-pvc
+      - name: bookdrop
+        persistentVolumeClaim:
+          claimName: booklore-bookdrop-pvc
+      - configMap:
+          name: logback-spring-xml
+        name: logback-spring-xml
+  updateStrategy:
+    type: RollingUpdate
