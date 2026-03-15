@@ -32,8 +32,7 @@
       "description": "Images with commit-hash tags (main-<hash> / master-<hash>)",
       "matchPackageNames": [
         "quay.io/invidious/invidious-companion",
-        "ghcr.io/danielramosacosta/norznab",
-        "ghcr.io/danielramosacosta/satph"
+        "ghcr.io/danielramosacosta/norznab"
       ],
       "versioning": "loose"
     }
