@@ -19,7 +19,9 @@ jobs:
           tanka-version: "0.36.2"
 
       - name: Install jsonnet-bundler
-        run: go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
+        run: |
+          go install github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb@latest
+          echo "$(go env GOPATH)/bin" >> $GITHUB_PATH
 
       - name: Install dependencies
         run: jb install
