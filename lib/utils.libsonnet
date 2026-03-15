@@ -4,6 +4,17 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local u = self,
 
   image(name, version):: name + ':' + version,
+  labelApp(appName, resources):: {
+    [key]:
+      local val = resources[key];
+      if std.isObject(val) && std.objectHas(val, 'metadata') then
+        val { metadata+: { labels+: { app: appName } } }
+      else if std.isObject(val) then
+        u.labelApp(appName, val)
+      else
+        val
+    for key in std.objectFields(resources)
+  },
   secretRef(secretName, key):: k.core.v1.envVar.fromSecretRef(key, secretName, key),
   extractConfig(configMapName, keys):: [
     k.core.v1.envVar.withName(key) +

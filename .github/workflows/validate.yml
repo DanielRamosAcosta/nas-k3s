@@ -48,7 +48,7 @@ jobs:
 
       - name: Export manifests
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        run: tk export dist/ environments/ --recursive --format '{{env.spec.namespace}}/{{.kind}}-{{.metadata.name}}'
+        run: tk export dist/ environments/ --recursive --format '{{index .metadata.labels "app"}}/{{.kind}}-{{.metadata.name}}'
 
       - name: Publish to manifests branch
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'

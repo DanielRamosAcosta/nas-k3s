@@ -1,6 +1,7 @@
 local kubernetesDashboard = import 'dashboard/kubernetes-dashboard.libsonnet';
+local u = import 'utils.libsonnet';
 
 {
-  dashboard: kubernetesDashboard.new(),
-  admin: kubernetesDashboard.createAdmin(),
+  dashboard: u.labelApp('kubernetes-dashboard', kubernetesDashboard.new()),
+  admin: u.labelApp('kubernetes-dashboard', kubernetesDashboard.createAdmin()),
 }

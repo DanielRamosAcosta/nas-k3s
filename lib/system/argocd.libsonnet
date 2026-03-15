@@ -5,8 +5,33 @@ local u = import 'utils.libsonnet';
 
 local helm = tanka.helm.new(std.thisFile);
 
+local makeApp(name, path, namespace) = {
+  apiVersion: 'argoproj.io/v1alpha1',
+  kind: 'Application',
+  metadata: {
+    name: name,
+    namespace: 'argocd',
+  },
+  spec: {
+    project: 'default',
+    source: {
+      repoURL: 'https://github.com/DanielRamosAcosta/nas-k3s.git',
+      targetRevision: 'manifests',
+      path: path,
+      directory: {
+        recurse: false,
+      },
+    },
+    destination: {
+      server: 'https://kubernetes.default.svc',
+      namespace: namespace,
+    },
+    syncPolicy: {},
+  },
+};
+
 {
-  new(clientID, cliClientID):: {
+  new(apps={}):: {
     local this = self,
 
     helm: helm.template('argocd', '../../charts/argo-cd', {
@@ -29,9 +54,9 @@ local helm = tanka.helm.new(std.thisFile);
             'oidc.config': std.manifestYamlDoc({
               name: 'Authelia',
               issuer: 'https://auth.danielramos.me',
-              clientID: clientID,
+              clientID: '$argocd-oidc-secret:client-id',
               clientSecret: '$argocd-oidc-secret:client-secret',
-              cliClientID: cliClientID,
+              cliClientID: '$argocd-oidc-secret:cli-client-id',
               requestedScopes: ['openid', 'email', 'groups'],
               enableUserInfoGroups: true,
               userInfoPath: '/api/oidc/userinfo',
@@ -100,38 +125,13 @@ local helm = tanka.helm.new(std.thisFile);
       },
     },
 
-    local makeApp(name, path, namespace) = {
-      apiVersion: 'argoproj.io/v1alpha1',
-      kind: 'Application',
-      metadata: {
-        name: name,
-        namespace: 'argocd',
-      },
-      spec: {
-        project: 'default',
-        source: {
-          repoURL: 'https://github.com/DanielRamosAcosta/nas-k3s.git',
-          targetRevision: 'manifests',
-          path: path,
-          directory: {
-            recurse: false,
-          },
-        },
-        destination: {
-          server: 'https://kubernetes.default.svc',
-          namespace: namespace,
-        },
-        syncPolicy: {},
-      },
-    },
-
-    app_arr: makeApp('arr', 'arr', 'arr'),
-    app_auth: makeApp('auth', 'auth', 'auth'),
-    app_databases: makeApp('databases', 'databases', 'databases'),
-    app_dashboard: makeApp('dashboard', 'dashboard', 'dashboard'),
-    app_media: makeApp('media', 'media', 'media'),
-    app_monitoring: makeApp('monitoring', 'monitoring', 'monitoring'),
-    app_system: makeApp('system', 'system', 'system'),
+  } + {
+    // Applications — generated dynamically from apps map
+    ['app_' + std.strReplace(name, '-', '_')]: makeApp(name, name, apps[name])
+    for name in std.objectFields(apps)
+    if name != 'argocd'
+  } + {
+    // argocd manages itself with ServerSideApply (applicationsets CRD > 262KB)
     app_argocd: makeApp('argocd', 'argocd', 'argocd') {
       spec+: {
         syncPolicy+: {
