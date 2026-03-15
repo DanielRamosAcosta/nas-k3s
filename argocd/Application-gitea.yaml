@@ -14,3 +14,7 @@ spec:
     path: gitea
     repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
     targetRevision: manifests
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
