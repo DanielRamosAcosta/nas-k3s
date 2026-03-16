@@ -22,7 +22,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    container.withVolumeMounts([
                      volumeMount.new('config', '/config'),
                      volumeMount.new('downloads', '/output'),
-                   ]),
+                   ]) +
+                   u.probes.http('/', 5800),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('config', '/data/jdownloader/config'),
