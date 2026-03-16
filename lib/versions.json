@@ -25,7 +25,7 @@
   },
   "valkey": {
     "image": "valkey/valkey",
-    "version": "7.2.10-alpine"
+    "version": "7.2.12-alpine"
   },
   "grafana": {
     "image": "docker.io/grafana/grafana-oss",
@@ -85,7 +85,7 @@
   },
   "slskd": {
     "image": "slskd/slskd",
-    "version": "0.24.3"
+    "version": "0.24.5"
   },
   "deluge": {
     "image": "docker.io/linuxserver/deluge",
