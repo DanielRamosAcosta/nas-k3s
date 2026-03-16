@@ -1,7 +1,7 @@
-local cloudflare = import 'system/cloudflare.libsonnet';
-local gluetun = import 'system/gluetun.libsonnet';
-local heartbeat = import 'system/heartbeat.libsonnet';
-local sealedSecrets = import 'system/sealed-secrets.libsonnet';
+local cloudflare = import 'system/cloudflare/cloudflare.libsonnet';
+local gluetun = import 'system/gluetun/gluetun.libsonnet';
+local heartbeat = import 'system/heartbeat/heartbeat.libsonnet';
+local sealedSecrets = import 'system/sealed-secrets/sealed-secrets.libsonnet';
 local u = import 'utils.libsonnet';
 
 {

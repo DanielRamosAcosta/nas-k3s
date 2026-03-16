@@ -1,4 +1,4 @@
-local authelia = import 'auth/authelia.libsonnet';
+local authelia = import 'auth/authelia/authelia.libsonnet';
 local u = import 'utils.libsonnet';
 
 {
