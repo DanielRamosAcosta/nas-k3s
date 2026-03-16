@@ -67,7 +67,7 @@ spec:
             secretKeyRef:
               key: DATABASE_PASSWORD
               name: booklore-shared-sealed-secret
-        image: booklore/booklore:v2.0.6
+        image: booklore/booklore:v2.2.1
         imagePullPolicy: IfNotPresent
         name: booklore
         ports:
