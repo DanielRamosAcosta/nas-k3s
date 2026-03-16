@@ -29,6 +29,11 @@
       "versioning": "regex:^release-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$"
     },
     {
+      "description": "Deluge: ignore legacy 18.x tag (old LinuxServer date-based versioning)",
+      "matchPackageNames": ["docker.io/linuxserver/deluge"],
+      "allowedVersions": "<10.0.0"
+    },
+    {
       "description": "Images with commit-hash tags (main-<hash> / master-<hash>)",
       "matchPackageNames": [
         "quay.io/invidious/invidious-companion",
