@@ -23,7 +23,8 @@ local autheliaConfig = importstr './authelia.config.yml';
                     u.volumeMount.fromFile(self.configuration, '/config'),
                     u.volumeMount.fromSealedSecretFile(self.sealedUsersDatabase, '/config'),
                     u.volumeMount.fromSealedSecretFile(self.sealedJwksKey, '/config/secrets/oidc/jwks'),
-                  ]),
+                  ]) +
+                  u.probes.http('/api/health', 9091),
                 ]) +
                 u.injectFiles([self.configuration, self.sealedUsersDatabase, self.sealedJwksKey]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
