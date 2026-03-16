@@ -139,6 +139,31 @@ spec:
             configMapKeyRef:
               key: GF_SERVER_ROOT_URL
               name: grafana-config-env
+        - name: GF_SMTP_ENABLED
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SMTP_ENABLED
+              name: grafana-config-env
+        - name: GF_SMTP_FROM_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SMTP_FROM_ADDRESS
+              name: grafana-config-env
+        - name: GF_SMTP_FROM_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SMTP_FROM_NAME
+              name: grafana-config-env
+        - name: GF_SMTP_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SMTP_HOST
+              name: grafana-config-env
+        - name: GF_SMTP_USER
+          valueFrom:
+            configMapKeyRef:
+              key: GF_SMTP_USER
+              name: grafana-config-env
         - name: GF_AUTH_GENERIC_OAUTH_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -153,6 +178,11 @@ spec:
           valueFrom:
             secretKeyRef:
               key: GF_DATABASE_PASSWORD
+              name: grafana-shared-sealed-secret
+        - name: GF_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: GF_SMTP_PASSWORD
               name: grafana-shared-sealed-secret
         image: docker.io/grafana/grafana-oss:12.4.1
         imagePullPolicy: IfNotPresent
