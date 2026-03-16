@@ -47,7 +47,7 @@ spec:
             configMapKeyRef:
               key: USER_ID
               name: jdownloader-config-env
-        image: docker.io/jlesage/jdownloader-2:v26.01.1
+        image: docker.io/jlesage/jdownloader-2:v26.03.1
         imagePullPolicy: IfNotPresent
         name: jdownloader
         ports:
