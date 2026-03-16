@@ -24,7 +24,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    ) + container.withVolumeMounts([
                      volumeMount.new(dataVolumeName, '/prometheus'),
                      u.volumeMount.fromFile(self.configuration, '/etc/prometheus'),
-                   ]),
+                   ]) +
+                   u.probes.withStartup.http('/-/ready', 9090),
                  ]) +
                  statefulSet.spec.template.spec.withServiceAccount('prometheus') +
                  statefulSet.spec.template.spec.withVolumes([
