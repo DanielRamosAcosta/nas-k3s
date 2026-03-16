@@ -47,7 +47,7 @@ spec:
             secretKeyRef:
               key: SLSKD_SLSK_USERNAME
               name: slskd-sealed-secret
-        image: slskd/slskd:0.24.3
+        image: slskd/slskd:0.24.5
         imagePullPolicy: IfNotPresent
         name: slskd
         ports:
