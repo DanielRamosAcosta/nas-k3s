@@ -23,7 +23,7 @@ spec:
           valueFrom:
             fieldRef:
               fieldPath: spec.nodeName
-        image: docker.io/grafana/promtail:3.5.7
+        image: docker.io/grafana/promtail:3.6.7
         imagePullPolicy: IfNotPresent
         name: promtail
         securityContext:

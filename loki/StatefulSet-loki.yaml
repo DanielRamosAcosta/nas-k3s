@@ -16,7 +16,7 @@ spec:
         name: loki
     spec:
       containers:
-      - image: docker.io/grafana/loki:3.5.7
+      - image: docker.io/grafana/loki:3.6.7
         imagePullPolicy: IfNotPresent
         name: loki
         ports:
