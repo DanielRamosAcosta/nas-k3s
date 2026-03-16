@@ -16,7 +16,7 @@ spec:
         name: valkey
     spec:
       containers:
-      - image: valkey/valkey:7.2.12-alpine
+      - image: valkey/valkey:9.0.3-alpine
         imagePullPolicy: IfNotPresent
         name: valkey
         ports:
