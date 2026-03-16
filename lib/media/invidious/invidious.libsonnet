@@ -22,7 +22,8 @@ local invidiousConfig = import './invidious.config.json';
                   container.withCommand(['sh', '-c', 'export INVIDIOUS_CONFIG="$(cat /merged-config/config.json)" && exec /invidious/invidious']) +
                   container.withVolumeMounts([
                     volumeMount.new('merged-config', '/merged-config', true),
-                  ]),
+                  ]) +
+                  u.probes.tcp(3000),
                 ]) +
                 deployment.spec.template.spec.withInitContainers(
                   container.new('merge-config', u.image(versions.jq.image, versions.jq.version)) +
