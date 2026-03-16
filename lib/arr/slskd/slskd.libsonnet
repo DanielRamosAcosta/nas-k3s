@@ -31,7 +31,8 @@ local secrets = import 'arr/slskd/slskd.secrets.json';
                      u.volumeMount.fromFile(self.configFile, '/app'),
                    ]) +
                    container.securityContext.withRunAsUser(1000) +
-                   container.securityContext.withRunAsGroup(100),
+                   container.securityContext.withRunAsGroup(100) +
+                   u.probes.withStartup.http('/health', 5030),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('data', '/data/arr/slskd/data'),
