@@ -59,10 +59,36 @@ spec:
               name: immich-shared-sealed-secret
         image: ghcr.io/immich-app/immich-server:v2.5.6
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/server/ping
+            port: 2283
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: immich
         ports:
         - containerPort: 2283
           name: server
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/server/ping
+            port: 2283
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /api/server/ping
+            port: 2283
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /usr/src/app/upload
           name: upload
