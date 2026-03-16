@@ -1,9 +1,10 @@
 ---
 id: NASKS-25
 title: 'Refactorizar utils.libsonnet: separar en ficheros por dominio'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-16 07:25'
+updated_date: '2026-03-16 07:56'
 labels:
   - infrastructure
   - refactor
@@ -28,8 +29,14 @@ Plan:
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 utils.libsonnet separado en ficheros por dominio dentro de lib/utils/
-- [ ] #2 utils.libsonnet actúa como barrel file que re-exporta todo
-- [ ] #3 Ningún consumidor necesita cambiar sus imports
-- [ ] #4 tk eval compila sin errores para todos los environments
+- [x] #1 utils.libsonnet separado en ficheros por dominio dentro de lib/utils/
+- [x] #2 utils.libsonnet actúa como barrel file que re-exporta todo
+- [x] #3 Ningún consumidor necesita cambiar sus imports
+- [x] #4 tk eval compila sin errores para todos los environments
 <!-- AC:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+PR #16: Split utils.libsonnet into 12 domain modules in lib/utils/, restructured lib/ into namespace/app/ directories matching ArgoCD, removed 14 unused functions and 3 dead reference files (2980 lines). All verified with golden master scripts.
+<!-- SECTION:FINAL_SUMMARY:END -->
