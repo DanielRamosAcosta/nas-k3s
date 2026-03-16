@@ -11,6 +11,7 @@ local rbac = import 'utils/rbac.libsonnet';
 local prometheusMod = import 'utils/prometheus.libsonnet';
 local command = import 'utils/command.libsonnet';
 local files = import 'utils/files.libsonnet';
+local probes = import 'utils/probes.libsonnet';
 
 {
   // Core helpers
@@ -34,4 +35,5 @@ local files = import 'utils/files.libsonnet';
   rbac(name, namespace, rules):: rbac.new(name, namespace, rules),
   prometheus(port, path='/metrics'):: prometheusMod.annotations(port, path),
   command: command,
+  probes: probes,
 }

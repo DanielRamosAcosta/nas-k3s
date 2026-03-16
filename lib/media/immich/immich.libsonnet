@@ -27,7 +27,8 @@ local immichConfig = importstr './immich.config.json';
                    container.withVolumeMounts([
                      volumeMount.new('upload', '/usr/src/app/upload'),
                      volumeMount.new('merged-config', '/app/config') + volumeMount.withReadOnly(true),
-                   ]),
+                   ]) +
+                   u.probes.withStartup.http('/api/server/ping', 2283),
                  ]) +
                  statefulSet.spec.template.spec.withInitContainers(
                    container.new('merge-config', u.image(versions.jq.image, versions.jq.version)) +
