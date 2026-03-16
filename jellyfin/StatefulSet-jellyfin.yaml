@@ -24,10 +24,36 @@ spec:
               name: jellyfin-config-env
         image: docker.io/jellyfin/jellyfin:10.11.6
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8096
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: jellyfin
         ports:
         - containerPort: 8096
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 8096
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /health
+            port: 8096
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /config
           name: config

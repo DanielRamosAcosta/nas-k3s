@@ -69,10 +69,36 @@ spec:
               name: booklore-shared-sealed-secret
         image: booklore/booklore:v2.2.1
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/v1/healthcheck
+            port: 6060
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: booklore
         ports:
         - containerPort: 6060
           name: server
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/v1/healthcheck
+            port: 6060
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /api/v1/healthcheck
+            port: 6060
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /app/data
           name: data

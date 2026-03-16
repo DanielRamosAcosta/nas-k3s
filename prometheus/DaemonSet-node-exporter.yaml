@@ -25,10 +25,24 @@ spec:
         - --collector.netclass
         image: quay.io/prometheus/node-exporter:v1.10.2
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 9100
+          timeoutSeconds: 5
         name: node-exporter
         ports:
         - containerPort: 9100
           name: node-exporter
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 9100
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /host
           name: root

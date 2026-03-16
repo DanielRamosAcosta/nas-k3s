@@ -116,10 +116,28 @@ spec:
               name: authelia-config-env
         image: ghcr.io/authelia/authelia:4.39.16
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 9091
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: authelia
         ports:
         - containerPort: 9091
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 9091
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /config/configuration.yml
           name: configuration-yml

@@ -18,10 +18,36 @@ spec:
       containers:
       - image: docker.io/grafana/loki:3.6.7
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ready
+            port: 3100
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: loki
         ports:
         - containerPort: 3100
           name: loki
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ready
+            port: 3100
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /ready
+            port: 3100
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /var/lib/loki
           name: data

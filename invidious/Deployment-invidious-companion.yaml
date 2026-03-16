@@ -26,10 +26,24 @@ spec:
               name: invidious-companion-sealed-secret
         image: quay.io/invidious/invidious-companion:master-5c372ba
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 8282
+          timeoutSeconds: 5
         name: invidious-companion
         ports:
         - containerPort: 8282
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 8282
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /var/tmp/youtubei.js
           name: cache

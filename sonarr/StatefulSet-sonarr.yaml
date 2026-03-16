@@ -44,10 +44,28 @@ spec:
               name: sonarr-config-env
         image: ghcr.io/hotio/sonarr:release-4.0.16.2944
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 8989
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: sonarr
         ports:
         - containerPort: 8989
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 8989
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /config
           name: config

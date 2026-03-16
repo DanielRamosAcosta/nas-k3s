@@ -26,10 +26,24 @@ spec:
               name: nut-exporter-sealed-secret
         image: ghcr.io/druggeri/nut_exporter:3.2.5
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 9199
+          timeoutSeconds: 5
         name: nut-exporter
         ports:
         - containerPort: 9199
           name: nut
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 9199
+          timeoutSeconds: 5
       dnsPolicy: ClusterFirstWithHostNet
       hostNetwork: true
       tolerations:

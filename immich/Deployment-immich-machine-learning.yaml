@@ -27,10 +27,28 @@ spec:
           value: "1"
         image: ghcr.io/immich-app/immich-machine-learning:v2.5.6
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 3003
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: immich-machine-learning
         ports:
         - containerPort: 3003
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 3003
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         resources:
           limits:
             cpu: 4000m
@@ -38,6 +56,14 @@ spec:
           requests:
             cpu: 1000m
             memory: 2Gi
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /ping
+            port: 3003
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /cache
           name: model-cache

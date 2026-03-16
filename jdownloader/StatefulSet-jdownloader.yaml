@@ -49,12 +49,30 @@ spec:
               name: jdownloader-config-env
         image: docker.io/jlesage/jdownloader-2:v26.03.1
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 5800
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: jdownloader
         ports:
         - containerPort: 5800
           name: web
         - containerPort: 3129
           name: myjd
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 5800
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /config
           name: config

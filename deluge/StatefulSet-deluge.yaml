@@ -44,6 +44,15 @@ spec:
               name: deluge-config-env
         image: docker.io/linuxserver/deluge:2.2.0
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: deluge
         ports:
         - containerPort: 8112
@@ -55,6 +64,15 @@ spec:
         - containerPort: 58946
           name: peer-udp
           protocol: UDP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8112
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /config
           name: config

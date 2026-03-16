@@ -44,10 +44,28 @@ spec:
               name: navidrome-sealed-secret
         image: docker.io/deluan/navidrome:0.60.3
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 4533
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: navidrome
         ports:
         - containerPort: 4533
           name: server
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 4533
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /library
           name: library

@@ -63,7 +63,21 @@ spec:
               name: norznab-config-env
         image: ghcr.io/danielramosacosta/norznab:main-dc95fd6
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 5
         name: norznab
         ports:
         - containerPort: 3000
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 5

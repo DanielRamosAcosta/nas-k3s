@@ -18,10 +18,24 @@ spec:
       containers:
       - image: quay.io/prometheuscommunity/smartctl-exporter:v0.14.0
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 9633
+          timeoutSeconds: 5
         name: smartctl-exporter
         ports:
         - containerPort: 9633
           name: smartctl
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 9633
+          timeoutSeconds: 5
         securityContext:
           privileged: true
           readOnlyRootFilesystem: true

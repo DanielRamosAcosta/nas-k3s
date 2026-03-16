@@ -156,10 +156,28 @@ spec:
               name: grafana-shared-sealed-secret
         image: docker.io/grafana/grafana-oss:12.4.1
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: grafana
         ports:
         - containerPort: 3000
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/health
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /usr/share/grafana/conf/provisioning/datasources/loki.yaml
           name: loki-yaml

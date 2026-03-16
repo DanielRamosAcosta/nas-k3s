@@ -49,6 +49,15 @@ spec:
               name: slskd-sealed-secret
         image: slskd/slskd:0.24.5
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 5030
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
         name: slskd
         ports:
         - containerPort: 5030
@@ -57,9 +66,26 @@ spec:
           name: https
         - containerPort: 50300
           name: slsk
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: 5030
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
         securityContext:
           runAsGroup: 100
           runAsUser: 1000
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /health
+            port: 5030
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /app/data
           name: data

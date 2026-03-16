@@ -22,5 +22,18 @@ spec:
         ports:
         - containerPort: 6379
           name: valkey
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 6379
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 6379
+          timeoutSeconds: 5
   updateStrategy:
     type: RollingUpdate

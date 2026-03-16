@@ -53,9 +53,23 @@ spec:
               name: gluetun-config-env
         image: ghcr.io/qdm12/gluetun:v3.41.1
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 8888
+          timeoutSeconds: 5
         name: gluetun
         ports:
         - containerPort: 8888
           name: http-proxy
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 8888
+          timeoutSeconds: 5
         securityContext:
           privileged: true

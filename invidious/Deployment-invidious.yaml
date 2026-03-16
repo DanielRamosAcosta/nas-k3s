@@ -24,10 +24,24 @@ spec:
         - export INVIDIOUS_CONFIG="$(cat /merged-config/config.json)" && exec /invidious/invidious
         image: quay.io/invidious/invidious:2.20260207.0
         imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 5
         name: invidious
         ports:
         - containerPort: 3000
           name: http
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 3000
+          timeoutSeconds: 5
         volumeMounts:
         - mountPath: /merged-config
           name: merged-config
