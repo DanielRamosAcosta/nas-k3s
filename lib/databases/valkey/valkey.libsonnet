@@ -12,7 +12,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       container.new('valkey', u.image(versions.valkey.image, versions.valkey.version)) +
       container.withPorts(
         [containerPort.new('valkey', 6379)]
-      ),
+      ) +
+      u.probes.stateful.tcp(6379),
     ]),
 
     service: k.util.serviceFor(self.statefulSet),
