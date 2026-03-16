@@ -20,7 +20,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  container.withVolumeMounts([
                    volumeMount.new('dev', '/dev'),
                    volumeMount.new('run-udev', '/run/udev', true),
-                 ]),
+                 ]) +
+                 u.probes.tcp(9633),
                ]) +
                daemonSet.spec.template.spec.withVolumes([
                  volume.fromHostPath('dev', '/dev') + volume.hostPath.withType('Directory'),
