@@ -1,10 +1,10 @@
-local grafana = import 'monitoring/grafana.libsonnet';
-local loki = import 'monitoring/loki.libsonnet';
-local nodeExporter = import 'monitoring/node-exporter.libsonnet';
-local nutExporter = import 'monitoring/nut-exporter.libsonnet';
-local prometheus = import 'monitoring/prometheus.libsonnet';
-local promtail = import 'monitoring/promtail.libsonnet';
-local smartctlExporter = import 'monitoring/smartctl-exporter.libsonnet';
+local grafana = import 'monitoring/grafana/grafana.libsonnet';
+local loki = import 'monitoring/loki/loki.libsonnet';
+local nodeExporter = import 'monitoring/node-exporter/node-exporter.libsonnet';
+local nutExporter = import 'monitoring/nut-exporter/nut-exporter.libsonnet';
+local prometheus = import 'monitoring/prometheus/prometheus.libsonnet';
+local promtail = import 'monitoring/promtail/promtail.libsonnet';
+local smartctlExporter = import 'monitoring/smartctl-exporter/smartctl-exporter.libsonnet';
 local u = import 'utils.libsonnet';
 
 {

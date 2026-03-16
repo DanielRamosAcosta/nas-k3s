@@ -1,4 +1,4 @@
-local argocd = import 'system/argocd.libsonnet';
+local argocd = import 'system/argocd/argocd.libsonnet';
 local u = import 'utils.libsonnet';
 
 // Import all environments to discover apps dynamically.

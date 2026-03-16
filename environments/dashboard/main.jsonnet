@@ -1,4 +1,4 @@
-local kubernetesDashboard = import 'dashboard/kubernetes-dashboard.libsonnet';
+local kubernetesDashboard = import 'dashboard/kubernetes-dashboard/kubernetes-dashboard.libsonnet';
 local u = import 'utils.libsonnet';
 
 {

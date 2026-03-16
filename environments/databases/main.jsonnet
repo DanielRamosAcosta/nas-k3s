@@ -1,6 +1,6 @@
-local mariadb = import 'databases/mariadb.libsonnet';
-local postgres = import 'databases/postgres.libsonnet';
-local valkey = import 'databases/valkey.libsonnet';
+local mariadb = import 'databases/mariadb/mariadb.libsonnet';
+local postgres = import 'databases/postgres/postgres.libsonnet';
+local valkey = import 'databases/valkey/valkey.libsonnet';
 local u = import 'utils.libsonnet';
 
 {
