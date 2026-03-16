@@ -18,7 +18,8 @@ local secrets = import 'system/gluetun/gluetun.secrets.json';
                   container.withEnv(
                     u.envVars.fromSealedSecret(self.sealed_secret) +
                     u.envVars.fromConfigMap(self.config)
-                  ),
+                  ) +
+                  u.probes.tcp(8888),
                 ]) +
                 deployment.spec.strategy.withType('Recreate'),
 
