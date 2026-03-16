@@ -23,7 +23,8 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.lokiDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
                     u.volumeMount.fromFile(self.prometheusDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
-                  ]),
+                  ]) +
+                  u.probes.http('/api/health', 3000),
                 ]) +
                 u.injectFiles([self.lokiDatasource, self.prometheusDatasource]),
 
