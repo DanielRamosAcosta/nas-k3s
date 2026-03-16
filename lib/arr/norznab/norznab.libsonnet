@@ -18,7 +18,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    container.withEnv(
                      u.envVars.fromSealedSecret(self.sealed_secret) +
                      u.envVars.fromConfigMap(self.config)
-                   ),
+                   ) +
+                   u.probes.tcp(3000),
                  ]) +
                  deployment.spec.strategy.withType('Recreate'),
 

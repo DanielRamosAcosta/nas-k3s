@@ -29,7 +29,8 @@ local secrets = import 'media/gitea/gitea.secrets.json';
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/data'),
-                   ]),
+                   ]) +
+                   u.probes.withStartup.http('/api/healthz', 3000),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    volume.fromHostPath('data', '/cold-data/gitea/data') + volume.hostPath.withType('DirectoryOrCreate'),

@@ -24,7 +24,8 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
                    container.withVolumeMounts([
                      volumeMount.new('library', '/library', true),
                      volumeMount.new('data', '/data'),
-                   ]),
+                   ]) +
+                   u.probes.http('/ping', 4533),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    volume.fromHostPath('library', '/cold-data/media/music/library'),

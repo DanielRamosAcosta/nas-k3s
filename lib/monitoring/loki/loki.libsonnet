@@ -23,7 +23,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    ) + container.withVolumeMounts([
                      volumeMount.new(dataVolumeName, '/var/lib/loki'),
                      u.volumeMount.fromFile(self.configuration, '/etc/loki'),
-                   ]),
+                   ]) +
+                   u.probes.withStartup.http('/ready', 3100),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.injectFile(self.configuration),

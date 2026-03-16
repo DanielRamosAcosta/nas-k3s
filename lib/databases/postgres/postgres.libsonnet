@@ -33,7 +33,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/var/lib/postgresql/data'),
         volumeMount.new('backup-storage', '/backups'),
-      ]),
+      ]) +
+      u.probes.stateful.tcp(5432),
     ]) + statefulSet.spec.template.spec.withInitContainers([
       container.new('setup-postgres-config', u.image(versions.busybox.image, versions.busybox.version)) +
       container.withCommand(['/bin/sh', '-c', 'cat /config/postgresql.auto.conf > /var/lib/postgresql/data/postgresql.auto.conf && cat /pg_hba/pg_hba.conf > /var/lib/postgresql/data/pg_hba.conf']) +

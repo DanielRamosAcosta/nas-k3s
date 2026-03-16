@@ -140,10 +140,6 @@ invidiousConfigSecret: u.sealedSecret.wide.forFile('invidious-config-secret.json
 // init container merges both, main container reads via env var or file mount
 ```
 
-#### Legacy (age-encrypted secrets.json) — DEPRECATED
-
-`lib/secrets.json` still exists (gitignored) but is no longer used by any service. All services have been migrated to Sealed Secrets. The file will be removed once ArgoCD prune cleans up the legacy Secret resources in the cluster.
-
 ### ArgoCD
 
 ArgoCD manages all deployments via GitOps. It lives in `environments/argocd/` with namespace `argocd`.
@@ -174,3 +170,14 @@ argocd app delete myapp --cascade=false
 
 #### Server-Side Apply
 The `argocd` Application uses `syncOptions: [ServerSideApply=true]` because the `applicationsets` CRD exceeds the 262KB annotation limit for client-side apply.
+
+## Project Management
+
+All work is tracked in **Backlog.md** via the backlog MCP server. Use the backlog MCP tools to read, create, edit, and complete tasks.
+
+### Rules
+
+1. **No work without a ticket.** Always have one or more tasks in `in_progress` that represent the current work. If none exist, find or create the appropriate task before starting.
+2. **Refinement flow.** When asked to refine a task: read it, ask questions to reduce uncertainty, and iterate until the user says OK. Only then add the `refined` tag. Do NOT start implementation during refinement.
+3. **Completion flow.** When a task is done, confirm with the user. Only after explicit approval: mark as `done` and commit.
+4. **Never self-approve.** Do not move tasks to `done` or commit without the user's explicit OK.

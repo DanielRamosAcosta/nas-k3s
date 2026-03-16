@@ -19,7 +19,8 @@ local secrets = import 'monitoring/nut-exporter/nut-exporter.secrets.json';
                  container.withPorts(containerPort.new('nut', 9199)) +
                  container.withEnv(
                    u.envVars.fromSealedSecret(self.sealed_secret)
-                 ),
+                 ) +
+                 u.probes.tcp(9199),
                ]) +
                daemonSet.spec.template.spec.withHostNetwork(true) +
                daemonSet.spec.template.spec.withDnsPolicy('ClusterFirstWithHostNet'),

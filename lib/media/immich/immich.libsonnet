@@ -93,7 +93,8 @@ local immichConfig = importstr './immich.config.json';
                           cpu: '4000m',
                         },
                       },
-                    },
+                    } +
+                    u.probes.withStartup.http('/ping', 3003),
                   ]) +
                   deployment.spec.template.spec.withVolumes([
                     volume.fromPersistentVolumeClaim('model-cache', self.mlPvc.metadata.name),

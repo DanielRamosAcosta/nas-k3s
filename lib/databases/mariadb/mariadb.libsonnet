@@ -30,7 +30,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       ) +
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/config'),
-      ]),
+      ]) +
+      u.probes.stateful.tcp(3306),
     ]) + statefulSet.spec.template.spec.withVolumes([
       volume.fromPersistentVolumeClaim(dataVolumeName, self.pvc.metadata.name),
     ]),
