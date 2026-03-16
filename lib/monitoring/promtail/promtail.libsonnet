@@ -29,7 +29,8 @@ local configuration = importstr './promtail.config.yml';
                    u.volumeMount.fromFile(self.configuration, '/etc/promtail'),
                    k.core.v1.volumeMount.new('logs', '/host/var/log'),
                    k.core.v1.volumeMount.new('machineid', '/etc/machine-id', true),
-                 ]),
+                 ]) +
+                 u.probes.http('/ready', 9080),
                ]) +
                daemonSet.spec.template.spec.withServiceAccount('promtail') +
                daemonSet.spec.template.spec.withVolumes([
