@@ -24,7 +24,8 @@ local beetsConfig = import './beets.config.json';
                      volumeMount.new('music', '/music'),
                      volumeMount.new('downloads', '/downloads'),
                      u.volumeMount.fromFile(self.configFile, '/config'),
-                   ]),
+                   ]) +
+                   u.probes.http('/', 8337),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('data', '/data/beets/data'),
