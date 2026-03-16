@@ -154,7 +154,7 @@ spec:
             secretKeyRef:
               key: GF_DATABASE_PASSWORD
               name: grafana-shared-sealed-secret
-        image: docker.io/grafana/grafana-oss:12.3.1
+        image: docker.io/grafana/grafana-oss:12.4.1
         imagePullPolicy: IfNotPresent
         name: grafana
         ports:
