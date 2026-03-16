@@ -14,7 +14,7 @@ jobs:
     name: Validate Tanka environments
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Jsonnet & jsonnet-bundler
         uses: kobtea/setup-jsonnet-action@v2
