@@ -41,7 +41,7 @@
   },
   "prometheus": {
     "image": "docker.io/prom/prometheus",
-    "version": "v3.7.3"
+    "version": "v3.10.0"
   },
   "nodeExporter": {
     "image": "quay.io/prometheus/node-exporter",
