@@ -26,7 +26,8 @@ local sftpgoConfig = importstr './sftpgo.config.json';
                    container.withVolumeMounts([
                      volumeMount.new('data', '/srv/sftpgo'),
                      u.volumeMount.fromFile(self.configuration, '/etc/sftpgo'),
-                   ]),
+                   ]) +
+                   u.probes.http('/healthz', 8080),
                  ]) +
                  statefulSet.spec.template.spec.securityContext.withRunAsUser(0) +
                  statefulSet.spec.template.spec.securityContext.withRunAsGroup(0) +

@@ -20,7 +20,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    container.withVolumeMounts([
                      volumeMount.new('config', '/config'),
                      volumeMount.new('data', '/data'),
-                   ]),
+                   ]) +
+                   u.probes.http('/ping', 7878),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('config', '/data/arr/radarr'),
