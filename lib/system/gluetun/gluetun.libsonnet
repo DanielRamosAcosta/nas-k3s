@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'system/gluetun/gluetun.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local secrets = import 'system/gluetun/gluetun.secrets.json';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -10,17 +10,17 @@ local versions = import '../../versions.json';
 
   new():: {
     deployment: deployment.new('gluetun', replicas=1, containers=[
-      container.new('gluetun', u.image(versions.gluetun.image, versions.gluetun.version)) +
-      container.securityContext.withPrivileged(true) +
-      container.withPorts([
-        containerPort.new('http-proxy', 8888),
-      ]) +
-      container.withEnv(
-        u.envVars.fromSealedSecret(self.sealed_secret) +
-        u.envVars.fromConfigMap(self.config)
-      ),
-    ]) +
-    deployment.spec.strategy.withType('Recreate'),
+                  container.new('gluetun', u.image(versions.gluetun.image, versions.gluetun.version)) +
+                  container.securityContext.withPrivileged(true) +
+                  container.withPorts([
+                    containerPort.new('http-proxy', 8888),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromSealedSecret(self.sealed_secret) +
+                    u.envVars.fromConfigMap(self.config)
+                  ),
+                ]) +
+                deployment.spec.strategy.withType('Recreate'),
 
     service: k.util.serviceFor(self.deployment),
 

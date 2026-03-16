@@ -1,6 +1,6 @@
 local u = import '../../utils.libsonnet';
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 local beetsConfig = import './beets.config.json';
 

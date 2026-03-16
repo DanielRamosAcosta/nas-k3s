@@ -1,17 +1,17 @@
 ---
-id: nasks-8
+id: NASKS-8
 title: Disable WebDAV in SFTPGo
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-09 16:54'
-updated_date: '2026-03-09 17:12'
+updated_date: '2026-03-16 11:07'
 labels:
   - security
   - chore
   - kubernetes
 dependencies: []
 priority: low
-ordinal: 1000
+ordinal: 41000
 ---
 
 ## Description

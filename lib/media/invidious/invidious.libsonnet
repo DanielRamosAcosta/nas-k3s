@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'media/invidious/invidious.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local secrets = import 'media/invidious/invidious.secrets.json';
 
 local invidiousConfig = import './invidious.config.json';
 

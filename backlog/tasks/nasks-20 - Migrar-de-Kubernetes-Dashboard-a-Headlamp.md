@@ -4,6 +4,7 @@ title: Migrar de Kubernetes Dashboard a Headlamp
 status: To Do
 assignee: []
 created_date: '2026-03-15 21:04'
+updated_date: '2026-03-16 11:05'
 labels:
   - infra
   - migración
@@ -12,6 +13,7 @@ references:
   - 'https://github.com/kubernetes/dashboard'
   - 'https://github.com/headlamp-k8s/headlamp'
 priority: medium
+ordinal: 37000
 ---
 
 ## Description

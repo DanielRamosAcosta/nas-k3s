@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'monitoring/grafana/grafana.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local secrets = import 'monitoring/grafana/grafana.secrets.json';
 
 local lokiDatasource = importstr './grafana.datasource.loki.yml';
 local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';

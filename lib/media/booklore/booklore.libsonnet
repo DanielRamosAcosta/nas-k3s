@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'media/booklore/booklore.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local secrets = import 'media/booklore/booklore.secrets.json';
 local logbackConfig = importstr './booklore.logback-spring.xml';
 
 {

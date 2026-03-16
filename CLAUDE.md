@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 K3s homelab infrastructure-as-code using **Jsonnet + Tanka** for declarative Kubernetes deployments on a personal NAS. Manages a self-hosted stack: media apps, databases, monitoring, authentication, and system services.
 
+## Available Tools
+
+- **jq** — Available for inspecting/transforming JSON (e.g. `tk eval ... | jq '.field'`)
+
 ## Key Commands
 
 ```bash

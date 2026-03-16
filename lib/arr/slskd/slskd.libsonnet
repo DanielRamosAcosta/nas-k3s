@@ -1,9 +1,9 @@
 local u = import '../../utils.libsonnet';
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
-local secrets = import 'arr/slskd/slskd.secrets.json';
 local slskdConfig = import './slskd.config.json';
+local secrets = import 'arr/slskd/slskd.secrets.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,

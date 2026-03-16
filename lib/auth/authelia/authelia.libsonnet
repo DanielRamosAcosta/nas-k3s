@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'auth/authelia/authelia.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local secrets = import 'auth/authelia/authelia.secrets.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 local autheliaConfig = importstr './authelia.config.yml';
 

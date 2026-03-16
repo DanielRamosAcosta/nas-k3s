@@ -1,17 +1,17 @@
 ---
-id: nasks-2
+id: NASKS-2
 title: Build custom bento-style dashboard with links to all apps
 status: To Do
 assignee: []
 created_date: '2026-03-09 16:48'
-updated_date: '2026-03-09 17:12'
+updated_date: '2026-03-16 11:05'
 labels:
   - dashboard
   - feature
   - kubernetes
 dependencies: []
 priority: medium
-ordinal: 14000
+ordinal: 40000
 ---
 
 ## Description

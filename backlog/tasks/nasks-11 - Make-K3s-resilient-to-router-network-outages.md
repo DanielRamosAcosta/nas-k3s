@@ -1,17 +1,15 @@
 ---
-id: nasks-11
+id: NASKS-11
 title: Make K3s resilient to router/network outages
 status: To Do
 assignee: []
 created_date: '2026-03-09 17:02'
-updated_date: '2026-03-09 17:12'
+updated_date: '2026-03-16 11:05'
 labels:
-  - infra
-  - bugfix
-  - nixos
+  - blocked
 dependencies: []
 priority: high
-ordinal: 10000
+ordinal: 34000
 ---
 
 ## Description
@@ -69,3 +67,9 @@ Option 1 or 2. Both solve the root cause (IP always present on the interface). O
 - [ ] #2 The IP 192.168.1.200 is always present on enp4s0 regardless of DHCP availability
 - [ ] #3 NAS can still reach the internet when the router is available
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+⏳ Bloqueada hasta 2026-04-02 — Daniel viaja a Tenerife y tendrá acceso físico al servidor.
+<!-- SECTION:NOTES:END -->

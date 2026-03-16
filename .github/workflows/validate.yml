@@ -29,6 +29,9 @@ jobs:
           jb install
           tk tool charts vendor
 
+      - name: Check formatting
+        run: tk fmt --test environments/ lib/
+
       - name: Validate all environments
         run: |
           failed=0

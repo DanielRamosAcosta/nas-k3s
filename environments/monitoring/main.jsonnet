@@ -1,4 +1,5 @@
 local grafana = import 'monitoring/grafana/grafana.libsonnet';
+local kubeStateMetrics = import 'monitoring/kube-state-metrics/kube-state-metrics.libsonnet';
 local loki = import 'monitoring/loki/loki.libsonnet';
 local nodeExporter = import 'monitoring/node-exporter/node-exporter.libsonnet';
 local nutExporter = import 'monitoring/nut-exporter/nut-exporter.libsonnet';
@@ -15,4 +16,5 @@ local u = import 'utils.libsonnet';
   nodeExporter: u.labelApp('prometheus', nodeExporter.new()),
   smartctlExporter: u.labelApp('prometheus', smartctlExporter.new()),
   nutExporter: u.labelApp('prometheus', nutExporter.new()),
+  kubeStateMetrics: u.labelApp('prometheus', kubeStateMetrics.new()),
 }

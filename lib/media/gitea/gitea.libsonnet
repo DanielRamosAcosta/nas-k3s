@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'media/gitea/gitea.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local secrets = import 'media/gitea/gitea.secrets.json';
 
 {
   local statefulSet = k.apps.v1.statefulSet,

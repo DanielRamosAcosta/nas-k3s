@@ -55,6 +55,10 @@
     "image": "ghcr.io/druggeri/nut_exporter",
     "version": "3.2.5"
   },
+  "kubeStateMetrics": {
+    "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
+    "version": "v2.15.0"
+  },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
     "version": "1.15.1"

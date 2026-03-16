@@ -1,17 +1,17 @@
 ---
-id: nasks-12
+id: NASKS-12
 title: Build custom bridge service between Lidarr and slskd
 status: To Do
 assignee: []
 created_date: '2026-03-09 17:05'
-updated_date: '2026-03-09 17:12'
+updated_date: '2026-03-16 11:05'
 labels:
   - media
   - feature
   - kubernetes
 dependencies: []
 priority: medium
-ordinal: 11000
+ordinal: 42000
 ---
 
 ## Description

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+tk fmt .
+git diff --quiet || {
+  echo "tk fmt reformatted files. Changes have been applied — please stage and commit again."
+  exit 1
+}

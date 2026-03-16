@@ -1,15 +1,17 @@
 ---
-id: nasks-16
+id: NASKS-16
 title: Migrate Tanka directory to its own repository
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-09 18:07'
+updated_date: '2026-03-16 11:07'
 labels:
   - infrastructure
   - kubernetes
   - argocd
 dependencies: []
 priority: medium
+ordinal: 38000
 ---
 
 ## Description

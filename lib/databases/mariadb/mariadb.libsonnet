@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'databases/mariadb/mariadb.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local secrets = import 'databases/mariadb/mariadb.secrets.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
   local statefulSet = k.apps.v1.statefulSet,

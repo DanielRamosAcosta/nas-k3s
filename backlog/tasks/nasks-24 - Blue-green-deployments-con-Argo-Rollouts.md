@@ -4,6 +4,7 @@ title: Blue-green deployments con Argo Rollouts
 status: To Do
 assignee: []
 created_date: '2026-03-15 23:55'
+updated_date: '2026-03-16 11:05'
 labels:
   - infrastructure
   - reliability
@@ -11,6 +12,7 @@ dependencies:
   - NASKS-22
   - NASKS-23
 priority: low
+ordinal: 43000
 ---
 
 ## Description

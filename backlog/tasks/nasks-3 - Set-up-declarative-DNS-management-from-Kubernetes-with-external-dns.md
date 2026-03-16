@@ -1,10 +1,10 @@
 ---
-id: nasks-3
+id: NASKS-3
 title: Set up declarative DNS management from Kubernetes with external-dns
 status: To Do
 assignee: []
 created_date: '2026-03-09 16:50'
-updated_date: '2026-03-09 17:12'
+updated_date: '2026-03-16 11:05'
 labels:
   - infra
   - feature
@@ -17,7 +17,7 @@ references:
   - hosts/shared/services/cloudflared.nix
   - tanka/environments/versions.json
 priority: medium
-ordinal: 8500
+ordinal: 36000
 ---
 
 ## Description

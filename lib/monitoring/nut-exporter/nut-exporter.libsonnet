@@ -1,7 +1,7 @@
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'monitoring/nut-exporter/nut-exporter.secrets.json';
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+local secrets = import 'monitoring/nut-exporter/nut-exporter.secrets.json';
 
 {
   local daemonSet = k.apps.v1.daemonSet,

@@ -1,7 +1,7 @@
 local u = import '../../utils.libsonnet';
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local versions = import '../../versions.json';
 local secrets = import 'arr/norznab/norznab.secrets.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -11,16 +11,16 @@ local secrets = import 'arr/norznab/norznab.secrets.json';
 
   new():: {
     statefulSet: deployment.new('norznab', replicas=1, containers=[
-      container.new('norznab', u.image(versions.norznab.image, versions.norznab.version)) +
-      container.withPorts([
-        containerPort.new('http', 3000),
-      ]) +
-      container.withEnv(
-        u.envVars.fromSealedSecret(self.sealed_secret) +
-        u.envVars.fromConfigMap(self.config)
-      ),
-    ]) +
-    deployment.spec.strategy.withType('Recreate'),
+                   container.new('norznab', u.image(versions.norznab.image, versions.norznab.version)) +
+                   container.withPorts([
+                     containerPort.new('http', 3000),
+                   ]) +
+                   container.withEnv(
+                     u.envVars.fromSealedSecret(self.sealed_secret) +
+                     u.envVars.fromConfigMap(self.config)
+                   ),
+                 ]) +
+                 deployment.spec.strategy.withType('Recreate'),
 
     service: k.util.serviceFor(self.statefulSet),
 
