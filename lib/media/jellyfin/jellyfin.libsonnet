@@ -21,7 +21,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                      volumeMount.new('cache', '/cache'),
                      volumeMount.new('media', '/media', true),
                      volumeMount.new('dri', '/dev/dri/renderD128') + volumeMount.withSubPath('renderD128'),
-                   ]),
+                   ]) +
+                   u.probes.withStartup.http('/health', 8096),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    volume.fromPersistentVolumeClaim('config', self.configPvc.metadata.name),
