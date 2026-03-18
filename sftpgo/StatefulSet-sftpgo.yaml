@@ -72,8 +72,8 @@ spec:
       - configMap:
           name: sftpgo-json
         name: sftpgo-json
-      - name: data
-        persistentVolumeClaim:
-          claimName: sftpgo-pvc
+      - hostPath:
+          path: /cold-data/sftpgo/data
+        name: data
   updateStrategy:
     type: RollingUpdate

@@ -61,8 +61,8 @@ spec:
       - configMap:
           name: local-config-yaml
         name: local-config-yaml
-      - name: data
-        persistentVolumeClaim:
-          claimName: loki-pvc
+      - hostPath:
+          path: /data/loki/data
+        name: data
   updateStrategy:
     type: RollingUpdate

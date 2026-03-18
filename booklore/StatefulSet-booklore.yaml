@@ -110,15 +110,15 @@ spec:
           name: logback-spring-xml
           subPath: logback-spring.xml
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: booklore-data-pvc
-      - name: books
-        persistentVolumeClaim:
-          claimName: booklore-books-pvc
-      - name: bookdrop
-        persistentVolumeClaim:
-          claimName: booklore-bookdrop-pvc
+      - hostPath:
+          path: /cold-data/booklore/data
+        name: data
+      - hostPath:
+          path: /cold-data/booklore/books
+        name: books
+      - hostPath:
+          path: /cold-data/booklore/bookdrop
+        name: bookdrop
       - configMap:
           name: logback-spring-xml
         name: logback-spring-xml

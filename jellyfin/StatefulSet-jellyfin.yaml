@@ -71,12 +71,12 @@ spec:
         - 303
         - 26
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: jellyfin-config-pvc
-      - name: cache
-        persistentVolumeClaim:
-          claimName: jellyfin-cache-pvc
+      - hostPath:
+          path: /data/jellyfin/config
+        name: config
+      - hostPath:
+          path: /data/jellyfin/cache
+        name: cache
       - hostPath:
           path: /cold-data/media
           type: DirectoryOrCreate

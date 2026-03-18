@@ -66,12 +66,12 @@ spec:
         - mountPath: /pg_hba
           name: pg-hba-vol
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: postgres-pvc
-      - name: backup-storage
-        persistentVolumeClaim:
-          claimName: postgres-backup-pvc
+      - hostPath:
+          path: /data/postgres/data
+        name: data
+      - hostPath:
+          path: /cold-data/postgres-backups
+        name: backup-storage
       - configMap:
           name: postgresql-auto-conf
         name: backup-config-vol

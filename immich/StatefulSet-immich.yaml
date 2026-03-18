@@ -113,9 +113,9 @@ spec:
         - mountPath: /output
           name: merged-config
       volumes:
-      - name: upload
-        persistentVolumeClaim:
-          claimName: immich-pvc
+      - hostPath:
+          path: /cold-data/immich/upload
+        name: upload
       - configMap:
           name: config-json
         name: config-json

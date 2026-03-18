@@ -69,6 +69,6 @@ spec:
           name: model-cache
       enableServiceLinks: false
       volumes:
-      - name: model-cache
-        persistentVolumeClaim:
-          claimName: immich-machine-learning-pvc
+      - hostPath:
+          path: /data/immich/ml-cache
+        name: model-cache

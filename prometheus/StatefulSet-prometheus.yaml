@@ -62,8 +62,8 @@ spec:
       - configMap:
           name: prometheus-yml
         name: prometheus-yml
-      - name: data
-        persistentVolumeClaim:
-          claimName: prometheus-pvc
+      - hostPath:
+          path: /data/prometheus/data
+        name: data
   updateStrategy:
     type: RollingUpdate

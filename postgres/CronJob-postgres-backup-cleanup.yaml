@@ -29,9 +29,9 @@ spec:
               subPath: postgres.cleanup.sh
           restartPolicy: OnFailure
           volumes:
-          - name: backup-storage
-            persistentVolumeClaim:
-              claimName: postgres-backup-pvc
+          - hostPath:
+              path: /cold-data/postgres-backups
+            name: backup-storage
           - configMap:
               name: postgres-cleanup-sh
             name: postgres-cleanup-sh

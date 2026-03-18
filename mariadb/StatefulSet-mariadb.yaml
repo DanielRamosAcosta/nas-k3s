@@ -51,8 +51,8 @@ spec:
         - mountPath: /config
           name: data
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: mariadb-pvc
+      - hostPath:
+          path: /data/mariadb/data
+        name: data
   updateStrategy:
     type: RollingUpdate
