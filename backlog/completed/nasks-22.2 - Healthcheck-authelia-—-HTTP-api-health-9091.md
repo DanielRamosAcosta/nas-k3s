@@ -4,7 +4,7 @@ title: 'Healthcheck: authelia — HTTP /api/health :9091'
 status: Done
 assignee: []
 created_date: '2026-03-16 08:14'
-updated_date: '2026-03-16 20:21'
+updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
