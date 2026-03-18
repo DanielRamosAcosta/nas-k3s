@@ -26,7 +26,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     service: k.util.serviceFor(self.statefulSet),
 
     config: u.configMap.forEnv(self.statefulSet, {
-      DON_TORRENT_BASE_URL: 'https://dontorrent.promo',
+      DON_TORRENT_BASE_URL: 'https://dontorrent.pink',
       MARCIANO_TORRENT_BASE_URL: 'https://marcianotorrent.net',
       REQUEST_TIMEOUT_MS: '20000',
       HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',

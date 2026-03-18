@@ -1,10 +1,10 @@
 ---
 id: NASKS-23
 title: Alertado de despliegues fallidos
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-15 23:55'
-updated_date: '2026-03-16 11:05'
+updated_date: '2026-03-18 21:11'
 labels:
   - infrastructure
   - reliability
@@ -12,7 +12,7 @@ labels:
 dependencies:
   - NASKS-22
 priority: medium
-ordinal: 33000
+ordinal: 31.25
 ---
 
 ## Description

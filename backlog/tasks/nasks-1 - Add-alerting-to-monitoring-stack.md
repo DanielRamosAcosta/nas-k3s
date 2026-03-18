@@ -1,10 +1,10 @@
 ---
 id: NASKS-1
 title: Add alerting to monitoring stack
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-09 16:47'
-updated_date: '2026-03-16 11:05'
+updated_date: '2026-03-18 20:52'
 labels:
   - monitoring
   - feature
@@ -18,7 +18,7 @@ references:
   - tanka/lib/monitoring/grafana.libsonnet
   - tanka/lib/monitoring/prometheus.libsonnet
 priority: medium
-ordinal: 32000
+ordinal: 62.5
 ---
 
 ## Description
