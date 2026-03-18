@@ -16,7 +16,7 @@
         "CONTEXT7_API_KEY": "${CONTEXT7_API_KEY}"
       }
     },
-    "grafana": {
+    "grafanaSelfHosted": {
       "type": "stdio",
       "command": "uvx",
       "args": [
@@ -24,8 +24,27 @@
       ],
       "env": {
         "GRAFANA_URL": "https://grafana.danielramos.me",
-        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_SERVICE_ACCOUNT_TOKEN}"
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_SELF_HOSTED_TOKEN}"
       }
+    },
+    "grafanaCloud": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": [
+        "mcp-grafana"
+      ],
+      "env": {
+        "GRAFANA_URL": "https://danielramosacosta.grafana.net",
+        "GRAFANA_SERVICE_ACCOUNT_TOKEN": "${GRAFANA_CLOUD_TOKEN}"
+      }
+    },
+    "playwright": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ],
+      "env": {}
     }
   }
 }

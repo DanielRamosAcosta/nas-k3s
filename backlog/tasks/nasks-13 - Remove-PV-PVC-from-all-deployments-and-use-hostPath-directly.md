@@ -4,14 +4,14 @@ title: Remove PV/PVC from all deployments and use hostPath directly
 status: To Do
 assignee: []
 created_date: '2026-03-09 17:08'
-updated_date: '2026-03-16 11:05'
+updated_date: '2026-03-18 21:11'
 labels:
   - tanka
   - kubernetes
   - simplification
 dependencies: []
 priority: medium
-ordinal: 35000
+ordinal: 17000
 ---
 
 ## Description
