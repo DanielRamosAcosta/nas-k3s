@@ -25,7 +25,8 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
         volumeMount.new('bookdrop', '/bookdrop'),
         u.volumeMount.fromFile(self.logbackConfiguration, '/config'),
       ]) +
-      u.probes.withStartup.http('/api/v1/healthcheck', 6060),
+      u.probes.withStartup.http('/api/v1/healthcheck', 6060) +
+      { startupProbe+: { failureThreshold: 60 } },
     ]) + statefulSet.spec.template.spec.withVolumes([
       volume.fromHostPath('data', '/cold-data/booklore/data'),
       volume.fromHostPath('books', '/cold-data/booklore/books'),
