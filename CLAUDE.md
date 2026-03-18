@@ -181,3 +181,7 @@ All work is tracked in **Backlog.md** via the backlog MCP server. Use the backlo
 2. **Refinement flow.** When asked to refine a task: read it, ask questions to reduce uncertainty, and iterate until the user says OK. Only then add the `refined` tag. Do NOT start implementation during refinement.
 3. **Completion flow.** When a task is done, confirm with the user. Only after explicit approval: mark as `done` and commit.
 4. **Never self-approve.** Do not move tasks to `done` or commit without the user's explicit OK.
+
+### Backlog MCP: completing tasks
+
+When finishing a task, only use `task_edit` with `status: "Done"`. Do NOT call `task_complete` — tasks should not be archived.

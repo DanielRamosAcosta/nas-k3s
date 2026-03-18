@@ -4,7 +4,7 @@ title: 'Healthcheck: booklore — HTTP :6060/api/v1/healthcheck'
 status: Done
 assignee: []
 created_date: '2026-03-16 08:14'
-updated_date: '2026-03-16 20:21'
+updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability

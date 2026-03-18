@@ -4,7 +4,7 @@ title: 'Healthcheck: jellyfin — HTTP :8096/health'
 status: Done
 assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-16 20:21'
+updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
