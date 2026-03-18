@@ -33,7 +33,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       ]) +
       u.probes.stateful.tcp(3306),
     ]) + statefulSet.spec.template.spec.withVolumes([
-      volume.fromPersistentVolumeClaim(dataVolumeName, self.pvc.metadata.name),
+      volume.fromHostPath(dataVolumeName, '/data/mariadb/data'),
     ]),
 
     service: k.util.serviceFor(self.statefulSet),
@@ -43,9 +43,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     userBooklore: self.createUser('booklore', secrets.userBooklore, self.createUserMigration, self.sealed_secret),
 
     createUserMigration: u.configMap.forFile('mariadb.create-user.sh', createUserMigration),
-
-    pv: u.pv.localPathFor(self.statefulSet, '10Gi', '/data/mariadb/data'),
-    pvc: u.pvc.from(self.pv),
 
     createUser(name, password, configMap, secret):: {
       migrationJob: k.batch.v1.job.new('mariadb-create-user-' + name) +

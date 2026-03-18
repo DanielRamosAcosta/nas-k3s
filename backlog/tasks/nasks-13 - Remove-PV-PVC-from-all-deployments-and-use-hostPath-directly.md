@@ -1,17 +1,17 @@
 ---
 id: NASKS-13
 title: Remove PV/PVC from all deployments and use hostPath directly
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-09 17:08'
-updated_date: '2026-03-18 21:11'
+updated_date: '2026-03-18 21:26'
 labels:
   - tanka
   - kubernetes
   - simplification
 dependencies: []
 priority: medium
-ordinal: 17000
+ordinal: 1000
 ---
 
 ## Description

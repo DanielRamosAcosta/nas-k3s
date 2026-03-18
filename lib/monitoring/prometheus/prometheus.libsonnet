@@ -30,7 +30,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  statefulSet.spec.template.spec.withServiceAccount('prometheus') +
                  statefulSet.spec.template.spec.withVolumes([
                    u.injectFile(self.configuration),
-                   volume.fromPersistentVolumeClaim(dataVolumeName, self.pvc.metadata.name),
+                   volume.fromHostPath(dataVolumeName, '/data/prometheus/data'),
                  ]) +
                  statefulSet.spec.template.spec.securityContext.withFsGroup(65534) +
                  statefulSet.spec.template.spec.securityContext.withFsGroupChangePolicy('OnRootMismatch'),
@@ -38,9 +38,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     service: k.util.serviceFor(self.statefulSet),
 
     configuration: u.configMap.forFile('prometheus.yml', configuration),
-
-    pv: u.pv.localPathFor(self.statefulSet, '50Gi', '/data/prometheus/data'),
-    pvc: u.pvc.from(self.pv),
 
     rbac: u.rbac('prometheus', 'monitoring', rules=[
       policyRule.withApiGroups(['']) +

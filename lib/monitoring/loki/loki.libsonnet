@@ -28,7 +28,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.injectFile(self.configuration),
-                   volume.fromPersistentVolumeClaim(dataVolumeName, self.pvc.metadata.name),
+                   volume.fromHostPath(dataVolumeName, '/data/loki/data'),
                  ]) +
                  statefulSet.spec.template.spec.securityContext.withFsGroup(10001) +
                  statefulSet.spec.template.spec.securityContext.withFsGroupChangePolicy('OnRootMismatch'),
@@ -37,7 +37,5 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
     configuration: u.configMap.forFile('local-config.yaml', configuration),
 
-    pv: u.pv.localPathFor(self.statefulSet, '50Gi', '/data/loki/data'),
-    pvc: u.pvc.from(self.pv),
   },
 }

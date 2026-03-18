@@ -4,14 +4,14 @@ title: Investigar JPEGs truncados que fallan en generación de thumbnails en Imm
 status: To Do
 assignee: []
 created_date: '2026-03-18 17:15'
-updated_date: '2026-03-18 19:58'
+updated_date: '2026-03-18 21:27'
 labels:
   - immich
   - media
   - bug
 dependencies: []
 priority: low
-ordinal: 45000
+ordinal: 25500
 ---
 
 ## Description
