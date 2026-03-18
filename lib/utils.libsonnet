@@ -6,8 +6,6 @@ local files = import 'utils/files.libsonnet';
 local ingressRoute = import 'utils/ingressRoute.libsonnet';
 local probes = import 'utils/probes.libsonnet';
 local prometheusMod = import 'utils/prometheus.libsonnet';
-local pv = import 'utils/pv.libsonnet';
-local pvc = import 'utils/pvc.libsonnet';
 local rbac = import 'utils/rbac.libsonnet';
 local sealedSecret = import 'utils/sealedSecret.libsonnet';
 local volume = import 'utils/volume.libsonnet';
@@ -24,8 +22,6 @@ local volumeMountMod = import 'utils/volumeMount.libsonnet';
   injectFile:: files.injectFile,
 
   // Domain modules
-  pv: pv,
-  pvc: pvc,
   volume: volume,
   volumeMount: volumeMountMod,
   sealedSecret: sealedSecret,

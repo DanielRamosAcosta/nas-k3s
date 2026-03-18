@@ -27,9 +27,9 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       ]) +
       u.probes.withStartup.http('/api/v1/healthcheck', 6060),
     ]) + statefulSet.spec.template.spec.withVolumes([
-      volume.fromPersistentVolumeClaim('data', self.dataPvc.metadata.name),
-      volume.fromPersistentVolumeClaim('books', self.booksPvc.metadata.name),
-      volume.fromPersistentVolumeClaim('bookdrop', self.bookdropPvc.metadata.name),
+      volume.fromHostPath('data', '/cold-data/booklore/data'),
+      volume.fromHostPath('books', '/cold-data/booklore/books'),
+      volume.fromHostPath('bookdrop', '/cold-data/booklore/bookdrop'),
       u.injectFile(self.logbackConfiguration),
     ]),
 
@@ -50,15 +50,6 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
     sealed_secret: u.sealedSecret.wide.forEnvNamed('booklore-shared-sealed-secret', secrets.shared),
 
     logbackConfiguration: u.configMap.forFile('logback-spring.xml', logbackConfig),
-
-    dataPv: u.pv.atLocal('booklore-data-pv', '5Gi', '/cold-data/booklore/data'),
-    dataPvc: u.pvc.from(self.dataPv),
-
-    booksPv: u.pv.atLocal('booklore-books-pv', '50Gi', '/cold-data/booklore/books'),
-    booksPvc: u.pvc.from(self.booksPv),
-
-    bookdropPv: u.pv.atLocal('booklore-bookdrop-pv', '5Gi', '/cold-data/booklore/bookdrop'),
-    bookdropPvc: u.pvc.from(self.bookdropPv),
 
     ingressRoute: u.ingressRoute.from(self.service, 'books.danielramos.me'),
   },

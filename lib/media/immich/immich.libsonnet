@@ -40,7 +40,7 @@ local immichConfig = importstr './immich.config.json';
                    ])
                  ) +
                  statefulSet.spec.template.spec.withVolumes([
-                   volume.fromPersistentVolumeClaim('upload', self.pvc.metadata.name),
+                   volume.fromHostPath('upload', '/cold-data/immich/upload'),
                    u.volume.fromConfigMap(self.immichConfigPublic),
                    u.volume.fromSealedSecret(self.immichConfigSecret),
                    volume.fromEmptyDir('merged-config'),
@@ -63,9 +63,6 @@ local immichConfig = importstr './immich.config.json';
     immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
 
     immichConfigSecret: u.sealedSecret.forFile('config-secret.json', secrets.configSecretFile),
-
-    pv: u.pv.localPathFor(self.statefulSet, '40Gi', '/cold-data/immich/upload'),
-    pvc: u.pvc.from(self.pv),
 
     ingressRoute: u.ingressRoute.from(self.service, 'photos.danielramos.me'),
 
@@ -97,14 +94,12 @@ local immichConfig = importstr './immich.config.json';
                     u.probes.withStartup.http('/ping', 3003),
                   ]) +
                   deployment.spec.template.spec.withVolumes([
-                    volume.fromPersistentVolumeClaim('model-cache', self.mlPvc.metadata.name),
+                    volume.fromHostPath('model-cache', '/data/immich/ml-cache'),
                   ]) +
                   deployment.spec.template.spec.withEnableServiceLinks(false) +
                   deployment.spec.strategy.withType('Recreate'),
 
     mlService: k.util.serviceFor(self.mlDeployment),
 
-    mlPv: u.pv.localPathFor(self.mlDeployment, '15Gi', '/data/immich/ml-cache'),
-    mlPvc: u.pvc.from(self.mlPv),
   },
 }

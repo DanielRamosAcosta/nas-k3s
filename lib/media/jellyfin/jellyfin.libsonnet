@@ -25,8 +25,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    u.probes.withStartup.http('/health', 8096),
                  ]) +
                  statefulSet.spec.template.spec.withVolumes([
-                   volume.fromPersistentVolumeClaim('config', self.configPvc.metadata.name),
-                   volume.fromPersistentVolumeClaim('cache', self.cachePvc.metadata.name),
+                   volume.fromHostPath('config', '/data/jellyfin/config'),
+                   volume.fromHostPath('cache', '/data/jellyfin/cache'),
                    volume.fromHostPath('media', '/cold-data/media') + volume.hostPath.withType('DirectoryOrCreate'),
                    volume.fromHostPath('dri', '/dev/dri') + volume.hostPath.withType('Directory'),
                  ]) +
@@ -38,12 +38,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     configEnv: u.configMap.forEnv(self.statefulSet, {
       JELLYFIN_PublishedServerUrl: 'https://media.danielramos.me',
     }),
-
-    configPv: u.pv.atLocal('jellyfin-config-pv', '25Gi', '/data/jellyfin/config'),
-    configPvc: u.pvc.from(self.configPv),
-
-    cachePv: u.pv.atLocal('jellyfin-cache-pv', '25Gi', '/data/jellyfin/cache'),
-    cachePvc: u.pvc.from(self.cachePv),
 
     ingressRoute: u.ingressRoute.from(self.service, 'media.danielramos.me'),
   },

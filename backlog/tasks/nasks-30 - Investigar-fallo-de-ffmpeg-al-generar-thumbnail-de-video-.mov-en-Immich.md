@@ -4,14 +4,14 @@ title: Investigar fallo de ffmpeg al generar thumbnail de video .mov en Immich
 status: To Do
 assignee: []
 created_date: '2026-03-18 17:15'
-updated_date: '2026-03-18 19:58'
+updated_date: '2026-03-18 21:27'
 labels:
   - immich
   - media
   - bug
 dependencies: []
 priority: low
-ordinal: 47000
+ordinal: 35000
 ---
 
 ## Description

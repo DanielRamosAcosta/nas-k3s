@@ -45,8 +45,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       ]) +
       { securityContext: { runAsUser: 999, runAsGroup: 999 } },
     ]) + statefulSet.spec.template.spec.withVolumes([
-      volume.fromPersistentVolumeClaim(dataVolumeName, self.pvc.metadata.name),
-      volume.fromPersistentVolumeClaim('backup-storage', self.backupPvc.metadata.name),
+      volume.fromHostPath(dataVolumeName, '/data/postgres/data'),
+      volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
       { name: 'backup-config-vol', configMap: { name: 'postgresql-auto-conf' } },
       { name: 'pg-hba-vol', configMap: { name: 'pg-hba-conf' } },
     ]),
@@ -69,16 +69,9 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     backupScriptConfigMap: u.configMap.forFile('postgres.backup.sh', backupScript),
     cleanupScriptConfigMap: u.configMap.forFile('postgres.cleanup.sh', cleanupScript),
 
-    pv: u.pv.localPathFor(self.statefulSet, '40Gi', '/data/postgres/data'),
-    pvc: u.pvc.from(self.pv),
-
     // PostgreSQL configuration
     backupConfig: u.configMap.forFile('postgresql.auto.conf', backupConfigContent),
     pgHbaConfig: u.configMap.forFile('pg_hba.conf', pgHbaContent),
-
-    // Backup storage
-    backupPv: u.pv.atLocal('postgres-backup-pv', '100Gi', '/cold-data/postgres-backups'),
-    backupPvc: u.pvc.from(self.backupPv),
 
     // Sealed secret for backup CronJobs
     backupSecrets: u.sealedSecret.wide.forEnvNamed('postgres-backup-sealed-secret', {
@@ -106,7 +99,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                     cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
                     cronJob.spec.withFailedJobsHistoryLimit(3) +
                     cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
-                      volume.fromPersistentVolumeClaim('backup-storage', self.backupPvc.metadata.name),
+                      volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
                       u.volume.fromConfigMap(self.backupScriptConfigMap),
                     ]),
 
@@ -126,7 +119,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
                  cronJob.spec.withConcurrencyPolicy('Forbid') +
                  cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
-                   volume.fromPersistentVolumeClaim('backup-storage', self.backupPvc.metadata.name),
+                   volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
                    u.volume.fromConfigMap(self.cleanupScriptConfigMap),
                  ]),
 

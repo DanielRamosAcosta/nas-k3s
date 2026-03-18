@@ -34,7 +34,7 @@ local sftpgoConfig = importstr './sftpgo.config.json';
                  statefulSet.spec.template.spec.securityContext.withFsGroup(0) +
                  statefulSet.spec.template.spec.withVolumes([
                    u.injectFile(self.configuration),
-                   volume.fromPersistentVolumeClaim('data', self.pvc.metadata.name),
+                   volume.fromHostPath('data', '/cold-data/sftpgo/data'),
                  ]),
 
     service: k.util.serviceFor(self.statefulSet) + u.prometheus(port='9219', path='/metrics'),
@@ -43,9 +43,6 @@ local sftpgoConfig = importstr './sftpgo.config.json';
 
     sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.sftpgo),
     sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('sftpgo-shared-sealed-secret', secrets.shared),
-
-    pv: u.pv.localPathFor(self.statefulSet, '40Gi', '/cold-data/sftpgo/data'),
-    pvc: u.pvc.from(self.pv),
 
     ingressRoute: u.ingressRoute.from(self.service, {
       '8080': 'cloud.danielramos.me',
