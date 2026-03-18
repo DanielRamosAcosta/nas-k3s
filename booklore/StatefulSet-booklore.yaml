@@ -92,7 +92,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
         startupProbe:
-          failureThreshold: 30
+          failureThreshold: 60
           httpGet:
             path: /api/v1/healthcheck
             port: 6060
