@@ -10,7 +10,7 @@ repositories:
   url: https://argoproj.github.io/argo-helm
 requires:
 - chart: traefik/traefik
-  version: 36.3.0
+  version: 39.0.5
 - chart: sealed-secrets/sealed-secrets
   version: 2.18.4
 - chart: argo-cd/argo-cd
