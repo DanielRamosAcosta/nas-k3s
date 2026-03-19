@@ -83,17 +83,17 @@ data:
     }}'\n        public: false\n        authorization_policy: two_factor\n        consent_mode:
     'auto'\n        require_pkce: false\n        pkce_challenge_method: ''\n        redirect_uris:\n
     \         - 'https://argocd.danielramos.me/auth/callback'\n        scopes:\n          -
-    openid\n          - email\n          - groups\n        response_types:\n          -
-    code\n        grant_types:\n          - authorization_code\n        access_token_signed_response_alg:
+    openid\n          - email\n          - groups\n          - offline_access\n        response_types:\n
+    \         - code\n        grant_types:\n          - authorization_code\n          -
+    refresh_token\n        access_token_signed_response_alg: none\n        userinfo_signed_response_alg:
+    none\n        token_endpoint_auth_method: client_secret_basic\n\n      - client_id:
+    '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLI_CLIENT_ID` }}'\n        client_name:
+    ArgoCD CLI\n        public: true\n        authorization_policy: two_factor\n        consent_mode:
+    'auto'\n        require_pkce: true\n        pkce_challenge_method: 'S256'\n        redirect_uris:\n
+    \         - 'http://localhost:8085/auth/callback'\n        scopes:\n          -
+    openid\n          - offline_access\n          - email\n          - groups\n        response_types:\n
+    \         - code\n        grant_types:\n          - authorization_code\n        access_token_signed_response_alg:
     none\n        userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
-    client_secret_basic\n\n      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLI_CLIENT_ID`
-    }}'\n        client_name: ArgoCD CLI\n        public: true\n        authorization_policy:
-    two_factor\n        consent_mode: 'auto'\n        require_pkce: true\n        pkce_challenge_method:
-    'S256'\n        redirect_uris:\n          - 'http://localhost:8085/auth/callback'\n
-    \       scopes:\n          - openid\n          - offline_access\n          - email\n
-    \         - groups\n        response_types:\n          - code\n        grant_types:\n
-    \         - authorization_code\n        access_token_signed_response_alg: none\n
-    \       userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
     none\n"
 kind: ConfigMap
 metadata:
