@@ -7,7 +7,6 @@ local envs = [
   { namespace: (import '../arr/spec.json').spec.namespace, resources: import '../arr/main.jsonnet' },
   { namespace: (import '../auth/spec.json').spec.namespace, resources: import '../auth/main.jsonnet' },
   { namespace: (import '../databases/spec.json').spec.namespace, resources: import '../databases/main.jsonnet' },
-  { namespace: (import '../dashboard/spec.json').spec.namespace, resources: import '../dashboard/main.jsonnet' },
   { namespace: (import '../media/spec.json').spec.namespace, resources: import '../media/main.jsonnet' },
   { namespace: (import '../monitoring/spec.json').spec.namespace, resources: import '../monitoring/main.jsonnet' },
   { namespace: (import '../system/spec.json').spec.namespace, resources: import '../system/main.jsonnet' },
