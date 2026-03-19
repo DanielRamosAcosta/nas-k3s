@@ -15,6 +15,7 @@ data:
     - "openid"
     - "email"
     - "groups"
+    - "offline_access"
     "userInfoPath": "/api/oidc/userinfo"
   resource.customizations.ignoreResourceUpdates.ConfigMap: |
     jqPathExpressions:
