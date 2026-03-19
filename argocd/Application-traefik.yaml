@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  labels:
+    app: argocd
+  name: traefik
+  namespace: argocd
+spec:
+  destination:
+    namespace: system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: traefik
+    repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
+    targetRevision: manifests
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
