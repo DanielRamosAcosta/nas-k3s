@@ -15,4 +15,6 @@ spec:
     services:
     - name: booklore
       port: 6060
-  tls: {}
+  tls:
+    store:
+      name: default

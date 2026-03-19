@@ -15,4 +15,6 @@ spec:
     services:
     - name: grafana
       port: 3000
-  tls: {}
+  tls:
+    store:
+      name: default

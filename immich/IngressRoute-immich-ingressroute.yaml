@@ -15,4 +15,6 @@ spec:
     services:
     - name: immich
       port: 2283
-  tls: {}
+  tls:
+    store:
+      name: default
