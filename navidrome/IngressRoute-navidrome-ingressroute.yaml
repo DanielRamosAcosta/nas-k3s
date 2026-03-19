@@ -15,5 +15,4 @@ spec:
     services:
     - name: navidrome
       port: 4533
-  tls:
-    certResolver: le
+  tls: {}

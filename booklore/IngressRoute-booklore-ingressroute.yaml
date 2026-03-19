@@ -15,5 +15,4 @@ spec:
     services:
     - name: booklore
       port: 6060
-  tls:
-    certResolver: le
+  tls: {}

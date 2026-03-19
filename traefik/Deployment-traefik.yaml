@@ -53,9 +53,6 @@ spec:
         - --entryPoints.web.http.redirections.entryPoint.scheme=https
         - --entryPoints.websecure.http.tls=true
         - --log.level=INFO
-        - --certificatesresolvers.le.acme.email=danielramosacosta1@gmail.com
-        - --certificatesresolvers.le.acme.httpChallenge.entryPoint=web
-        - --certificatesresolvers.le.acme.storage=/data/acme.json
         env:
         - name: POD_NAME
           valueFrom:
@@ -133,8 +130,7 @@ spec:
         key: node-role.kubernetes.io/control-plane
         operator: Exists
       volumes:
-      - name: data
-        persistentVolumeClaim:
-          claimName: traefik
+      - emptyDir: {}
+        name: data
       - emptyDir: {}
         name: tmp

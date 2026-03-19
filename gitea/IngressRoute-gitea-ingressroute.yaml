@@ -14,5 +14,4 @@ spec:
     services:
     - name: gitea
       port: 3000
-  tls:
-    certResolver: le
+  tls: {}

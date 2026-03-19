@@ -269,9 +269,10 @@
     "traefik/CustomResourceDefinition-traefikservices.traefik.io.yaml": "environments/system/main.jsonnet",
     "traefik/Deployment-traefik.yaml": "environments/system/main.jsonnet",
     "traefik/IngressClass-traefik.yaml": "environments/system/main.jsonnet",
-    "traefik/PersistentVolumeClaim-traefik.yaml": "environments/system/main.jsonnet",
+    "traefik/SealedSecret-cloudflare-origin-cert.yaml": "environments/system/main.jsonnet",
     "traefik/Service-traefik.yaml": "environments/system/main.jsonnet",
     "traefik/ServiceAccount-traefik.yaml": "environments/system/main.jsonnet",
+    "traefik/TLSStore-default.yaml": "environments/system/main.jsonnet",
     "valkey/Service-valkey.yaml": "environments/databases/main.jsonnet",
     "valkey/StatefulSet-valkey.yaml": "environments/databases/main.jsonnet"
 }

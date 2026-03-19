@@ -14,5 +14,4 @@ spec:
     services:
     - name: argocd-server
       port: 80
-  tls:
-    certResolver: le
+  tls: {}

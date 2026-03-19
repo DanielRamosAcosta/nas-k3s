@@ -1,0 +1,10 @@
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  labels:
+    app: traefik
+  name: default
+  namespace: system
+spec:
+  defaultCertificate:
+    secretName: cloudflare-origin-cert
