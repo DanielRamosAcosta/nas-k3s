@@ -27,7 +27,9 @@
           middlewares: if std.length(middlewares) > 0 then middlewares else null,
         },
       ],
-      tls: {},
+      tls: {
+        store: { name: 'default' },
+      },
     },
   },
   fromPortToHostMap(service, portToHostMap):: {
@@ -53,7 +55,9 @@
         }
         for port in std.objectFields(portToHostMap)
       ],
-      tls: {},
+      tls: {
+        store: { name: 'default' },
+      },
     },
   },
 }

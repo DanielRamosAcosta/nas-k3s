@@ -121,7 +121,9 @@ local makeApp(name, path, namespace) = {
             port: 80,
           }],
         }],
-        tls: {},
+        tls: {
+          store: { name: 'default' },
+        },
       },
     },
 
