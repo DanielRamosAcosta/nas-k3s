@@ -12,7 +12,11 @@ local volume = import 'utils/volume.libsonnet';
 local volumeMountMod = import 'utils/volumeMount.libsonnet';
 
 {
-  // Core helpers
+  Environment(apps):: {
+    [name]: core.labelApp(name, apps[name])
+    for name in std.objectFields(apps)
+  },
+
   image:: core.image,
   labelApp:: core.labelApp,
   withoutSchema:: core.withoutSchema,
