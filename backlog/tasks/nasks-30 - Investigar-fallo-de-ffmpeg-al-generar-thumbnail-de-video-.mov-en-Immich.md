@@ -1,17 +1,17 @@
 ---
 id: NASKS-30
 title: Investigar fallo de ffmpeg al generar thumbnail de video .mov en Immich
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-18 17:15'
-updated_date: '2026-03-18 21:27'
+updated_date: '2026-03-19 07:48'
 labels:
   - immich
   - media
   - bug
 dependencies: []
 priority: low
-ordinal: 35000
+ordinal: 46000
 ---
 
 ## Description
