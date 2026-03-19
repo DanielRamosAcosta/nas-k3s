@@ -1,4 +1,5 @@
 local tanka = import 'github.com/grafana/jsonnet-libs/tanka-util/main.libsonnet';
+local secrets = import 'traefik.secrets.json';
 
 local helm = tanka.helm.new(std.thisFile);
 
@@ -64,21 +65,8 @@ local helm = tanka.helm.new(std.thisFile);
           },
         },
       },
-      certificatesResolvers: {
-        le: {
-          acme: {
-            email: 'danielramosacosta1@gmail.com',
-            storage: '/data/acme.json',
-            httpChallenge: {
-              entryPoint: 'web',
-            },
-          },
-        },
-      },
       persistence: {
-        enabled: true,
-        storageClass: 'local-path',
-        size: '128Mi',
+        enabled: false,
       },
       service: {
         type: 'LoadBalancer',
@@ -89,5 +77,32 @@ local helm = tanka.helm.new(std.thisFile);
         isDefaultClass: true,
       },
     },
-  }),
+  }) + {
+    sealed_secret: {
+      apiVersion: 'bitnami.com/v1alpha1',
+      kind: 'SealedSecret',
+      metadata: {
+        name: 'cloudflare-origin-cert',
+      },
+      spec: {
+        template: {
+          type: 'kubernetes.io/tls',
+        },
+        encryptedData: secrets.cloudflareOriginCert,
+      },
+    },
+    tls_store: {
+      apiVersion: 'traefik.io/v1alpha1',
+      kind: 'TLSStore',
+      metadata: {
+        name: 'default',
+        namespace: 'system',
+      },
+      spec: {
+        defaultCertificate: {
+          secretName: 'cloudflare-origin-cert',
+        },
+      },
+    },
+  },
 }

@@ -27,9 +27,7 @@
           middlewares: if std.length(middlewares) > 0 then middlewares else null,
         },
       ],
-      tls: {
-        certResolver: 'le',
-      },
+      tls: {},
     },
   },
   fromPortToHostMap(service, portToHostMap):: {
@@ -55,9 +53,7 @@
         }
         for port in std.objectFields(portToHostMap)
       ],
-      tls: {
-        certResolver: 'le',
-      },
+      tls: {},
     },
   },
 }
