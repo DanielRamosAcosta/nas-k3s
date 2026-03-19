@@ -8,13 +8,13 @@ local navidrome = import 'media/navidrome/navidrome.libsonnet';
 local sftpgo = import 'media/sftpgo/sftpgo.libsonnet';
 local u = import 'utils.libsonnet';
 
-{
-  beets: u.labelApp('beets', beets.new()),
-  immich: u.labelApp('immich', immich.new()),
-  navidrome: u.labelApp('navidrome', navidrome.new()),
-  sftpgo: u.labelApp('sftpgo', sftpgo.new()),
-  gitea: u.labelApp('gitea', gitea.new()),
-  booklore: u.labelApp('booklore', booklore.new()),
-  jellyfin: u.labelApp('jellyfin', jellyfin.new()),
-  invidious: u.labelApp('invidious', invidious.new()),
-}
+u.Environment({
+  beets: beets.new(),
+  immich: immich.new(),
+  navidrome: navidrome.new(),
+  sftpgo: sftpgo.new(),
+  gitea: gitea.new(),
+  booklore: booklore.new(),
+  jellyfin: jellyfin.new(),
+  invidious: invidious.new(),
+})
