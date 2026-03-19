@@ -1,15 +1,17 @@
 ---
 id: NASKS-35
 title: Fix Let's Encrypt ACME HTTP-01 challenge failures (403 from Cloudflare)
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-03-19 17:02'
+updated_date: '2026-03-19 20:06'
 labels:
   - traefik
   - cloudflare
   - tls
 dependencies: []
 priority: high
+ordinal: 1000
 ---
 
 ## Description
