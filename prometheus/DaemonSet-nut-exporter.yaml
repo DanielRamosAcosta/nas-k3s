@@ -12,6 +12,8 @@ spec:
       name: nut-exporter
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: nut-exporter
     spec:

@@ -12,6 +12,8 @@ spec:
       name: promtail
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: promtail
     spec:

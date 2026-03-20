@@ -12,6 +12,8 @@ spec:
       name: deluge
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: deluge
     spec:

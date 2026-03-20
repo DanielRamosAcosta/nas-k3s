@@ -14,6 +14,8 @@ spec:
       name: grafana
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: grafana
     spec:

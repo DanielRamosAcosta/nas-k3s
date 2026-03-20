@@ -12,6 +12,8 @@ spec:
       name: jellyfin
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: jellyfin
     spec:

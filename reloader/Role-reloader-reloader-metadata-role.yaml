@@ -1,0 +1,29 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  annotations:
+    meta.helm.sh/release-name: reloader
+    meta.helm.sh/release-namespace: kube-system
+  labels:
+    app: reloader
+    app.kubernetes.io/instance: reloader
+    app.kubernetes.io/managed-by: Helmraiser
+    app.kubernetes.io/name: reloader
+    app.kubernetes.io/version: v1.4.14
+    chart: reloader-2.2.9
+    helm.sh/chart: reloader-2.2.9
+    heritage: Helm
+    release: reloader
+  name: reloader-reloader-metadata-role
+  namespace: kube-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - list
+  - get
+  - watch
+  - create
+  - update

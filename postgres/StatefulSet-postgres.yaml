@@ -12,6 +12,8 @@ spec:
       name: postgres
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: postgres
     spec:

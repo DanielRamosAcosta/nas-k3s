@@ -12,6 +12,8 @@ spec:
       name: smartctl-exporter
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: smartctl-exporter
     spec:

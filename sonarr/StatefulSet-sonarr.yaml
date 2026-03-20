@@ -12,6 +12,8 @@ spec:
       name: sonarr
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: sonarr
     spec:

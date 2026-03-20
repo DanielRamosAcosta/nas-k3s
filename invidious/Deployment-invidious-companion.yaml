@@ -14,6 +14,8 @@ spec:
       name: invidious-companion
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: invidious-companion
     spec:

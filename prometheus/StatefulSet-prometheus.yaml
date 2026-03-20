@@ -12,6 +12,8 @@ spec:
       name: prometheus
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: prometheus
     spec:

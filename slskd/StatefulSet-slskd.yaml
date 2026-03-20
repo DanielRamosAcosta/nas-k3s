@@ -12,6 +12,8 @@ spec:
       name: slskd
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: slskd
     spec:

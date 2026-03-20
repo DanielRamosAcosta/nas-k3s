@@ -27,6 +27,7 @@ spec:
         prometheus.io/path: /metrics
         prometheus.io/port: "9100"
         prometheus.io/scrape: "true"
+        reloader.stakater.com/auto: "true"
       labels:
         app.kubernetes.io/instance: traefik-system
         app.kubernetes.io/managed-by: Helm

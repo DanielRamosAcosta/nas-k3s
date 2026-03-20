@@ -12,6 +12,8 @@ spec:
       name: valkey
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: valkey
     spec:

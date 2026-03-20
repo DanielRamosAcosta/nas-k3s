@@ -12,6 +12,8 @@ spec:
       name: booklore
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: booklore
     spec:

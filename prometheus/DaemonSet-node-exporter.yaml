@@ -12,6 +12,8 @@ spec:
       name: node-exporter
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: node-exporter
     spec:

@@ -12,6 +12,8 @@ spec:
       name: lidarr
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: lidarr
     spec:

@@ -12,6 +12,8 @@ spec:
       name: sftpgo
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: sftpgo
     spec:

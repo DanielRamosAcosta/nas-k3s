@@ -12,6 +12,8 @@ spec:
       name: mariadb
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: mariadb
     spec:

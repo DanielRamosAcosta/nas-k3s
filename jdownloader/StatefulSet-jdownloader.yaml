@@ -12,6 +12,8 @@ spec:
       name: jdownloader
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: jdownloader
     spec:

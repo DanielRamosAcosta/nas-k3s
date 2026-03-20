@@ -12,6 +12,8 @@ spec:
       name: radarr
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: radarr
     spec:

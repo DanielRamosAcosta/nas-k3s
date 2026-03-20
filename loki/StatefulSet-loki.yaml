@@ -12,6 +12,8 @@ spec:
       name: loki
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: loki
     spec:

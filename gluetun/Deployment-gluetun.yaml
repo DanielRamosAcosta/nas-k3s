@@ -16,6 +16,8 @@ spec:
     type: Recreate
   template:
     metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
       labels:
         name: gluetun
     spec:
