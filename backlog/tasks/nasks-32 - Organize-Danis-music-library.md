@@ -4,12 +4,14 @@ title: Organize Dani's music library
 status: To Do
 assignee: []
 created_date: '2026-03-19 08:20'
+updated_date: '2026-03-19 22:08'
 labels:
   - media
   - chore
   - manual
 dependencies: []
 priority: low
+ordinal: 49000
 ---
 
 ## Description

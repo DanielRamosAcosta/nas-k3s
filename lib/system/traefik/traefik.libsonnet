@@ -1,5 +1,6 @@
 local tanka = import 'github.com/grafana/jsonnet-libs/tanka-util/main.libsonnet';
 local secrets = import 'traefik.secrets.json';
+local u = import 'utils.libsonnet';
 
 local helm = tanka.helm.new(std.thisFile);
 
@@ -78,31 +79,7 @@ local helm = tanka.helm.new(std.thisFile);
       },
     },
   }) + {
-    sealed_secret: {
-      apiVersion: 'bitnami.com/v1alpha1',
-      kind: 'SealedSecret',
-      metadata: {
-        name: 'cloudflare-origin-cert',
-      },
-      spec: {
-        template: {
-          type: 'kubernetes.io/tls',
-        },
-        encryptedData: secrets.cloudflareOriginCert,
-      },
-    },
-    tls_store: {
-      apiVersion: 'traefik.io/v1alpha1',
-      kind: 'TLSStore',
-      metadata: {
-        name: 'default',
-        namespace: 'system',
-      },
-      spec: {
-        defaultCertificate: {
-          secretName: 'cloudflare-origin-cert',
-        },
-      },
-    },
+    sealed_secret: u.sealedSecret.forTls('cloudflare-origin-cert', secrets.cloudflareOriginCert),
+    tls_store: u.ingressRoute.tlsStore(self.sealed_secret),
   },
 }

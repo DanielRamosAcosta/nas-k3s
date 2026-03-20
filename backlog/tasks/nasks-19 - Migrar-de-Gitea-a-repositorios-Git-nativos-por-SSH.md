@@ -4,14 +4,14 @@ title: Migrar de Gitea a repositorios Git nativos por SSH
 status: To Do
 assignee: []
 created_date: '2026-03-15 20:43'
-updated_date: '2026-03-16 11:05'
+updated_date: '2026-03-19 22:08'
 labels:
   - infra
   - migración
   - git
 dependencies: []
 priority: medium
-ordinal: 39000
+ordinal: 31875
 ---
 
 ## Description

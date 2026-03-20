@@ -4,13 +4,13 @@ title: Auto-restart pods cuando cambia un ConfigMap
 status: To Do
 assignee: []
 created_date: '2026-03-18 21:22'
-updated_date: '2026-03-18 21:27'
+updated_date: '2026-03-19 22:08'
 labels:
   - improvement
   - infrastructure
 dependencies: []
 priority: low
-ordinal: 48000
+ordinal: 27625
 ---
 
 ## Description
