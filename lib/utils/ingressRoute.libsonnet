@@ -24,7 +24,7 @@
               port: service.spec.ports[0].port,
             },
           ],
-          middlewares: if std.length(middlewares) > 0 then middlewares else null,
+          [if std.length(middlewares) > 0 then 'middlewares']: middlewares,
         },
       ],
       tls: {

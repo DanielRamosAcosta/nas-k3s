@@ -22,6 +22,15 @@
     {
       "source": {
         "git": {
+          "remote": "https://github.com/jsonnet-libs/argo-cd-libsonnet.git",
+          "subdir": ""
+        }
+      },
+      "version": "674323826e0f173a2f20ec6a094bb21a87f56ce6"
+    },
+    {
+      "source": {
+        "git": {
           "remote": "https://github.com/jsonnet-libs/docsonnet.git",
           "subdir": "doc-util"
         }

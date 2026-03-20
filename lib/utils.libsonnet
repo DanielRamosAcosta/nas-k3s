@@ -1,9 +1,11 @@
+local argocdUtil = import 'utils/argocd.libsonnet';
 local command = import 'utils/command.libsonnet';
 local configMap = import 'utils/configMap.libsonnet';
 local core = import 'utils/core.libsonnet';
 local envVars = import 'utils/envVars.libsonnet';
 local files = import 'utils/files.libsonnet';
 local ingressRoute = import 'utils/ingressRoute.libsonnet';
+local labels = import 'utils/labels.libsonnet';
 local probes = import 'utils/probes.libsonnet';
 local prometheusMod = import 'utils/prometheus.libsonnet';
 local rbac = import 'utils/rbac.libsonnet';
@@ -31,9 +33,11 @@ local volumeMountMod = import 'utils/volumeMount.libsonnet';
   sealedSecret: sealedSecret,
   configMap: configMap,
   envVars: envVars,
+  labels: labels,
   ingressRoute: ingressRoute,
   rbac(name, namespace, rules):: rbac.new(name, namespace, rules),
   prometheus(port, path='/metrics'):: prometheusMod.annotations(port, path),
+  argocd: argocdUtil,
   command: command,
   probes: probes,
 }

@@ -1,36 +1,8 @@
 local u = import '../../utils.libsonnet';
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local tanka = import 'github.com/grafana/jsonnet-libs/tanka-util/main.libsonnet';
 local secrets = import 'system/argocd/argocd.secrets.json';
 
 local helm = tanka.helm.new(std.thisFile);
-
-local makeApp(name, path, namespace) = {
-  apiVersion: 'argoproj.io/v1alpha1',
-  kind: 'Application',
-  metadata: {
-    name: name,
-    namespace: 'argocd',
-  },
-  spec: {
-    project: 'default',
-    source: {
-      repoURL: 'https://github.com/DanielRamosAcosta/nas-k3s.git',
-      targetRevision: 'manifests',
-      path: path,
-    },
-    destination: {
-      server: 'https://kubernetes.default.svc',
-      namespace: namespace,
-    },
-    syncPolicy: {
-      automated: {
-        prune: true,
-        selfHeal: true,
-      },
-    },
-  },
-};
 
 {
   new(apps={}):: {
@@ -75,71 +47,19 @@ local makeApp(name, path, namespace) = {
       },
     }),
 
-    argocd_secret: u.sealedSecret.forEnvNamed('argocd-secret', secrets.argocdSecret) {
-      metadata+: {
-        labels+: {
-          'app.kubernetes.io/part-of': 'argocd',
-        },
-      },
-      spec+: {
-        template+: {
-          metadata+: {
-            labels+: {
-              'app.kubernetes.io/part-of': 'argocd',
-            },
-          },
-        },
-      },
-    },
+    argocd_secret: u.sealedSecret.forEnvNamed('argocd-secret', secrets.argocdSecret)
+                   + u.labels.partOf('argocd')
+                   + u.labels.templatePartOf('argocd'),
 
-    oidc_sealed_secret: u.sealedSecret.forEnvNamed('argocd-oidc-secret', secrets.argocd) {
-      spec+: {
-        template+: {
-          metadata+: {
-            labels+: {
-              'app.kubernetes.io/part-of': 'argocd',
-            },
-          },
-        },
-      },
-    },
+    oidc_sealed_secret: u.sealedSecret.forEnvNamed('argocd-oidc-secret', secrets.argocd)
+                        + u.labels.partOf('argocd')
+                        + u.labels.templatePartOf('argocd'),
 
-    ingress_route: {
-      apiVersion: 'traefik.io/v1alpha1',
-      kind: 'IngressRoute',
-      metadata: {
-        name: 'argocd-server-ingressroute',
-        namespace: 'argocd',
-      },
-      spec: {
-        entryPoints: ['websecure'],
-        routes: [{
-          match: 'Host(`argocd.danielramos.me`)',
-          kind: 'Rule',
-          services: [{
-            name: 'argocd-server',
-            port: 80,
-          }],
-        }],
-        tls: {
-          store: { name: 'default' },
-        },
-      },
-    },
+    ingress_route: u.ingressRoute.from(this.helm.service_argocd_server, 'argocd.danielramos.me'),
 
   } + {
     // Applications — generated dynamically from apps map
-    ['app_' + std.strReplace(name, '-', '_')]: makeApp(name, name, apps[name])
+    [u.argocd.appKey(name)]: u.argocd.app(name, name, apps[name])
     for name in std.objectFields(apps)
-    if name != 'argocd'
-  } + {
-    // argocd manages itself with ServerSideApply (applicationsets CRD > 262KB)
-    app_argocd: makeApp('argocd', 'argocd', 'argocd') {
-      spec+: {
-        syncPolicy: {
-          syncOptions: ['ServerSideApply=true'],
-        },
-      },
-    },
   },
 }
