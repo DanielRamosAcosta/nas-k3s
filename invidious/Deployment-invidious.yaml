@@ -51,26 +51,35 @@ spec:
       - command:
         - sh
         - -c
-        - jq -s '.[0] * .[1]' /data/invidious-config.json /data/invidious-config-secret.json
-          > /output/config.json
-        image: ghcr.io/danielramosacosta/jq:main-5231ab6
+        - envsubst < /data/invidious-config.json > /output/config.json
+        env:
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASSWORD
+              name: invidious-sealed-secret
+        - name: HMAC_KEY
+          valueFrom:
+            secretKeyRef:
+              key: HMAC_KEY
+              name: invidious-sealed-secret
+        - name: INVIDIOUS_COMPANION_KEY
+          valueFrom:
+            secretKeyRef:
+              key: INVIDIOUS_COMPANION_KEY
+              name: invidious-sealed-secret
+        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
         imagePullPolicy: IfNotPresent
-        name: merge-config
+        name: render-config
         volumeMounts:
         - mountPath: /data/invidious-config.json
           name: invidious-config-json
           subPath: invidious-config.json
-        - mountPath: /data/invidious-config-secret.json
-          name: invidious-config-secret-json-sealed-secret
-          subPath: invidious-config-secret.json
         - mountPath: /output
           name: merged-config
       volumes:
       - configMap:
           name: invidious-config-json
         name: invidious-config-json
-      - name: invidious-config-secret-json-sealed-secret
-        secret:
-          secretName: invidious-config-secret-json-sealed-secret
       - emptyDir: {}
         name: merged-config

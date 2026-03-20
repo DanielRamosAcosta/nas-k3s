@@ -130,7 +130,7 @@
     "invidious/Deployment-invidious.yaml": "environments/media/main.jsonnet",
     "invidious/IngressRoute-invidious-ingressroute.yaml": "environments/media/main.jsonnet",
     "invidious/SealedSecret-invidious-companion-sealed-secret.yaml": "environments/media/main.jsonnet",
-    "invidious/SealedSecret-invidious-config-secret-json-sealed-secret.yaml": "environments/media/main.jsonnet",
+    "invidious/SealedSecret-invidious-sealed-secret.yaml": "environments/media/main.jsonnet",
     "invidious/Service-invidious-companion.yaml": "environments/media/main.jsonnet",
     "invidious/Service-invidious.yaml": "environments/media/main.jsonnet",
     "jdownloader/ConfigMap-jdownloader-config-env.yaml": "environments/arr/main.jsonnet",

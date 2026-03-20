@@ -9,6 +9,7 @@ data:
       "db": {
         "dbname": "invidious",
         "host": "postgres.databases.svc.cluster.local",
+        "password": "$DB_PASSWORD",
         "port": 5432,
         "user": "invidious"
       },
@@ -25,12 +26,14 @@ data:
         "save_player_pos": true
       },
       "domain": "invidious.danielramos.me",
+      "hmac_key": "$HMAC_KEY",
       "https_only": true,
       "invidious_companion": [
         {
           "private_url": "http://invidious-companion.media.svc.cluster.local:8282/companion"
         }
       ],
+      "invidious_companion_key": "$INVIDIOUS_COMPANION_KEY",
       "registration_enabled": false
     }
 kind: ConfigMap
