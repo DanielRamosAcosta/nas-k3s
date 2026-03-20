@@ -1,17 +1,17 @@
 ---
 id: NASKS-38
 title: Refactorizar módulo Traefik para usar utils
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-19 20:11'
-updated_date: '2026-03-20 18:05'
+updated_date: '2026-03-20 18:23'
 labels:
   - refactor
 dependencies: []
 references:
   - lib/system/traefik/traefik.libsonnet
 priority: low
-ordinal: 1000
+ordinal: 1.953125
 ---
 
 ## Description

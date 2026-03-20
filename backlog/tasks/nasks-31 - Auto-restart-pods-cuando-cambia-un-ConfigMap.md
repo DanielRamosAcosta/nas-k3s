@@ -1,16 +1,16 @@
 ---
 id: NASKS-31
 title: Auto-restart pods cuando cambia un ConfigMap
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-18 21:22'
-updated_date: '2026-03-19 22:08'
+updated_date: '2026-03-20 18:36'
 labels:
   - improvement
   - infrastructure
 dependencies: []
 priority: low
-ordinal: 27625
+ordinal: 0.9765625
 ---
 
 ## Description
