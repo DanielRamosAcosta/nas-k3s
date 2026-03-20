@@ -19,8 +19,8 @@ data:
             "autoRegister": true,
             "buttonText": "Iniciar Sesión",
             "issuerUrl": "https://auth.danielramos.me/.well-known/openid-configuration",
-            "clientId": "{{AUTHELIA_OIDC_IMMICH_CLIENT_ID}}",
-            "clientSecret": "{{AUTHELIA_OIDC_IMMICH_CLIENT_SECRET_DIGEST}}"
+            "clientId": "$OAUTH_CLIENT_ID",
+            "clientSecret": "$OAUTH_CLIENT_SECRET"
         },
         "machineLearning": {
             "enabled": true,
@@ -35,7 +35,7 @@ data:
                     "host": "smtp.eu.mailgun.org",
                     "port": 587,
                     "username": "nas@mail.danielramos.me",
-                    "password": "{{SMTP_PASSWORD}}"
+                    "password": "$SMTP_PASSWORD"
                 }
             }
         },

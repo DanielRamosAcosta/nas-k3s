@@ -21,10 +21,16 @@ spec:
     spec:
       containers:
       - env:
-        - name: TRANSFORMERS_CACHE
-          value: /cache
         - name: PYTHONUNBUFFERED
-          value: "1"
+          valueFrom:
+            configMapKeyRef:
+              key: PYTHONUNBUFFERED
+              name: immich-machine-learning-config-env
+        - name: TRANSFORMERS_CACHE
+          valueFrom:
+            configMapKeyRef:
+              key: TRANSFORMERS_CACHE
+              name: immich-machine-learning-config-env
         image: ghcr.io/immich-app/immich-machine-learning:v2.5.6
         imagePullPolicy: IfNotPresent
         livenessProbe:

@@ -99,17 +99,30 @@ spec:
       - command:
         - sh
         - -c
-        - jq -s '.[0] * .[1]' /data/config.json /data/config-secret.json > /output/immich.json
-        image: ghcr.io/danielramosacosta/jq:main-5231ab6
+        - envsubst < /data/config.json > /output/immich.json
+        env:
+        - name: OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: OAUTH_CLIENT_ID
+              name: immich-sealed-secret
+        - name: OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: OAUTH_CLIENT_SECRET
+              name: immich-sealed-secret
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SMTP_PASSWORD
+              name: immich-sealed-secret
+        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
         imagePullPolicy: IfNotPresent
-        name: merge-config
+        name: render-config
         volumeMounts:
         - mountPath: /data/config.json
           name: config-json
           subPath: config.json
-        - mountPath: /data/config-secret.json
-          name: config-secret-json-sealed-secret
-          subPath: config-secret.json
         - mountPath: /output
           name: merged-config
       volumes:
@@ -119,9 +132,6 @@ spec:
       - configMap:
           name: config-json
         name: config-json
-      - name: config-secret-json-sealed-secret
-        secret:
-          secretName: config-secret-json-sealed-secret
       - emptyDir: {}
         name: merged-config
   updateStrategy:
