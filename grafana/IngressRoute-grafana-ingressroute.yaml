@@ -11,7 +11,6 @@ spec:
   routes:
   - kind: Rule
     match: Host(`grafana.danielramos.me`)
-    middlewares: null
     services:
     - name: grafana
       port: 3000
