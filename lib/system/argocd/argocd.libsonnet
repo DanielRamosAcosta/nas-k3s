@@ -1,36 +1,23 @@
 local u = import '../../utils.libsonnet';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local tanka = import 'github.com/grafana/jsonnet-libs/tanka-util/main.libsonnet';
+local argocd = import 'github.com/jsonnet-libs/argo-cd-libsonnet/3.2/main.libsonnet';
 local secrets = import 'system/argocd/argocd.secrets.json';
 
 local helm = tanka.helm.new(std.thisFile);
+local app = argocd.argoproj.v1alpha1.application;
 
-local makeApp(name, path, namespace) = {
-  apiVersion: 'argoproj.io/v1alpha1',
-  kind: 'Application',
-  metadata: {
-    name: name,
-    namespace: 'argocd',
-  },
-  spec: {
-    project: 'default',
-    source: {
-      repoURL: 'https://github.com/DanielRamosAcosta/nas-k3s.git',
-      targetRevision: 'manifests',
-      path: path,
-    },
-    destination: {
-      server: 'https://kubernetes.default.svc',
-      namespace: namespace,
-    },
-    syncPolicy: {
-      automated: {
-        prune: true,
-        selfHeal: true,
-      },
-    },
-  },
-};
+local makeApp(name, path, namespace) =
+  app.new(name)
+  + app.metadata.withNamespace('argocd')
+  + app.spec.withProject('default')
+  + app.spec.source.withRepoURL('https://github.com/DanielRamosAcosta/nas-k3s.git')
+  + app.spec.source.withTargetRevision('manifests')
+  + app.spec.source.withPath(path)
+  + app.spec.destination.withServer('https://kubernetes.default.svc')
+  + app.spec.destination.withNamespace(namespace)
+  + app.spec.syncPolicy.automated.withPrune(true)
+  + app.spec.syncPolicy.automated.withSelfHeal(true);
 
 {
   new(apps={}):: {
