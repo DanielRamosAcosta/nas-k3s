@@ -4,9 +4,12 @@
     "dbname": "invidious",
     "user": "invidious",
     "host": "postgres.databases.svc.cluster.local",
-    "port": 5432
+    "port": 5432,
+    "password": "$DB_PASSWORD"
   },
   "check_tables": true,
+  "invidious_companion_key": "$INVIDIOUS_COMPANION_KEY",
+  "hmac_key": "$HMAC_KEY",
   "invidious_companion": [
     {
       "private_url": "http://invidious-companion.media.svc.cluster.local:8282/companion"
