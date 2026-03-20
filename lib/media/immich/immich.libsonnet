@@ -31,18 +31,19 @@ local immichConfig = importstr './immich.config.json';
                    u.probes.withStartup.http('/api/server/ping', 2283),
                  ]) +
                  statefulSet.spec.template.spec.withInitContainers(
-                   container.new('merge-config', u.image(versions.jq.image, versions.jq.version)) +
-                   u.command.jq.merge('/data/config.json', '/data/config-secret.json', '/output/immich.json') +
+                   container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
+                   container.withCommand(['sh', '-c', 'envsubst < /data/config.json > /output/immich.json']) +
+                   container.withEnv(
+                     u.envVars.fromSealedSecret(self.sealed_secret),
+                   ) +
                    container.withVolumeMounts([
                      u.volumeMount.fromFile(self.immichConfigPublic, '/data'),
-                     u.volumeMount.fromSealedSecretFile(self.immichConfigSecret, '/data'),
                      volumeMount.new('merged-config', '/output'),
                    ])
                  ) +
                  statefulSet.spec.template.spec.withVolumes([
                    volume.fromHostPath('upload', '/cold-data/immich/upload'),
                    u.volume.fromConfigMap(self.immichConfigPublic),
-                   u.volume.fromSealedSecret(self.immichConfigSecret),
                    volume.fromEmptyDir('merged-config'),
                  ]),
 
@@ -60,9 +61,9 @@ local immichConfig = importstr './immich.config.json';
 
     sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('immich-shared-sealed-secret', secrets.shared),
 
-    immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
+    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.immich),
 
-    immichConfigSecret: u.sealedSecret.forFile('config-secret.json', secrets.configSecretFile),
+    immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
 
     ingressRoute: u.ingressRoute.from(self.service, 'photos.danielramos.me'),
 
@@ -72,10 +73,9 @@ local immichConfig = importstr './immich.config.json';
                     container.withPorts([
                       containerPort.new('http', 3003),
                     ]) +
-                    container.withEnv([
-                      k.core.v1.envVar.new('TRANSFORMERS_CACHE', '/cache'),
-                      k.core.v1.envVar.new('PYTHONUNBUFFERED', '1'),
-                    ]) +
+                    container.withEnv(
+                      u.envVars.fromConfigMap(self.mlConfigEnv),
+                    ) +
                     container.withVolumeMounts([
                       volumeMount.new('model-cache', '/cache'),
                     ]) +
@@ -98,6 +98,11 @@ local immichConfig = importstr './immich.config.json';
                   ]) +
                   deployment.spec.template.spec.withEnableServiceLinks(false) +
                   deployment.spec.strategy.withType('Recreate'),
+
+    mlConfigEnv: u.configMap.forEnv(self.mlDeployment, {
+      TRANSFORMERS_CACHE: '/cache',
+      PYTHONUNBUFFERED: '1',
+    }),
 
     mlService: k.util.serviceFor(self.mlDeployment),
 

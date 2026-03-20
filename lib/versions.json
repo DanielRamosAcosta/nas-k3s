@@ -127,6 +127,10 @@
     "image": "ghcr.io/danielramosacosta/jq",
     "version": "main-5231ab6"
   },
+  "envsubst": {
+    "image": "docker.io/bhgedigital/envsubst",
+    "version": "v1.0-alpine3.6"
+  },
   "busybox": {
     "image": "busybox",
     "version": "1.37.0"
