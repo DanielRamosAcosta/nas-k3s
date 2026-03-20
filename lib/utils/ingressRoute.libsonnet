@@ -1,4 +1,16 @@
 {
+  tlsStore(sealedSecret):: {
+    apiVersion: 'traefik.io/v1alpha1',
+    kind: 'TLSStore',
+    metadata: {
+      name: 'default',
+    },
+    spec: {
+      defaultCertificate: {
+        secretName: sealedSecret.metadata.name,
+      },
+    },
+  },
   from(service, hostOrMap, middlewares=[])::
     if std.type(hostOrMap) == 'string' then
       self.fromDefaultPort(service, hostOrMap, middlewares)

@@ -4,7 +4,7 @@ title: Set up declarative DNS management from Kubernetes with external-dns
 status: To Do
 assignee: []
 created_date: '2026-03-09 16:50'
-updated_date: '2026-03-16 11:05'
+updated_date: '2026-03-19 22:08'
 labels:
   - infra
   - feature
@@ -17,7 +17,7 @@ references:
   - hosts/shared/services/cloudflared.nix
   - tanka/environments/versions.json
 priority: medium
-ordinal: 36000
+ordinal: 29750
 ---
 
 ## Description

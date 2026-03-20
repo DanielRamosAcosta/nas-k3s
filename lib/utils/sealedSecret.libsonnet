@@ -22,6 +22,17 @@ local core = import 'utils/core.libsonnet';
       encryptedData: encryptedData,
     },
   },
+  forTls(name, encryptedData):: {
+    apiVersion: 'bitnami.com/v1alpha1',
+    kind: 'SealedSecret',
+    metadata: {
+      name: name,
+    },
+    spec: {
+      template: { type: 'kubernetes.io/tls' },
+      encryptedData: encryptedData,
+    },
+  },
   forFile(fileName, encryptedValue):: {
     apiVersion: 'bitnami.com/v1alpha1',
     kind: 'SealedSecret',
