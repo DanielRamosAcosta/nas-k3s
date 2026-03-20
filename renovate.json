@@ -1,10 +1,14 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended"
+  ],
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": ["lib/versions\\.json$"],
+      "managerFilePatterns": [
+        "/lib/versions\\.json$/"
+      ],
       "matchStrings": [
         "\"image\":\\s*\"(?<packageName>[^\"]+)\",\\s*\"version\":\\s*\"(?<currentValue>[^\"]+)\""
       ],
@@ -15,22 +19,34 @@
   "packageRules": [
     {
       "description": "Group immich server and ML images",
-      "matchPackageNames": ["ghcr.io/immich-app/immich-server", "ghcr.io/immich-app/immich-machine-learning"],
+      "matchPackageNames": [
+        "ghcr.io/immich-app/immich-server",
+        "ghcr.io/immich-app/immich-machine-learning"
+      ],
       "groupName": "immich"
     },
     {
       "description": "Group loki and promtail",
-      "matchPackageNames": ["docker.io/grafana/loki", "docker.io/grafana/promtail"],
+      "matchPackageNames": [
+        "docker.io/grafana/loki",
+        "docker.io/grafana/promtail"
+      ],
       "groupName": "grafana-loki"
     },
     {
       "description": "Hotio images versioning",
-      "matchPackageNames": ["ghcr.io/hotio/sonarr", "ghcr.io/hotio/radarr", "ghcr.io/hotio/lidarr"],
+      "matchPackageNames": [
+        "ghcr.io/hotio/sonarr",
+        "ghcr.io/hotio/radarr",
+        "ghcr.io/hotio/lidarr"
+      ],
       "versioning": "regex:^release-(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)\\.(?<build>\\d+)$"
     },
     {
       "description": "Deluge: ignore legacy 18.x tag (old LinuxServer date-based versioning)",
-      "matchPackageNames": ["docker.io/linuxserver/deluge"],
+      "matchPackageNames": [
+        "docker.io/linuxserver/deluge"
+      ],
       "allowedVersions": "<10.0.0"
     },
     {
