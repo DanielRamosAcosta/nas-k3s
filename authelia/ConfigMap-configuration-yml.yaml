@@ -11,15 +11,16 @@ data:
     \     authelia_url: 'https://auth.danielramos.me'\n      default_redirection_url:
     'https://photos.danielramos.me'\n\nnotifier:\n  smtp:\n    address: 'smtp://smtp-relay.system.svc.cluster.local:587'\n
     \   sender: \"NAS <nas@mail.danielramos.me>\"\n    subject: \"[NAS] {title}\"\n
-    \   disable_require_tls: true\n\ndefinitions:\n  user_attributes:\n    sftpgo_role:\n
-    \     expression: 'username == \"admin\" ? \"admin\" : \"user\"'\n\nidentity_providers:\n
-    \ oidc:\n    cors:\n      endpoints:\n        - authorization\n        - pushed-authorization-request\n
-    \       - token\n        - revocation\n        - introspection\n        - userinfo\n
-    \     allowed_origins_from_client_redirect_uris: true\n\n    jwks:\n      - key_id:
-    main\n        algorithm: RS256\n        key: {{ secret \"/config/secrets/oidc/jwks/rsa.2048.key\"
-    | mindent 10 \"|\" | msquote }}\n\n    claims_policies:\n      grafana:\n        id_token:
-    ['email', 'name', 'groups', 'preferred_username']\n\n      sftpgo:\n        id_token:
-    ['username', 'sftpgo_role']\n        custom_claims:\n          username:\n            attribute:
+    \   disable_require_tls: true\n    tls:\n      skip_verify: true\n\ndefinitions:\n
+    \ user_attributes:\n    sftpgo_role:\n      expression: 'username == \"admin\"
+    ? \"admin\" : \"user\"'\n\nidentity_providers:\n  oidc:\n    cors:\n      endpoints:\n
+    \       - authorization\n        - pushed-authorization-request\n        - token\n
+    \       - revocation\n        - introspection\n        - userinfo\n      allowed_origins_from_client_redirect_uris:
+    true\n\n    jwks:\n      - key_id: main\n        algorithm: RS256\n        key:
+    {{ secret \"/config/secrets/oidc/jwks/rsa.2048.key\" | mindent 10 \"|\" | msquote
+    }}\n\n    claims_policies:\n      grafana:\n        id_token: ['email', 'name',
+    'groups', 'preferred_username']\n\n      sftpgo:\n        id_token: ['username',
+    'sftpgo_role']\n        custom_claims:\n          username:\n            attribute:
     username\n          sftpgo_role:\n            attribute: sftpgo_role\n\n      booklore:\n
     \       id_token: ['email', 'email_verified', 'preferred_username', 'name']\n\n
     \   scopes:\n      sftpgo:\n        claims:\n          - username\n          -
