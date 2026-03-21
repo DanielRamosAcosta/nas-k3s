@@ -26,7 +26,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
           k.core.v1.envVar.new('PGID', '1000'),
           k.core.v1.envVar.new('TZ', 'Atlantic/Canary'),
         ] +
-        u.envVars.fromSealedSecret(self.sealed_secret)
+        u.envVars.fromSealedSecret(self.sealedSecret)
       ) +
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/config'),
@@ -38,9 +38,9 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
     service: k.util.serviceFor(self.statefulSet),
 
-    sealed_secret: u.sealedSecret.wide.forEnv(self.statefulSet, secrets.mariadb),
+    sealedSecret: u.sealedSecret.wide.forEnv(self.statefulSet, secrets.mariadb),
 
-    userBooklore: self.createUser('booklore', secrets.userBooklore, self.createUserMigration, self.sealed_secret),
+    userBooklore: self.createUser('booklore', secrets.userBooklore, self.createUserMigration, self.sealedSecret),
 
     createUserMigration: u.configMap.forFile('mariadb.create-user.sh', createUserMigration),
 

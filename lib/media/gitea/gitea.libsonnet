@@ -25,8 +25,8 @@ local secrets = import 'media/gitea/gitea.secrets.json';
                    ]) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSealedSecret(self.sealed_secret) +
-                     u.envVars.fromSealedSecret(self.sealed_secret_shared),
+                     u.envVars.fromSealedSecret(self.sealedSecret) +
+                     u.envVars.fromSealedSecret(self.sealedSecretShared),
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/data'),
@@ -76,8 +76,8 @@ local secrets = import 'media/gitea/gitea.secrets.json';
       GITEA__server__START_SSH_SERVER: 'true',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.gitea),
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('gitea-shared-sealed-secret', { GITEA__database__PASSWD: postgresSecrets.userGitea }),
+    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.gitea),
+    sealedSecretShared: u.sealedSecret.wide.forEnvNamed('gitea-shared-sealed-secret', { GITEA__database__PASSWD: postgresSecrets.userGitea }),
 
     ingressRoute: u.ingressRoute.from(self.service, {
       '3000': 'git.danielramos.me',

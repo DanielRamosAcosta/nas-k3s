@@ -79,7 +79,7 @@ local helm = tanka.helm.new(std.thisFile);
       },
     },
   }) + {
-    sealed_secret: u.sealedSecret.forTls('cloudflare-origin-cert', secrets.cloudflareOriginCert),
-    tls_store: u.ingressRoute.tlsStore(self.sealed_secret),
+    sealedSecret: u.sealedSecret.forTls('cloudflare-origin-cert', secrets.cloudflareOriginCert),
+    tls_store: u.ingressRoute.tlsStore(self.sealedSecret),
   },
 }

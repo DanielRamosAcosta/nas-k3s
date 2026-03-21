@@ -18,8 +18,8 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
                   container.withPorts([containerPort.new('http', 3000)]) +
                   container.withEnv(
                     u.envVars.fromConfigMap(self.configEnv) +
-                    u.envVars.fromSealedSecret(self.sealed_secret) +
-                    u.envVars.fromSealedSecret(self.sealed_secret_shared)
+                    u.envVars.fromSealedSecret(self.sealedSecret) +
+                    u.envVars.fromSealedSecret(self.sealedSecretShared)
                   ) +
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.lokiDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
@@ -69,8 +69,8 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
       GF_LOG_CONSOLE_FORMAT: 'json',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.grafana),
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('grafana-shared-sealed-secret', { GF_DATABASE_PASSWORD: postgresSecrets.userGrafana }),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.grafana),
+    sealedSecretShared: u.sealedSecret.wide.forEnvNamed('grafana-shared-sealed-secret', { GF_DATABASE_PASSWORD: postgresSecrets.userGrafana }),
 
     lokiDatasource: u.configMap.forFile('loki.yaml', lokiDatasource),
     prometheusDatasource: u.configMap.forFile('prometheus.yaml', prometheusDatasource),

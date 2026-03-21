@@ -18,7 +18,7 @@ local secrets = import 'monitoring/nut-exporter/nut-exporter.secrets.json';
                  ]) +
                  container.withPorts(containerPort.new('nut', 9199)) +
                  container.withEnv(
-                   u.envVars.fromSealedSecret(self.sealed_secret)
+                   u.envVars.fromSealedSecret(self.sealedSecret)
                  ) +
                  u.probes.tcp(9199),
                ]) +
@@ -27,6 +27,6 @@ local secrets = import 'monitoring/nut-exporter/nut-exporter.secrets.json';
 
     service: k.util.serviceFor(self.daemonSet),
 
-    sealed_secret: u.sealedSecret.forEnv(self.daemonSet, secrets.nutExporter),
+    sealedSecret: u.sealedSecret.forEnv(self.daemonSet, secrets.nutExporter),
   },
 }

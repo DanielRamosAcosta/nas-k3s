@@ -19,7 +19,7 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
                    ) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSealedSecret(self.sealed_secret)
+                     u.envVars.fromSealedSecret(self.sealedSecret)
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('library', '/library', true),
@@ -38,7 +38,7 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
       ND_BASEURL: 'https://music.danielramos.me',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.navidrome),
+    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.navidrome),
 
     ingressRoute: u.ingressRoute.from(self.service, 'music.danielramos.me'),
   },

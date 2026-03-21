@@ -16,8 +16,8 @@ local autheliaConfig = importstr './authelia.config.yml';
                   container.new('authelia', u.image(versions.authelia.image, versions.authelia.version)) +
                   container.withPorts([containerPort.new('http', 9091)]) +
                   container.withEnv(
-                    u.envVars.fromSealedSecret(self.sealed_secret) +
-                    u.envVars.fromSealedSecret(self.sealed_secret_shared) +
+                    u.envVars.fromSealedSecret(self.sealedSecret) +
+                    u.envVars.fromSealedSecret(self.sealedSecretShared) +
                     u.envVars.fromConfigMap(self.configEnv)
                   ) +
                   container.withVolumeMounts([
@@ -42,9 +42,9 @@ local autheliaConfig = importstr './authelia.config.yml';
 
     sealedJwksKey: u.sealedSecret.forFile('rsa.2048.key', secrets.jwksKey),
 
-    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.authelia),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.authelia),
 
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('authelia-shared-sealed-secret', { AUTHELIA_STORAGE_POSTGRES_PASSWORD: postgresSecrets.userAuthelia }),
+    sealedSecretShared: u.sealedSecret.wide.forEnvNamed('authelia-shared-sealed-secret', { AUTHELIA_STORAGE_POSTGRES_PASSWORD: postgresSecrets.userAuthelia }),
 
     ingressRoute: u.ingressRoute.from(self.service, 'auth.danielramos.me'),
   },

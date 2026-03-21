@@ -16,7 +16,7 @@ local secrets = import 'system/gluetun/gluetun.secrets.json';
                     containerPort.new('http-proxy', 8888),
                   ]) +
                   container.withEnv(
-                    u.envVars.fromSealedSecret(self.sealed_secret) +
+                    u.envVars.fromSealedSecret(self.sealedSecret) +
                     u.envVars.fromConfigMap(self.config)
                   ) +
                   u.probes.tcp(8888),
@@ -32,6 +32,6 @@ local secrets = import 'system/gluetun/gluetun.secrets.json';
       HTTPPROXY: 'on',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.gluetun),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.gluetun),
   },
 }
