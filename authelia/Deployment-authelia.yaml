@@ -101,11 +101,6 @@ spec:
             secretKeyRef:
               key: IDENTITY_PROVIDERS_OIDC_CLIENTS_SFTPGO_CLIENT_SECRET_DIGEST
               name: authelia-sealed-secret
-        - name: AUTHELIA_NOTIFIER_SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: AUTHELIA_NOTIFIER_SMTP_PASSWORD
-              name: authelia-shared-sealed-secret
         - name: AUTHELIA_STORAGE_POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:

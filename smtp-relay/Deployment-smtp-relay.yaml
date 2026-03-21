@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: smtp-relay
+  name: smtp-relay
+  namespace: system
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: smtp-relay
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: smtp-relay
+    spec:
+      containers:
+      - env:
+        - name: RELAYHOST_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: RELAYHOST_PASSWORD
+              name: smtp-relay-sealed-secret
+        - name: ALLOWED_SENDER_DOMAINS
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOWED_SENDER_DOMAINS
+              name: smtp-relay-config-env
+        - name: LOG_FORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: LOG_FORMAT
+              name: smtp-relay-config-env
+        - name: POSTFIX_message_size_limit
+          valueFrom:
+            configMapKeyRef:
+              key: POSTFIX_message_size_limit
+              name: smtp-relay-config-env
+        - name: POSTFIX_myhostname
+          valueFrom:
+            configMapKeyRef:
+              key: POSTFIX_myhostname
+              name: smtp-relay-config-env
+        - name: POSTFIX_smtp_tls_security_level
+          valueFrom:
+            configMapKeyRef:
+              key: POSTFIX_smtp_tls_security_level
+              name: smtp-relay-config-env
+        - name: RELAYHOST
+          valueFrom:
+            configMapKeyRef:
+              key: RELAYHOST
+              name: smtp-relay-config-env
+        - name: RELAYHOST_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: RELAYHOST_USERNAME
+              name: smtp-relay-config-env
+        image: boky/postfix:v5.1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          exec:
+            command:
+            - /scripts/healthcheck.sh
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: smtp-relay
+        ports:
+        - containerPort: 587
+          name: smtp
+        readinessProbe:
+          exec:
+            command:
+            - /scripts/healthcheck.sh
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /var/spool/postfix
+          name: spool
+      volumes:
+      - hostPath:
+          path: /data/smtp-relay
+          type: DirectoryOrCreate
+        name: spool

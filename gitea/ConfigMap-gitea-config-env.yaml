@@ -6,10 +6,9 @@ data:
   GITEA__database__USER: gitea
   GITEA__mailer__ENABLED: "true"
   GITEA__mailer__FROM: NAS <nas@mail.danielramos.me>
-  GITEA__mailer__PROTOCOL: smtps
-  GITEA__mailer__SMTP_ADDR: smtp.eu.mailgun.org
+  GITEA__mailer__PROTOCOL: smtp
+  GITEA__mailer__SMTP_ADDR: smtp-relay.system.svc.cluster.local
   GITEA__mailer__SMTP_PORT: "587"
-  GITEA__mailer__USER: nas@mail.danielramos.me
   GITEA__metrics__ENABLED: "true"
   GITEA__openid__ENABLE_OPENID_SIGNIN: "false"
   GITEA__openid__ENABLE_OPENID_SIGNUP: "true"

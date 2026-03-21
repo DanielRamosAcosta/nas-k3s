@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: smtp-relay
+    name: smtp-relay
+  name: smtp-relay
+  namespace: system
+spec:
+  ports:
+  - name: smtp-relay-smtp
+    port: 587
+    targetPort: 587
+  selector:
+    name: smtp-relay

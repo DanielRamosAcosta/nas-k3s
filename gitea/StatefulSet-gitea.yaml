@@ -64,11 +64,6 @@ spec:
             configMapKeyRef:
               key: GITEA__mailer__SMTP_PORT
               name: gitea-config-env
-        - name: GITEA__mailer__USER
-          valueFrom:
-            configMapKeyRef:
-              key: GITEA__mailer__USER
-              name: gitea-config-env
         - name: GITEA__metrics__ENABLED
           valueFrom:
             configMapKeyRef:
@@ -153,11 +148,6 @@ spec:
           valueFrom:
             secretKeyRef:
               key: GITEA__database__PASSWD
-              name: gitea-shared-sealed-secret
-        - name: GITEA__mailer__PASSWD
-          valueFrom:
-            secretKeyRef:
-              key: GITEA__mailer__PASSWD
               name: gitea-shared-sealed-secret
         image: docker.io/gitea/gitea:1.25.5
         imagePullPolicy: IfNotPresent

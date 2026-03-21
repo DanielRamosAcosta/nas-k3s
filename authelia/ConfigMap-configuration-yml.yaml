@@ -9,18 +9,17 @@ data:
     authelia\n\naccess_control:\n  default_policy: two_factor\n\nsession:\n  secret:
     '{{ env `AUTHELIA_SESSION_SECRET` }}'\n  cookies:\n    - domain: danielramos.me\n
     \     authelia_url: 'https://auth.danielramos.me'\n      default_redirection_url:
-    'https://photos.danielramos.me'\n\nnotifier:\n  smtp:\n    address: 'smtp://smtp.eu.mailgun.org:587'\n
-    \   username: 'nas@mail.danielramos.me'\n    password: '{{ env `AUTHELIA_NOTIFIER_SMTP_PASSWORD`
-    }}'\n    sender: \"NAS <nas@mail.danielramos.me>\"\n    subject: \"[NAS] {title}\"\n\ndefinitions:\n
-    \ user_attributes:\n    sftpgo_role:\n      expression: 'username == \"admin\"
-    ? \"admin\" : \"user\"'\n\nidentity_providers:\n  oidc:\n    cors:\n      endpoints:\n
-    \       - authorization\n        - pushed-authorization-request\n        - token\n
-    \       - revocation\n        - introspection\n        - userinfo\n      allowed_origins_from_client_redirect_uris:
-    true\n\n    jwks:\n      - key_id: main\n        algorithm: RS256\n        key:
-    {{ secret \"/config/secrets/oidc/jwks/rsa.2048.key\" | mindent 10 \"|\" | msquote
-    }}\n\n    claims_policies:\n      grafana:\n        id_token: ['email', 'name',
-    'groups', 'preferred_username']\n\n      sftpgo:\n        id_token: ['username',
-    'sftpgo_role']\n        custom_claims:\n          username:\n            attribute:
+    'https://photos.danielramos.me'\n\nnotifier:\n  smtp:\n    address: 'smtp://smtp-relay.system.svc.cluster.local:587'\n
+    \   sender: \"NAS <nas@mail.danielramos.me>\"\n    subject: \"[NAS] {title}\"\n
+    \   disable_require_tls: true\n\ndefinitions:\n  user_attributes:\n    sftpgo_role:\n
+    \     expression: 'username == \"admin\" ? \"admin\" : \"user\"'\n\nidentity_providers:\n
+    \ oidc:\n    cors:\n      endpoints:\n        - authorization\n        - pushed-authorization-request\n
+    \       - token\n        - revocation\n        - introspection\n        - userinfo\n
+    \     allowed_origins_from_client_redirect_uris: true\n\n    jwks:\n      - key_id:
+    main\n        algorithm: RS256\n        key: {{ secret \"/config/secrets/oidc/jwks/rsa.2048.key\"
+    | mindent 10 \"|\" | msquote }}\n\n    claims_policies:\n      grafana:\n        id_token:
+    ['email', 'name', 'groups', 'preferred_username']\n\n      sftpgo:\n        id_token:
+    ['username', 'sftpgo_role']\n        custom_claims:\n          username:\n            attribute:
     username\n          sftpgo_role:\n            attribute: sftpgo_role\n\n      booklore:\n
     \       id_token: ['email', 'email_verified', 'preferred_username', 'name']\n\n
     \   scopes:\n      sftpgo:\n        claims:\n          - username\n          -
