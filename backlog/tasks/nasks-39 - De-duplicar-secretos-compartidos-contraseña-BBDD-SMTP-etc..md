@@ -4,7 +4,7 @@ title: 'De-duplicar secretos compartidos (contraseña BBDD, SMTP, etc.)'
 status: To Do
 assignee: []
 created_date: '2026-03-20 08:09'
-updated_date: '2026-03-20 18:23'
+updated_date: '2026-03-20 19:05'
 labels:
   - refactor
 dependencies: []
@@ -12,7 +12,7 @@ references:
   - lib/media/immich/immich.secrets.json
   - lib/media/invidious/invidious.secrets.json
 priority: low
-ordinal: 28687.5
+ordinal: 14875
 ---
 
 ## Description

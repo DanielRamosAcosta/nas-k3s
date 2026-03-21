@@ -40,8 +40,8 @@ argocd app sync <app-name> --grpc-web                  # Sync a single app
 - **k8s-libsonnet 1.29** - Typed Kubernetes API bindings via `lib/k.libsonnet`
 
 ### Directory Layout
-- **`lib/`** - Jsonnet libraries defining each application. Each app is a `.libsonnet` module with a `new(version)` factory that returns all its K8s resources (StatefulSet/Deployment, Service, ConfigMap, Secret, PV/PVC, IngressRoute).
-  - `utils.libsonnet` - Shared helpers for PV/PVC creation, secrets, config maps, ingress routes, RBAC, volume mounts, and Traefik middleware
+- **`lib/`** - Jsonnet libraries defining each application. Each app is a `.libsonnet` module with a `new(version)` factory that returns all its K8s resources (StatefulSet/Deployment, Service, ConfigMap, Secret, IngressRoute).
+  - `utils.libsonnet` - Shared helpers for hostPath volumes, secrets, config maps, ingress routes, RBAC, volume mounts, and Traefik middleware
   - `secrets.json` - Plaintext secrets (gitignored, encrypted at rest via age)
   - Subdirectories: `arr/`, `auth/`, `databases/`, `media/`, `monitoring/`, `system/`
 - **`environments/`** - Tanka environment definitions. Each has `main.jsonnet` (imports libs, wires versions) + `spec.json` (namespace, API server).
@@ -63,9 +63,9 @@ local secrets = import 'category/appname.secrets.json';
     service: /* ClusterIP service */,
     config_map: /* app config via importstr */,
     sealed_secret: u.sealedSecret.forEnv(self.statefulset, secrets.appname),
-    pv: u.pv.localPathFor(this.statefulset, '10Gi', '/data/appname'),
-    pvc: u.pvc.from(self.pv),
     ingress_route: u.ingressRoute.from(this.service, 'app.domain.com'),
+    // volumes are hostPath, defined inline in the statefulset/deployment spec:
+    // volume.fromHostPath('data', '/data/appname'),
   }
 }
 ```
@@ -78,8 +78,9 @@ Environments compose these modules in `main.jsonnet`, passing versions from `ver
 - Services communicate internally via Kubernetes DNS (`svc.cluster.local`)
 
 ### Storage
-- All PVs use `local-path` storage class with `hostPath` mounts from NAS paths (`/data/*`, `/cold-data/*`)
-- `Retain` reclaim policy on all persistent volumes
+- All volumes use **hostPath** directly (no PV/PVC) — simpler for a single-node NAS homelab
+- Data paths: `/data/*` (SSD, app state) and `/cold-data/*` (HDD, media/backups)
+- Helper: `u.volume.fromHostPath(name, path)` or `volume.fromHostPath(name, path)` from k8s-libsonnet
 
 ### Secrets (Sealed Secrets)
 
