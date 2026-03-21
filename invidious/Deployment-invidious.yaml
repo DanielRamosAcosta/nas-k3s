@@ -55,11 +55,6 @@ spec:
         - -c
         - envsubst < /data/invidious-config.json > /output/config.json
         env:
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: DB_PASSWORD
-              name: invidious-sealed-secret
         - name: HMAC_KEY
           valueFrom:
             secretKeyRef:
@@ -70,6 +65,11 @@ spec:
             secretKeyRef:
               key: INVIDIOUS_COMPANION_KEY
               name: invidious-sealed-secret
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASSWORD
+              name: invidious-shared-sealed-secret
         image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
         imagePullPolicy: IfNotPresent
         name: render-config
