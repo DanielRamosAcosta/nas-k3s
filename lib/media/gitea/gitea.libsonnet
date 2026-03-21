@@ -49,10 +49,9 @@ local secrets = import 'media/gitea/gitea.secrets.json';
       // mailer
       GITEA__mailer__ENABLED: 'true',
       GITEA__mailer__FROM: 'NAS <nas@mail.danielramos.me>',
-      GITEA__mailer__PROTOCOL: 'smtps',
-      GITEA__mailer__SMTP_ADDR: 'smtp.eu.mailgun.org',
+      GITEA__mailer__PROTOCOL: 'smtp',
+      GITEA__mailer__SMTP_ADDR: 'smtp-relay.system.svc.cluster.local',
       GITEA__mailer__SMTP_PORT: '587',
-      GITEA__mailer__USER: 'nas@mail.danielramos.me',
 
       // metrics
       GITEA__metrics__ENABLED: 'true',

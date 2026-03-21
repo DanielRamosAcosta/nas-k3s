@@ -34,11 +34,10 @@ session:
 
 notifier:
   smtp:
-    address: 'smtp://smtp.eu.mailgun.org:587'
-    username: 'nas@mail.danielramos.me'
-    password: '{{ env `AUTHELIA_NOTIFIER_SMTP_PASSWORD` }}'
+    address: 'smtp://smtp-relay.system.svc.cluster.local:587'
     sender: "NAS <nas@mail.danielramos.me>"
     subject: "[NAS] {title}"
+    disable_require_tls: true
 
 definitions:
   user_attributes:

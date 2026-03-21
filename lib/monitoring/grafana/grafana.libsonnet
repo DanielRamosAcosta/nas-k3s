@@ -60,8 +60,7 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
       GF_PATHS_PROVISIONING: '/usr/share/grafana/conf/provisioning',
 
       GF_SMTP_ENABLED: 'true',
-      GF_SMTP_HOST: 'smtp.eu.mailgun.org:587',
-      GF_SMTP_USER: 'nas@mail.danielramos.me',
+      GF_SMTP_HOST: 'smtp-relay.system.svc.cluster.local:587',
       GF_SMTP_FROM_ADDRESS: 'nas@mail.danielramos.me',
       GF_SMTP_FROM_NAME: 'NAS',
 

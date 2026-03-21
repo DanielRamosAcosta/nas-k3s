@@ -107,6 +107,10 @@
     "image": "lscr.io/linuxserver/beets",
     "version": "2.6.1-ls311"
   },
+  "smtpRelay": {
+    "image": "boky/postfix",
+    "version": "v5.1.0"
+  },
   "gluetun": {
     "image": "ghcr.io/qdm12/gluetun",
     "version": "v3.41.1"
