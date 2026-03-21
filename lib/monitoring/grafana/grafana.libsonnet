@@ -1,5 +1,6 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local secrets = import 'monitoring/grafana/grafana.secrets.json';
 
@@ -69,7 +70,7 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
     }),
 
     sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.grafana),
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('grafana-shared-sealed-secret', secrets.shared),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('grafana-shared-sealed-secret', { GF_DATABASE_PASSWORD: postgresSecrets.userGrafana }),
 
     lokiDatasource: u.configMap.forFile('loki.yaml', lokiDatasource),
     prometheusDatasource: u.configMap.forFile('prometheus.yaml', prometheusDatasource),

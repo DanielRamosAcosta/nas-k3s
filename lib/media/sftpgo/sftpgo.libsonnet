@@ -1,5 +1,6 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local secrets = import 'media/sftpgo/sftpgo.secrets.json';
 
@@ -42,7 +43,7 @@ local sftpgoConfig = importstr './sftpgo.config.json';
     configuration: u.configMap.forFile('sftpgo.json', sftpgoConfig),
 
     sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.sftpgo),
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('sftpgo-shared-sealed-secret', secrets.shared),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('sftpgo-shared-sealed-secret', { SFTPGO_DATA_PROVIDER__PASSWORD: postgresSecrets.userSftpgo }),
 
     ingressRoute: u.ingressRoute.from(self.service, {
       '8080': 'cloud.danielramos.me',
