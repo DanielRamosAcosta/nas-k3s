@@ -13,7 +13,7 @@ local secrets = import 'system/cloudflare/cloudflare.secrets.json';
       container.new('cloudflare-ddns', u.image(versions.cloudflare.image, versions.cloudflare.version)) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv) +
-        u.envVars.fromSealedSecret(self.sealed_secret),
+        u.envVars.fromSealedSecret(self.sealedSecret),
       ),
     ]),
 
@@ -22,6 +22,6 @@ local secrets = import 'system/cloudflare/cloudflare.secrets.json';
       PROXIED: 'true',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.cloudflare),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.cloudflare),
   },
 }

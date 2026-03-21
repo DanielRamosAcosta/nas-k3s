@@ -30,8 +30,8 @@ local invidiousConfig = import './invidious.config.json';
                   container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
                   container.withCommand(['sh', '-c', 'envsubst < /data/invidious-config.json > /output/config.json']) +
                   container.withEnv(
-                    u.envVars.fromSealedSecret(self.sealed_secret) +
-                    u.envVars.fromSealedSecret(self.sealed_secret_shared),
+                    u.envVars.fromSealedSecret(self.sealedSecret) +
+                    u.envVars.fromSealedSecret(self.sealedSecretShared),
                   ) +
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.invidiousConfigPublic, '/data'),
@@ -48,9 +48,9 @@ local invidiousConfig = import './invidious.config.json';
 
     invidiousConfigPublic: u.configMap.forFile('invidious-config.json', std.manifestJsonEx(u.withoutSchema(invidiousConfig), '  ')),
 
-    sealed_secret: u.sealedSecret.wide.forEnv(self.deployment, secrets.invidious),
+    sealedSecret: u.sealedSecret.wide.forEnv(self.deployment, secrets.invidious),
 
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('invidious-shared-sealed-secret', {
+    sealedSecretShared: u.sealedSecret.wide.forEnvNamed('invidious-shared-sealed-secret', {
       DB_PASSWORD: postgresSecrets.userInvidious,
     }),
 

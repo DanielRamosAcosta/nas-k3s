@@ -17,7 +17,7 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       container.withPorts([containerPort.new('server', 6060)]) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv) +
-        u.envVars.fromSealedSecret(self.sealed_secret),
+        u.envVars.fromSealedSecret(self.sealedSecret),
       ) +
       container.withVolumeMounts([
         volumeMount.new('data', '/app/data'),
@@ -48,7 +48,7 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       SPRINGDOC_SWAGGER_UI_ENABLED: 'false',
     }),
 
-    sealed_secret: u.sealedSecret.wide.forEnvNamed('booklore-shared-sealed-secret', secrets.shared),
+    sealedSecret: u.sealedSecret.wide.forEnvNamed('booklore-shared-sealed-secret', secrets.shared),
 
     logbackConfiguration: u.configMap.forFile('logback-spring.xml', logbackConfig),
 

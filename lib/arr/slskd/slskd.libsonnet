@@ -21,7 +21,7 @@ local secrets = import 'arr/slskd/slskd.secrets.json';
                    ]) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSealedSecret(self.sealed_secret)
+                     u.envVars.fromSealedSecret(self.sealedSecret)
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/app/data'),
@@ -50,7 +50,7 @@ local secrets = import 'arr/slskd/slskd.secrets.json';
       TZ: 'Atlantic/Canary',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.slskd),
+    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.slskd),
 
     configFile: u.configMap.forFile('slskd.yml', std.manifestYamlDoc(u.withoutSchema(slskdConfig))),
   },

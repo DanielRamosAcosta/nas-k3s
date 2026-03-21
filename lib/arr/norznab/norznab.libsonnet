@@ -16,7 +16,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                      containerPort.new('http', 3000),
                    ]) +
                    container.withEnv(
-                     u.envVars.fromSealedSecret(self.sealed_secret) +
+                     u.envVars.fromSealedSecret(self.sealedSecret) +
                      u.envVars.fromConfigMap(self.config)
                    ) +
                    u.probes.tcp(3000),
@@ -35,6 +35,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       NODE_USE_ENV_PROXY: '1',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.norznab),
+    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.norznab),
   },
 }

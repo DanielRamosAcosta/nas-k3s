@@ -28,7 +28,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
         [containerPort.new('postgres', 5432)]
       ) +
       container.withEnv(
-        u.envVars.fromSealedSecret(self.sealed_secret)
+        u.envVars.fromSealedSecret(self.sealedSecret)
       ) +
       container.withVolumeMounts([
         volumeMount.new(dataVolumeName, '/var/lib/postgresql/data'),
@@ -53,14 +53,14 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
     service: k.util.serviceFor(self.statefulSet),
 
-    sealed_secret: u.sealedSecret.wide.forEnv(self.statefulSet, secrets.postgres),
+    sealedSecret: u.sealedSecret.wide.forEnv(self.statefulSet, secrets.postgres),
 
-    userImmich: self.createUser('immich', secrets.userImmich, self.createUserMigration, self.sealed_secret),
-    userAuthelia: self.createUser('authelia', secrets.userAuthelia, self.createUserMigration, self.sealed_secret),
-    userSftpgo: self.createUser('sftpgo', secrets.userSftpgo, self.createUserMigration, self.sealed_secret),
-    userGrafana: self.createUser('grafana', secrets.userGrafana, self.createUserMigration, self.sealed_secret),
-    userGitea: self.createUser('gitea', secrets.userGitea, self.createUserMigration, self.sealed_secret),
-    userInvidious: self.createUser('invidious', secrets.userInvidious, self.createUserMigration, self.sealed_secret),
+    userImmich: self.createUser('immich', secrets.userImmich, self.createUserMigration, self.sealedSecret),
+    userAuthelia: self.createUser('authelia', secrets.userAuthelia, self.createUserMigration, self.sealedSecret),
+    userSftpgo: self.createUser('sftpgo', secrets.userSftpgo, self.createUserMigration, self.sealedSecret),
+    userGrafana: self.createUser('grafana', secrets.userGrafana, self.createUserMigration, self.sealedSecret),
+    userGitea: self.createUser('gitea', secrets.userGitea, self.createUserMigration, self.sealedSecret),
+    userInvidious: self.createUser('invidious', secrets.userInvidious, self.createUserMigration, self.sealedSecret),
 
     createUserMigration: u.configMap.forFile('postgres.create-user.sh', createUserMigration),
 

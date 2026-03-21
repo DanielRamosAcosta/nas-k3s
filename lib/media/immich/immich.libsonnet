@@ -23,7 +23,7 @@ local immichConfig = importstr './immich.config.json';
                    ) +
                    container.withEnv(
                      u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSealedSecret(self.sealed_secret_shared),
+                     u.envVars.fromSealedSecret(self.sealedSecretShared),
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('upload', '/usr/src/app/upload'),
@@ -35,7 +35,7 @@ local immichConfig = importstr './immich.config.json';
                    container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
                    container.withCommand(['sh', '-c', 'envsubst < /data/config.json > /output/immich.json']) +
                    container.withEnv(
-                     u.envVars.fromSealedSecret(self.sealed_secret),
+                     u.envVars.fromSealedSecret(self.sealedSecret),
                    ) +
                    container.withVolumeMounts([
                      u.volumeMount.fromFile(self.immichConfigPublic, '/data'),
@@ -60,11 +60,11 @@ local immichConfig = importstr './immich.config.json';
       IMMICH_PORT: '2283',
     }),
 
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('immich-shared-sealed-secret', {
+    sealedSecretShared: u.sealedSecret.wide.forEnvNamed('immich-shared-sealed-secret', {
       DB_PASSWORD: postgresSecrets.userImmich,
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.immich),
+    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.immich),
 
     immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
 

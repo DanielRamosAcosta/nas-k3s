@@ -21,8 +21,8 @@ local sftpgoConfig = importstr './sftpgo.config.json';
                      containerPort.new('metrics', 9219),
                    ]) +
                    container.withEnv(
-                     u.envVars.fromSealedSecret(self.sealed_secret) +
-                     u.envVars.fromSealedSecret(self.sealed_secret_shared),
+                     u.envVars.fromSealedSecret(self.sealedSecret) +
+                     u.envVars.fromSealedSecret(self.sealedSecretShared),
                    ) +
                    container.withVolumeMounts([
                      volumeMount.new('data', '/srv/sftpgo'),
@@ -42,8 +42,8 @@ local sftpgoConfig = importstr './sftpgo.config.json';
 
     configuration: u.configMap.forFile('sftpgo.json', sftpgoConfig),
 
-    sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.sftpgo),
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('sftpgo-shared-sealed-secret', { SFTPGO_DATA_PROVIDER__PASSWORD: postgresSecrets.userSftpgo }),
+    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.sftpgo),
+    sealedSecretShared: u.sealedSecret.wide.forEnvNamed('sftpgo-shared-sealed-secret', { SFTPGO_DATA_PROVIDER__PASSWORD: postgresSecrets.userSftpgo }),
 
     ingressRoute: u.ingressRoute.from(self.service, {
       '8080': 'cloud.danielramos.me',

@@ -15,7 +15,7 @@ local secrets = import 'system/smtp-relay/smtp-relay.secrets.json';
                   container.new('smtp-relay', u.image(versions.smtpRelay.image, versions.smtpRelay.version))
                   + container.withPorts([containerPort.new('smtp', 587)])
                   + container.withEnv(
-                    u.envVars.fromSealedSecret(self.sealed_secret)
+                    u.envVars.fromSealedSecret(self.sealedSecret)
                     + u.envVars.fromConfigMap(self.config)
                   )
                   + container.withVolumeMounts([
@@ -41,6 +41,6 @@ local secrets = import 'system/smtp-relay/smtp-relay.secrets.json';
       LOG_FORMAT: 'json',
     }),
 
-    sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.smtpRelay),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.smtpRelay),
   },
 }
