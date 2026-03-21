@@ -1,5 +1,6 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local secrets = import 'media/immich/immich.secrets.json';
 
@@ -59,7 +60,9 @@ local immichConfig = importstr './immich.config.json';
       IMMICH_PORT: '2283',
     }),
 
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('immich-shared-sealed-secret', secrets.shared),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('immich-shared-sealed-secret', {
+      DB_PASSWORD: postgresSecrets.userImmich,
+    }),
 
     sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.immich),
 
