@@ -1,5 +1,6 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local secrets = import 'media/gitea/gitea.secrets.json';
 
@@ -76,7 +77,7 @@ local secrets = import 'media/gitea/gitea.secrets.json';
     }),
 
     sealed_secret: u.sealedSecret.forEnv(self.statefulSet, secrets.gitea),
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('gitea-shared-sealed-secret', secrets.shared),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('gitea-shared-sealed-secret', { GITEA__database__PASSWD: postgresSecrets.userGitea }),
 
     ingressRoute: u.ingressRoute.from(self.service, {
       '3000': 'git.danielramos.me',

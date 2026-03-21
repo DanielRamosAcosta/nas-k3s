@@ -1,5 +1,6 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local secrets = import 'media/invidious/invidious.secrets.json';
 
@@ -29,7 +30,8 @@ local invidiousConfig = import './invidious.config.json';
                   container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
                   container.withCommand(['sh', '-c', 'envsubst < /data/invidious-config.json > /output/config.json']) +
                   container.withEnv(
-                    u.envVars.fromSealedSecret(self.sealed_secret),
+                    u.envVars.fromSealedSecret(self.sealed_secret) +
+                    u.envVars.fromSealedSecret(self.sealed_secret_shared),
                   ) +
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.invidiousConfigPublic, '/data'),
@@ -47,6 +49,10 @@ local invidiousConfig = import './invidious.config.json';
     invidiousConfigPublic: u.configMap.forFile('invidious-config.json', std.manifestJsonEx(u.withoutSchema(invidiousConfig), '  ')),
 
     sealed_secret: u.sealedSecret.wide.forEnv(self.deployment, secrets.invidious),
+
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('invidious-shared-sealed-secret', {
+      DB_PASSWORD: postgresSecrets.userInvidious,
+    }),
 
     ingressRoute: u.ingressRoute.from(self.service, 'invidious.danielramos.me'),
 

@@ -1,6 +1,7 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
 local secrets = import 'auth/authelia/authelia.secrets.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 local autheliaConfig = importstr './authelia.config.yml';
@@ -43,7 +44,7 @@ local autheliaConfig = importstr './authelia.config.yml';
 
     sealed_secret: u.sealedSecret.forEnv(self.deployment, secrets.authelia),
 
-    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('authelia-shared-sealed-secret', secrets.shared),
+    sealed_secret_shared: u.sealedSecret.wide.forEnvNamed('authelia-shared-sealed-secret', { AUTHELIA_STORAGE_POSTGRES_PASSWORD: postgresSecrets.userAuthelia }),
 
     ingressRoute: u.ingressRoute.from(self.service, 'auth.danielramos.me'),
   },
