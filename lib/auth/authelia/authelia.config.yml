@@ -38,6 +38,8 @@ notifier:
     sender: "NAS <nas@mail.danielramos.me>"
     subject: "[NAS] {title}"
     disable_require_tls: true
+    tls:
+      skip_verify: true
 
 definitions:
   user_attributes:
