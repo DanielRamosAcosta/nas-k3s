@@ -4,14 +4,14 @@ title: Fix Invidious Companion PO token validation failure
 status: Done
 assignee: []
 created_date: '2026-03-09 16:57'
-updated_date: '2026-03-18 20:52'
+updated_date: '2026-03-21 18:37'
 labels:
   - media
   - bugfix
   - blocked
 dependencies: []
 priority: medium
-ordinal: 2000
+ordinal: 3000
 ---
 
 ## Description

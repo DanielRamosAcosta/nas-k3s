@@ -1,10 +1,10 @@
 ---
 id: NASKS-41
 title: 'Alertas Grafana para SMTP relay (bounces, deferred, relay caído)'
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-20 19:41'
-updated_date: '2026-03-20 19:43'
+updated_date: '2026-03-21 18:37'
 labels:
   - monitoring
   - smtp
@@ -12,7 +12,7 @@ labels:
 dependencies:
   - NASKS-40
 priority: medium
-ordinal: 7937.5
+ordinal: 0.48828125
 ---
 
 ## Description
