@@ -59,7 +59,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     userAuthelia: self.createUser('authelia', secrets.userAuthelia, self.createUserMigration, self.sealedSecret),
     userSftpgo: self.createUser('sftpgo', secrets.userSftpgo, self.createUserMigration, self.sealedSecret),
     userGrafana: self.createUser('grafana', secrets.userGrafana, self.createUserMigration, self.sealedSecret),
-    userGitea: self.createUser('gitea', secrets.userGitea, self.createUserMigration, self.sealedSecret),
     userInvidious: self.createUser('invidious', secrets.userInvidious, self.createUserMigration, self.sealedSecret),
 
     createUserMigration: u.configMap.forFile('postgres.create-user.sh', createUserMigration),

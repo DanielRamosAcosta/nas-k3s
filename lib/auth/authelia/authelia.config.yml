@@ -157,33 +157,6 @@ identity_providers:
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_basic
 
-      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_GITEA_CLIENT_ID` }}'
-        client_name: Gitea
-        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_GITEA_CLIENT_SECRET_DIGEST` }}'
-        public: false
-        authorization_policy: two_factor
-        # See:
-        # * https://github.com/go-gitea/gitea/issues/34747
-        # * https://github.com/go-gitea/gitea/issues/16983
-        # * https://github.com/go-gitea/gitea/issues/21376
-        consent_mode: 'auto'
-        require_pkce: false
-        pkce_challenge_method: ''
-        redirect_uris:
-          - 'https://git.danielramos.me/user/oauth2/Authelia/callback'
-        scopes:
-          - openid
-          - profile
-          - email
-          - groups
-        response_types:
-          - code
-        grant_types:
-          - authorization_code
-        access_token_signed_response_alg: none
-        userinfo_signed_response_alg: none
-        token_endpoint_auth_method: client_secret_basic
-
       - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_ID` }}'
         client_name: Jellyfin
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_SECRET_DIGEST` }}'
