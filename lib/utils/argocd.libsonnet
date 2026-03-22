@@ -5,6 +5,7 @@ local app = argocdLib.argoproj.v1alpha1.application;
   app(name, path, namespace, repoURL='https://github.com/DanielRamosAcosta/nas-k3s.git', targetRevision='manifests')::
     app.new(name)
     + app.metadata.withNamespace('argocd')
+    + app.metadata.withFinalizers(['resources-finalizer.argocd.argoproj.io'])
     + app.spec.withProject('default')
     + app.spec.source.withRepoURL(repoURL)
     + app.spec.source.withTargetRevision(targetRevision)
