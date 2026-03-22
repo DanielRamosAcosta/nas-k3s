@@ -15,10 +15,6 @@
     "image": "docker.io/drakkan/sftpgo",
     "version": "v2.7.1-alpine"
   },
-  "gitea": {
-    "image": "docker.io/gitea/gitea",
-    "version": "1.25.5"
-  },
   "authelia": {
     "image": "ghcr.io/authelia/authelia",
     "version": "4.39.16"
