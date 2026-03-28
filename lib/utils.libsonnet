@@ -15,7 +15,7 @@ local volumeMountMod = import 'utils/volumeMount.libsonnet';
 
 {
   Environment(apps):: {
-    [name]: core.labelApp(name, apps[name])
+    [core.kebabCase(name)]: core.labelApp(core.kebabCase(name), apps[name])
     for name in std.objectFields(apps)
   },
 

@@ -25,6 +25,17 @@
     };
     recurse(appName, resources),
 
+  kebabCase(name)::
+    local chars = std.stringChars(name);
+    std.join('', [
+      if std.codepoint(c) >= 65 && std.codepoint(c) <= 90 then
+        (if i > 0 then '-' else '') + std.asciiLower(c)
+      else
+        c
+      for i in std.range(0, std.length(chars) - 1)
+      for c in [chars[i]]
+    ]),
+
   normalizeName(name):: std.strReplace(std.strReplace(name, '.', '-'), '_', '-'),
 
   withoutSchema(object):: std.prune(std.mergePatch(object, { '$schema': null })),
