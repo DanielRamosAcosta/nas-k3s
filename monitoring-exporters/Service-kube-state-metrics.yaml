@@ -6,7 +6,7 @@ metadata:
     prometheus.io/port: "8080"
     prometheus.io/scrape: "true"
   labels:
-    app: prometheus
+    app: monitoring-exporters
     name: kube-state-metrics
   name: kube-state-metrics
   namespace: monitoring

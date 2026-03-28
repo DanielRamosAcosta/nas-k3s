@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: prometheus
+    app: monitoring-exporters
   name: node-exporter
   namespace: monitoring
 spec:

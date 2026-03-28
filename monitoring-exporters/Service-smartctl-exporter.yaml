@@ -6,7 +6,7 @@ metadata:
     prometheus.io/port: "9633"
     prometheus.io/scrape: "true"
   labels:
-    app: prometheus
+    app: monitoring-exporters
     name: smartctl-exporter
   name: smartctl-exporter
   namespace: monitoring
