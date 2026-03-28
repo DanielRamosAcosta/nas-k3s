@@ -104,6 +104,7 @@
     "grafana/ConfigMap-grafana-config-env.yaml": "environments/monitoring/main.jsonnet",
     "grafana/ConfigMap-loki-yaml.yaml": "environments/monitoring/main.jsonnet",
     "grafana/ConfigMap-prometheus-yaml.yaml": "environments/monitoring/main.jsonnet",
+    "grafana/ConfigMap-victoriametrics-yaml.yaml": "environments/monitoring/main.jsonnet",
     "grafana/Deployment-grafana.yaml": "environments/monitoring/main.jsonnet",
     "grafana/IngressRoute-grafana-ingressroute.yaml": "environments/monitoring/main.jsonnet",
     "grafana/SealedSecret-grafana-sealed-secret.yaml": "environments/monitoring/main.jsonnet",
