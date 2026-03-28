@@ -121,6 +121,11 @@ spec:
             configMapKeyRef:
               key: GF_EXPLORE_ENABLED
               name: grafana-config-env
+        - name: GF_INSTALL_PLUGINS
+          valueFrom:
+            configMapKeyRef:
+              key: GF_INSTALL_PLUGINS
+              name: grafana-config-env
         - name: GF_LOG_CONSOLE_FORMAT
           valueFrom:
             configMapKeyRef:
@@ -135,6 +140,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: GF_PATHS_PROVISIONING
+              name: grafana-config-env
+        - name: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
+          valueFrom:
+            configMapKeyRef:
+              key: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
               name: grafana-config-env
         - name: GF_SERVER_ROOT_URL
           valueFrom:

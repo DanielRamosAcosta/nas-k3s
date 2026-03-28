@@ -5,7 +5,7 @@ data:
 
     datasources:
       - name: VictoriaMetrics
-        type: prometheus
+        type: victoriametrics-datasource
         access: proxy
         url: http://victoriametrics.monitoring.svc.cluster.local:8428
         jsonData:
