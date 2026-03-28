@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: monitoring-exporters
+    app: monitoringExporters
   name: nut-exporter
   namespace: monitoring
 spec:

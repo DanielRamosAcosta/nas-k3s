@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: monitoring-exporters
+    app: monitoringExporters
     name: nut-exporter
   name: nut-exporter
   namespace: monitoring
