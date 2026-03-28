@@ -38,7 +38,7 @@ local sftpgoConfig = importstr './sftpgo.config.json';
                    volume.fromHostPath('data', '/cold-data/sftpgo/data'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet) + u.prometheus(port='9219', path='/metrics'),
+    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='9219', path='/metrics'),
 
     configuration: u.configMap.forFile('sftpgo.json', sftpgoConfig),
 

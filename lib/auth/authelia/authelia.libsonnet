@@ -30,7 +30,7 @@ local autheliaConfig = importstr './authelia.config.yml';
                 u.injectFiles([self.configuration, self.sealedUsersDatabase, self.sealedJwksKey]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
-    service: k.util.serviceFor(self.deployment) + u.prometheus(port='9959'),
+    service: k.util.serviceFor(self.deployment) + u.metrics(port='9959'),
 
     configuration: u.configMap.forFile('configuration.yml', autheliaConfig),
 

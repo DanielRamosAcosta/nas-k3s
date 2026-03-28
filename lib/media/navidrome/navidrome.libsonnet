@@ -32,7 +32,7 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
                    volume.fromHostPath('data', '/data/navidrome/data'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet) + u.prometheus(port='8081'),
+    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='8081'),
 
     configEnv: u.configMap.forEnv(self.statefulSet, {
       ND_BASEURL: 'https://music.danielramos.me',

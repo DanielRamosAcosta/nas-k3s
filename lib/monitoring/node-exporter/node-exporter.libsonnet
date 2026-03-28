@@ -37,6 +37,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                daemonSet.spec.template.spec.withHostPID(true) +
                daemonSet.spec.template.spec.withHostNetwork(true),
 
-    service: k.util.serviceFor(self.daemonSet) + u.prometheus('9100'),
+    service: k.util.serviceFor(self.daemonSet) + u.metrics('9100'),
   },
 }

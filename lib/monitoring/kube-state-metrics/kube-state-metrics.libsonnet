@@ -63,6 +63,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                 deployment.spec.template.spec.withServiceAccountName(name) +
                 deployment.spec.template.spec.withAutomountServiceAccountToken(true),
 
-    service: k.util.serviceFor(self.deployment) + u.prometheus('8080'),
+    service: k.util.serviceFor(self.deployment) + u.metrics('8080'),
   },
 }

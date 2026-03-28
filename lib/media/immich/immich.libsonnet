@@ -48,7 +48,7 @@ local immichConfig = importstr './immich.config.json';
                    volume.fromEmptyDir('merged-config'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet) + u.prometheus(port='8081'),
+    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='8081'),
 
     configEnv: u.configMap.forEnv(self.statefulSet, {
       DB_HOSTNAME: 'postgres.databases.svc.cluster.local',

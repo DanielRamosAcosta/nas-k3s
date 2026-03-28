@@ -28,6 +28,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  volume.fromHostPath('run-udev', '/run/udev') + volume.hostPath.withType('Directory'),
                ]),
 
-    service: k.util.serviceFor(self.daemonSet) + u.prometheus('9633'),
+    service: k.util.serviceFor(self.daemonSet) + u.metrics('9633'),
   },
 }
