@@ -209,9 +209,6 @@ spec:
         - mountPath: /usr/share/grafana/conf/provisioning/datasources/loki.yaml
           name: loki-yaml
           subPath: loki.yaml
-        - mountPath: /usr/share/grafana/conf/provisioning/datasources/prometheus.yaml
-          name: prometheus-yaml
-          subPath: prometheus.yaml
         - mountPath: /usr/share/grafana/conf/provisioning/datasources/victoriametrics.yaml
           name: victoriametrics-yaml
           subPath: victoriametrics.yaml
@@ -219,9 +216,6 @@ spec:
       - configMap:
           name: loki-yaml
         name: loki-yaml
-      - configMap:
-          name: prometheus-yaml
-        name: prometheus-yaml
       - configMap:
           name: victoriametrics-yaml
         name: victoriametrics-yaml
