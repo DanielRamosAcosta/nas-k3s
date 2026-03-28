@@ -13,8 +13,8 @@ local u = import 'utils.libsonnet';
   loki: u.labelApp('loki', loki.new()),
   promtail: u.labelApp('loki', promtail.new()),
   prometheus: u.labelApp('prometheus', prometheus.new()),
-  nodeExporter: u.labelApp('prometheus', nodeExporter.new()),
-  smartctlExporter: u.labelApp('prometheus', smartctlExporter.new()),
-  nutExporter: u.labelApp('prometheus', nutExporter.new()),
-  kubeStateMetrics: u.labelApp('prometheus', kubeStateMetrics.new()),
+  nodeExporter: u.labelApp('monitoring-exporters', nodeExporter.new()),
+  smartctlExporter: u.labelApp('monitoring-exporters', smartctlExporter.new()),
+  nutExporter: u.labelApp('monitoring-exporters', nutExporter.new()),
+  kubeStateMetrics: u.labelApp('monitoring-exporters', kubeStateMetrics.new()),
 }
