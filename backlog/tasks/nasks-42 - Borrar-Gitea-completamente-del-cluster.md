@@ -1,10 +1,10 @@
 ---
 id: NASKS-42
 title: Borrar Gitea completamente del cluster
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-03-22 00:14'
-updated_date: '2026-03-22 00:33'
+updated_date: '2026-03-22 00:47'
 labels:
   - cleanup
   - refined
@@ -15,7 +15,7 @@ references:
   - lib/auth/authelia/authelia.config.yml
   - environments/media/main.jsonnet
 priority: medium
-ordinal: 1000
+ordinal: 0.06103515625
 ---
 
 ## Description
