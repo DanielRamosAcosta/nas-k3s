@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: nodeExporter
+    app: node-exporter
   name: node-exporter
   namespace: monitoring
 spec:

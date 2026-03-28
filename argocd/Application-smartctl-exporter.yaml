@@ -5,7 +5,7 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
   labels:
     app: argocd
-  name: nutExporter
+  name: smartctl-exporter
   namespace: argocd
 spec:
   destination:
@@ -13,7 +13,7 @@ spec:
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: nutExporter
+    path: smartctl-exporter
     repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
     targetRevision: manifests
   syncPolicy:
