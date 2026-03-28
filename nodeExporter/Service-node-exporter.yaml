@@ -6,7 +6,7 @@ metadata:
     prometheus.io/port: "9100"
     prometheus.io/scrape: "true"
   labels:
-    app: monitoringExporters
+    app: nodeExporter
     name: node-exporter
   name: node-exporter
   namespace: monitoring

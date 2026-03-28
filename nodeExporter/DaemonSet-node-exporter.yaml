@@ -2,64 +2,76 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: monitoringExporters
-  name: smartctl-exporter
+    app: nodeExporter
+  name: node-exporter
   namespace: monitoring
 spec:
   minReadySeconds: 10
   selector:
     matchLabels:
-      name: smartctl-exporter
+      name: node-exporter
   template:
     metadata:
       annotations:
         reloader.stakater.com/auto: "true"
       labels:
-        name: smartctl-exporter
+        name: node-exporter
     spec:
       containers:
-      - image: quay.io/prometheuscommunity/smartctl-exporter:v0.14.0
+      - args:
+        - --path.rootfs=/host
+        - --path.procfs=/host/proc
+        - --path.sysfs=/host/sys
+        - --collector.netdev
+        - --collector.netstat
+        - --collector.netclass
+        image: quay.io/prometheus/node-exporter:v1.10.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
           initialDelaySeconds: 15
           periodSeconds: 30
           tcpSocket:
-            port: 9633
+            port: 9100
           timeoutSeconds: 5
-        name: smartctl-exporter
+        name: node-exporter
         ports:
-        - containerPort: 9633
-          name: smartctl
+        - containerPort: 9100
+          name: node-exporter
         readinessProbe:
           failureThreshold: 3
           initialDelaySeconds: 5
           periodSeconds: 10
           tcpSocket:
-            port: 9633
+            port: 9100
           timeoutSeconds: 5
-        securityContext:
-          privileged: true
-          readOnlyRootFilesystem: true
-          runAsGroup: 0
-          runAsUser: 0
         volumeMounts:
-        - mountPath: /dev
-          name: dev
-        - mountPath: /run/udev
-          name: run-udev
+        - mountPath: /host
+          name: root
           readOnly: true
+        - mountPath: /host/proc
+          name: proc
+          readOnly: true
+        - mountPath: /host/sys
+          name: sys
+          readOnly: true
+      hostNetwork: true
+      hostPID: true
       tolerations:
       - effect: NoSchedule
         operator: Exists
       volumes:
       - hostPath:
-          path: /dev
+          path: /
           type: Directory
-        name: dev
+        name: root
       - hostPath:
-          path: /run/udev
+          path: /proc
           type: Directory
-        name: run-udev
+        name: proc
+      - hostPath:
+          path: /sys
+          type: Directory
+        name: sys
   updateStrategy:
     type: RollingUpdate

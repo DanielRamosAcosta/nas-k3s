@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   labels:
-    app: loki
+    app: promtail
   name: promtail
   namespace: monitoring
 spec:
