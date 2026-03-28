@@ -6,6 +6,7 @@ local secrets = import 'monitoring/grafana/grafana.secrets.json';
 
 local lokiDatasource = importstr './grafana.datasource.loki.yml';
 local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
+local victoriametricsDatasource = importstr './grafana.datasource.victoriametrics.yml';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -24,10 +25,11 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
                   container.withVolumeMounts([
                     u.volumeMount.fromFile(self.lokiDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
                     u.volumeMount.fromFile(self.prometheusDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
+                    u.volumeMount.fromFile(self.victoriametricsDatasource, '/usr/share/grafana/conf/provisioning/datasources'),
                   ]) +
                   u.probes.http('/api/health', 3000),
                 ]) +
-                u.injectFiles([self.lokiDatasource, self.prometheusDatasource]),
+                u.injectFiles([self.lokiDatasource, self.prometheusDatasource, self.victoriametricsDatasource]),
 
     service: k.util.serviceFor(self.deployment),
 
@@ -74,6 +76,7 @@ local prometheusDatasource = importstr './grafana.datasource.prometheus.yml';
 
     lokiDatasource: u.configMap.forFile('loki.yaml', lokiDatasource),
     prometheusDatasource: u.configMap.forFile('prometheus.yaml', prometheusDatasource),
+    victoriametricsDatasource: u.configMap.forFile('victoriametrics.yaml', victoriametricsDatasource),
 
     ingressRoute: u.ingressRoute.from(self.service, 'grafana.danielramos.me'),
   },
