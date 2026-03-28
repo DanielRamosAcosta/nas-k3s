@@ -141,11 +141,6 @@ spec:
             configMapKeyRef:
               key: GF_PATHS_PROVISIONING
               name: grafana-config-env
-        - name: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
-          valueFrom:
-            configMapKeyRef:
-              key: GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS
-              name: grafana-config-env
         - name: GF_SERVER_ROOT_URL
           valueFrom:
             configMapKeyRef:
