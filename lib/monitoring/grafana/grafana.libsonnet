@@ -69,6 +69,9 @@ local victoriametricsDatasource = importstr './grafana.datasource.victoriametric
 
       GF_LOG_MODE: 'console',
       GF_LOG_CONSOLE_FORMAT: 'json',
+
+      GF_INSTALL_PLUGINS: 'https://github.com/VictoriaMetrics/victoriametrics-datasource/releases/download/v0.23.2/victoriametrics-datasource-v0.23.2.zip;victoriametrics-datasource',
+      GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS: 'victoriametrics-datasource',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.grafana),
