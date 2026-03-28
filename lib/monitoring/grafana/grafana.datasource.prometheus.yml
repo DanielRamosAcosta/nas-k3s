@@ -4,7 +4,7 @@ datasources:
   - name: Prometheus
     type: prometheus
     access: proxy
-    url: http://prometheus.monitoring.svc.cluster.local:9090
+    url: http://victoriametrics.monitoring.svc.cluster.local:8428
     jsonData:
       timeout: 60
       maxLines: 1000
