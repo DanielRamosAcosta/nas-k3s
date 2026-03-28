@@ -10,15 +10,11 @@ local u = import 'utils.libsonnet';
 
 u.Environment({
   grafana: grafana.new(),
-  loki: {
-    loki: loki.new(),
-    promtail: promtail.new(),
-  },
-  monitoringExporters: {
-    nodeExporter: nodeExporter.new(),
-    smartctlExporter: smartctlExporter.new(),
-    nutExporter: nutExporter.new(),
-    kubeStateMetrics: kubeStateMetrics.new(),
-  },
+  loki: loki.new(),
+  promtail: promtail.new(),
+  nodeExporter: nodeExporter.new(),
+  smartctlExporter: smartctlExporter.new(),
+  nutExporter: nutExporter.new(),
+  kubeStateMetrics: kubeStateMetrics.new(),
   victoriametrics: victoriametrics.new(),
 })
