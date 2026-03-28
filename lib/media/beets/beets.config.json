@@ -27,7 +27,7 @@
         "resume": "ask",
         "incremental": true,
         "quiet_fallback": "skip",
-        "timid": true,
+        "timid": false,
         "log": "/data/beet.log"
     },
     "lastgenre": {
