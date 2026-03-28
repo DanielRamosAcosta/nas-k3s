@@ -63,8 +63,6 @@ spec:
           name: data
         - mountPath: /music
           name: music
-        - mountPath: /downloads
-          name: downloads
         - mountPath: /config/config.yaml
           name: config-yaml
           subPath: config.yaml
@@ -75,9 +73,6 @@ spec:
       - hostPath:
           path: /cold-data/media/music/library/all
         name: music
-      - hostPath:
-          path: /cold-data/media/music/downloads
-        name: downloads
       - configMap:
           name: config-yaml
         name: config-yaml

@@ -21,7 +21,7 @@ data:
       "move": false
       "quiet_fallback": "skip"
       "resume": "ask"
-      "timid": true
+      "timid": false
       "write": true
     "lastgenre":
       "auto": false
