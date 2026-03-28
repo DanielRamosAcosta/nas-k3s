@@ -28,6 +28,7 @@
     "argocd/Application-sonarr.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-traefik.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-valkey.yaml": "environments/argocd/main.jsonnet",
+    "argocd/Application-victoriametrics.yaml": "environments/argocd/main.jsonnet",
     "argocd/ClusterRole-argocd-application-controller.yaml": "environments/argocd/main.jsonnet",
     "argocd/ClusterRole-argocd-notifications-controller.yaml": "environments/argocd/main.jsonnet",
     "argocd/ClusterRole-argocd-server.yaml": "environments/argocd/main.jsonnet",
@@ -275,5 +276,11 @@
     "traefik/ServiceAccount-traefik.yaml": "environments/system/main.jsonnet",
     "traefik/TLSStore-default.yaml": "environments/system/main.jsonnet",
     "valkey/Service-valkey.yaml": "environments/databases/main.jsonnet",
-    "valkey/StatefulSet-valkey.yaml": "environments/databases/main.jsonnet"
+    "valkey/StatefulSet-valkey.yaml": "environments/databases/main.jsonnet",
+    "victoriametrics/ClusterRole-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
+    "victoriametrics/ClusterRoleBinding-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
+    "victoriametrics/ConfigMap-victoriametrics-yml.yaml": "environments/monitoring/main.jsonnet",
+    "victoriametrics/Service-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
+    "victoriametrics/ServiceAccount-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
+    "victoriametrics/StatefulSet-victoriametrics.yaml": "environments/monitoring/main.jsonnet"
 }

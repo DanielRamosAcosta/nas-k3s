@@ -1,0 +1,14 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app: victoriametrics
+  name: victoriametrics
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: victoriametrics
+subjects:
+- kind: ServiceAccount
+  name: victoriametrics
+  namespace: monitoring

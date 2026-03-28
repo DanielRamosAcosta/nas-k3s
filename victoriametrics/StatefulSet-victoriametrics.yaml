@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: victoriametrics
+  name: victoriametrics
+  namespace: monitoring
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: victoriametrics
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: victoriametrics
+    spec:
+      containers:
+      - args:
+        - -promscrape.config=/etc/victoriametrics/victoriametrics.yml
+        - -storageDataPath=/victoria-metrics-data
+        - -retentionPeriod=100y
+        image: victoriametrics/victoria-metrics:v1.138.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/healthy
+            port: 8428
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: victoriametrics
+        ports:
+        - containerPort: 8428
+          name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/healthy
+            port: 8428
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /-/healthy
+            port: 8428
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /victoria-metrics-data
+          name: data
+        - mountPath: /etc/victoriametrics/victoriametrics.yml
+          name: victoriametrics-yml
+          subPath: victoriametrics.yml
+      serviceAccount: victoriametrics
+      volumes:
+      - configMap:
+          name: victoriametrics-yml
+        name: victoriametrics-yml
+      - hostPath:
+          path: /data/victoriametrics/data
+        name: data
+  updateStrategy:
+    type: RollingUpdate
