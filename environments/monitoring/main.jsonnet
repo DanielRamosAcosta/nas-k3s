@@ -6,6 +6,7 @@ local nutExporter = import 'monitoring/nut-exporter/nut-exporter.libsonnet';
 local prometheus = import 'monitoring/prometheus/prometheus.libsonnet';
 local promtail = import 'monitoring/promtail/promtail.libsonnet';
 local smartctlExporter = import 'monitoring/smartctl-exporter/smartctl-exporter.libsonnet';
+local victoriametrics = import 'monitoring/victoriametrics/victoriametrics.libsonnet';
 local u = import 'utils.libsonnet';
 
 {
@@ -17,4 +18,5 @@ local u = import 'utils.libsonnet';
   smartctlExporter: u.labelApp('monitoring-exporters', smartctlExporter.new()),
   nutExporter: u.labelApp('monitoring-exporters', nutExporter.new()),
   kubeStateMetrics: u.labelApp('monitoring-exporters', kubeStateMetrics.new()),
+  victoriametrics: u.labelApp('victoriametrics', victoriametrics.new()),
 }

@@ -39,6 +39,10 @@
     "image": "docker.io/prom/prometheus",
     "version": "v3.10.0"
   },
+  "victoriametrics": {
+    "image": "victoriametrics/victoria-metrics",
+    "version": "v1.138.0"
+  },
   "nodeExporter": {
     "image": "quay.io/prometheus/node-exporter",
     "version": "v1.10.2"
