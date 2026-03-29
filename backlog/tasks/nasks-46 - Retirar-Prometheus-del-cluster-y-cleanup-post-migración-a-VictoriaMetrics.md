@@ -1,9 +1,10 @@
 ---
 id: NASKS-46
 title: Retirar Prometheus del cluster y cleanup post-migración a VictoriaMetrics
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-28 14:14'
+updated_date: '2026-03-28 20:05'
 labels:
   - monitoring
   - cleanup
@@ -14,6 +15,7 @@ references:
   - environments/monitoring/main.jsonnet
   - lib/versions.json
 priority: medium
+ordinal: 0.00762939453125
 ---
 
 ## Description

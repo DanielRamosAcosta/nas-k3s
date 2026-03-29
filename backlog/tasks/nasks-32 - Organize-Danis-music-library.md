@@ -1,17 +1,17 @@
 ---
 id: NASKS-32
 title: Organize Dani's music library
-status: Done
+status: In Progress
 assignee: []
 created_date: '2026-03-19 08:20'
-updated_date: '2026-03-28 17:02'
+updated_date: '2026-03-29 12:07'
 labels:
   - media
   - chore
   - manual
 dependencies: []
 priority: low
-ordinal: 0.0152587890625
+ordinal: 1000
 ---
 
 ## Description

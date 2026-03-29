@@ -3,7 +3,7 @@
     "plugins": "musicbrainz fetchart embedart convert scrub replaygain lastgenre chroma web missing",
     "directory": "/music",
     "library": "/data/musiclibrary.blb",
-    "art_filename": "albumart",
+    "art_filename": "cover",
     "threaded": true,
     "original_date": false,
     "per_disc_numbering": false,
@@ -34,11 +34,11 @@
         "auto": false,
         "source": "album"
     },
-    "embedart": {
-        "auto": true
-    },
     "fetchart": {
         "auto": true
+    },
+    "embedart": {
+        "auto": false
     },
     "replaygain": {
         "auto": false,
