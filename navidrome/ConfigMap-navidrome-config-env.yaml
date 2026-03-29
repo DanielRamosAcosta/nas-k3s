@@ -1,6 +1,7 @@
 apiVersion: v1
 data:
   ND_BASEURL: https://music.danielramos.me
+  ND_ENABLETRANSCODINGCONFIG: "true"
 kind: ConfigMap
 metadata:
   labels:

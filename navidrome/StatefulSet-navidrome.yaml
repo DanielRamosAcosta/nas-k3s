@@ -24,6 +24,11 @@ spec:
             configMapKeyRef:
               key: ND_BASEURL
               name: navidrome-config-env
+        - name: ND_ENABLETRANSCODINGCONFIG
+          valueFrom:
+            configMapKeyRef:
+              key: ND_ENABLETRANSCODINGCONFIG
+              name: navidrome-config-env
         - name: ND_LASTFM_APIKEY
           valueFrom:
             secretKeyRef:
