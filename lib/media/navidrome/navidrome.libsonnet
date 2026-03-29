@@ -36,6 +36,7 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
 
     configEnv: u.configMap.forEnv(self.statefulSet, {
       ND_BASEURL: 'https://music.danielramos.me',
+      ND_ENABLETRANSCODINGCONFIG: 'true',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.navidrome),
