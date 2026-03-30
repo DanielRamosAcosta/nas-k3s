@@ -34,6 +34,11 @@ spec:
             configMapKeyRef:
               key: TZ
               name: beets-config-env
+        - name: UMASK
+          valueFrom:
+            configMapKeyRef:
+              key: UMASK
+              name: beets-config-env
         image: lscr.io/linuxserver/beets:2.6.1-ls311
         imagePullPolicy: IfNotPresent
         livenessProbe:

@@ -3,6 +3,7 @@ data:
   PGID: "100"
   PUID: "1000"
   TZ: Atlantic/Canary
+  UMASK: "002"
 kind: ConfigMap
 metadata:
   labels:
