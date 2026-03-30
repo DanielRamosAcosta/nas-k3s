@@ -37,6 +37,7 @@ local beetsConfig = import './beets.config.json';
     configEnv: u.configMap.forEnv(self.statefulSet, {
       PUID: '1000',
       PGID: '100',
+      UMASK: '002',
       TZ: 'Atlantic/Canary',
     }),
 

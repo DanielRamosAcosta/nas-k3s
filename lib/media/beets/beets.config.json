@@ -3,6 +3,7 @@
     "plugins": "musicbrainz fetchart embedart convert scrub replaygain lastgenre chroma web missing",
     "directory": "/music",
     "library": "/data/musiclibrary.blb",
+    "statefile": "/data/state.pickle",
     "art_filename": "cover",
     "threaded": true,
     "original_date": false,
