@@ -130,19 +130,67 @@ spec:
           name: configuration-yml
           subPath: configuration.yml
         - mountPath: /config/users_database.yml
-          name: users-database-yml-sealed-secret
+          name: merged-users
+          readOnly: true
           subPath: users_database.yml
         - mountPath: /config/secrets/oidc/jwks/rsa.2048.key
           name: rsa-2048-key-sealed-secret
           subPath: rsa.2048.key
       enableServiceLinks: false
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - envsubst < /data/users_database.yml > /output/users_database.yml
+        env:
+        - name: USER_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_ADMIN_PASSWORD
+              name: authelia-user-passwords
+        - name: USER_ALEX_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_ALEX_PASSWORD
+              name: authelia-user-passwords
+        - name: USER_ANA_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_ANA_PASSWORD
+              name: authelia-user-passwords
+        - name: USER_CRIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_CRIS_PASSWORD
+              name: authelia-user-passwords
+        - name: USER_DANI_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_DANI_PASSWORD
+              name: authelia-user-passwords
+        - name: USER_GABRIEL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_GABRIEL_PASSWORD
+              name: authelia-user-passwords
+        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
+        imagePullPolicy: IfNotPresent
+        name: render-users
+        volumeMounts:
+        - mountPath: /data/users_database.yml
+          name: users-database-yml
+          subPath: users_database.yml
+        - mountPath: /output
+          name: merged-users
       volumes:
       - configMap:
           name: configuration-yml
         name: configuration-yml
-      - name: users-database-yml-sealed-secret
-        secret:
-          secretName: users-database-yml-sealed-secret
       - name: rsa-2048-key-sealed-secret
         secret:
           secretName: rsa-2048-key-sealed-secret
+      - configMap:
+          name: users-database-yml
+        name: users-database-yml
+      - emptyDir: {}
+        name: merged-users

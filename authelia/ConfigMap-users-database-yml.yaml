@@ -1,0 +1,78 @@
+apiVersion: v1
+data:
+  users_database.yml: |
+    users:
+      admin:
+        disabled: false
+        displayname: Dani
+        email: danielramosacosta1+admin@gmail.com
+        family_name: Ramos Acosta
+        given_name: Daniel
+        groups:
+          - admins
+        locale: es-ES
+        password: '$USER_ADMIN_PASSWORD'
+        picture: https://2.gravatar.com/avatar/bd9cf3cfa5c4875128bdd435d7f304403c6c883442670a1cd201abf85d3858d1?size=512&d=initials
+        zoneinfo: Europe/Madrid
+      alex:
+        disabled: false
+        displayname: Alex
+        email: alexsaxramos@gmail.com
+        family_name: Ramos García
+        given_name: Alexander
+        groups: []
+        locale: es-ES
+        password: '$USER_ALEX_PASSWORD'
+        picture: https://2.gravatar.com/avatar/6bc544db0e0d3242bb0f72894672cfb24635d29f02a2c9164368a9612b923374?size=512&d=initials
+        zoneinfo: Atlantic/Canary
+      ana:
+        disabled: false
+        displayname: Ana
+        email: ana_acosta@live.com
+        family_name: Acosta García
+        given_name: Ana
+        groups: []
+        locale: es-ES
+        password: '$USER_ANA_PASSWORD'
+        picture: https://1.gravatar.com/avatar/c1bb07abcadf81a38641e42d64a3181ca22c3807b49abc49798ce72e9cf45007?size=512&d=initials
+        zoneinfo: Atlantic/Canary
+      cris:
+        disabled: false
+        displayname: Cris
+        email: ivhcristinaguardia@gmail.com
+        family_name: Guardia Trujillo
+        given_name: Cristina
+        groups: []
+        locale: es-ES
+        password: '$USER_CRIS_PASSWORD'
+        picture: https://2.gravatar.com/avatar/3780877d4745ddac6f733933240f62fddc3c4ded1a78571ac710b36d6dd96673?size=512&d=initials
+        zoneinfo: Europe/Madrid
+      dani:
+        disabled: false
+        displayname: Dani
+        email: danielramosacosta1@gmail.com
+        family_name: Ramos Acosta
+        given_name: Daniel
+        groups:
+          - admins
+        locale: es-ES
+        password: '$USER_DANI_PASSWORD'
+        picture: https://2.gravatar.com/avatar/bd9cf3cfa5c4875128bdd435d7f304403c6c883442670a1cd201abf85d3858d1?size=512&d=initials
+        zoneinfo: Europe/Madrid
+      gabriel:
+        disabled: false
+        displayname: Gabriel
+        email: gabrielramosacosta1@gmail.com
+        family_name: Ramos Acosta
+        given_name: Gabriel
+        groups: []
+        locale: es-ES
+        password: '$USER_GABRIEL_PASSWORD'
+        picture: https://2.gravatar.com/avatar/f7454bbabbe58703669567dfe8bdeb80cfc79ffef303ca8f8ba12fc6238521c7?size=512&d=initials
+        zoneinfo: Atlantic/Canary
+kind: ConfigMap
+metadata:
+  labels:
+    app: authelia
+  name: users-database-yml
+  namespace: auth
