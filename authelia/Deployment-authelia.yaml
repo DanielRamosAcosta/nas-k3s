@@ -153,6 +153,11 @@ spec:
             secretKeyRef:
               key: USER_ALEX_PASSWORD
               name: authelia-user-passwords
+        - name: USER_ALE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_ALE_PASSWORD
+              name: authelia-user-passwords
         - name: USER_ANA_PASSWORD
           valueFrom:
             secretKeyRef:

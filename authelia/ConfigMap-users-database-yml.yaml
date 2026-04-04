@@ -59,6 +59,17 @@ data:
         password: '$USER_DANI_PASSWORD'
         picture: https://2.gravatar.com/avatar/bd9cf3cfa5c4875128bdd435d7f304403c6c883442670a1cd201abf85d3858d1?size=512&d=initials
         zoneinfo: Europe/Madrid
+      ale:
+        disabled: false
+        displayname: Ale
+        email: alejandrahdez105@gmail.com
+        family_name: Hernández Hernández
+        given_name: Alejandra
+        groups: []
+        locale: es-ES
+        password: '$USER_ALE_PASSWORD'
+        picture: https://2.gravatar.com/avatar/77152eb68e52775a78fe63b08ce0b728ebc5bf7ea019fc01e0e08254bc7615f6?size=512&d=initials
+        zoneinfo: Atlantic/Canary
       gabriel:
         disabled: false
         displayname: Gabriel
