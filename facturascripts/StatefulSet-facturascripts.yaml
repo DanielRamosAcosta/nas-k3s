@@ -21,7 +21,7 @@ spec:
       - command:
         - sh
         - -c
-        - cp htaccess-sample .htaccess && apache2-foreground
+        - cp /var/www/html/htaccess-sample /var/www/html/.htaccess && apache2-foreground
         env:
         - name: TZ
           value: Atlantic/Canary
