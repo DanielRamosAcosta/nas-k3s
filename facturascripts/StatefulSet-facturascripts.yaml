@@ -18,23 +18,19 @@ spec:
         name: facturascripts
     spec:
       containers:
-      - env:
+      - command:
+        - sh
+        - -c
+        - cp htaccess-sample .htaccess && apache2-foreground
+        env:
         - name: TZ
           value: Atlantic/Canary
         image: docker.io/facturascripts/facturascripts:2025.81
         imagePullPolicy: IfNotPresent
-        lifecycle:
-          postStart:
-            exec:
-              command:
-              - sh
-              - -c
-              - cp htaccess-sample .htaccess && sleep 3 && curl -s http://localhost/deploy
-                > /dev/null
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /
+            path: /deploy
             port: 80
             scheme: HTTP
           initialDelaySeconds: 15
@@ -47,7 +43,7 @@ spec:
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /
+            path: /deploy
             port: 80
             scheme: HTTP
           initialDelaySeconds: 5
@@ -56,7 +52,7 @@ spec:
         startupProbe:
           failureThreshold: 30
           httpGet:
-            path: /
+            path: /deploy
             port: 80
             scheme: HTTP
           periodSeconds: 10
