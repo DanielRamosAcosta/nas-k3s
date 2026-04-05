@@ -1,5 +1,4 @@
 <?php
-define('FS_FOLDER', '/var/www/html');
 define('FS_DB_TYPE', 'postgresql');
 define('FS_DB_HOST', 'postgres.databases.svc.cluster.local');
 define('FS_DB_PORT', 5432);
