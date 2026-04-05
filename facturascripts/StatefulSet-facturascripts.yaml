@@ -23,6 +23,14 @@ spec:
           value: Atlantic/Canary
         image: docker.io/facturascripts/facturascripts:2025.81
         imagePullPolicy: IfNotPresent
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - sh
+              - -c
+              - cp htaccess-sample .htaccess && sleep 3 && curl -s http://localhost/deploy
+                > /dev/null
         livenessProbe:
           failureThreshold: 3
           httpGet:
