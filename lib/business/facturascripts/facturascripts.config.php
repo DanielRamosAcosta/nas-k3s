@@ -1,4 +1,5 @@
 <?php
+define('FS_FOLDER', '/var/www/html');
 define('FS_DB_TYPE', 'postgresql');
 define('FS_DB_HOST', 'postgres.databases.svc.cluster.local');
 define('FS_DB_PORT', 5432);
@@ -7,3 +8,8 @@ define('FS_DB_USER', 'facturascripts');
 define('FS_DB_PASS', '${FS_DB_PASS}');
 define('FS_LANG', 'es_ES');
 define('FS_TIMEZONE', 'Atlantic/Canary');
+define('FS_DEBUG', false);
+define('FS_COOKIES_EXPIRE', 31536000);
+define('FS_ROUTE', '');
+define('FS_DB_FOREIGN_KEYS', true);
+define('FS_DB_TYPE_CHECK', true);
