@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: facturascripts
+  name: facturascripts-ingressroute
+  namespace: business
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`facturas.danielramos.me`)
+    services:
+    - name: facturascripts
+      port: 80
+  tls:
+    store:
+      name: default

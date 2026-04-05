@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: facturascripts
+  name: facturascripts
+  namespace: business
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: facturascripts
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: facturascripts
+    spec:
+      containers:
+      - env:
+        - name: TZ
+          value: Atlantic/Canary
+        image: docker.io/facturascripts/facturascripts:2025.81
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: facturascripts
+        ports:
+        - containerPort: 80
+          name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /var/www/html/config.php
+          name: config-output
+          subPath: config.php
+        - mountPath: /var/www/html/Plugins
+          name: plugins
+        - mountPath: /var/www/html/MyFiles
+          name: myfiles
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - envsubst < /mnt/config-template/config.php > /mnt/config/config.php
+        env:
+        - name: FS_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: FS_DB_PASS
+              name: facturascripts-db
+        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
+        imagePullPolicy: IfNotPresent
+        name: render-config
+        volumeMounts:
+        - mountPath: /mnt/config-template/config.php
+          name: config-php
+          subPath: config.php
+        - mountPath: /mnt/config
+          name: config-output
+      volumes:
+      - emptyDir: {}
+        name: config-output
+      - hostPath:
+          path: /data/facturascripts/plugins
+        name: plugins
+      - hostPath:
+          path: /cold-data/facturascripts/myfiles
+        name: myfiles
+      - configMap:
+          name: config-php
+        name: config-php
+      - name: facturascripts-db
+        secret:
+          secretName: facturascripts-db
+  updateStrategy:
+    type: RollingUpdate
