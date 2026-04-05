@@ -18,7 +18,18 @@ spec:
         name: facturascripts
     spec:
       containers:
-      - env:
+      - command:
+        - bash
+        - -c
+        - |
+          # Copy app source to webroot (same as official entrypoint)
+          if [ ! -f /var/www/html/.htaccess ]; then
+            cp -r /usr/src/facturascripts/* /var/www/html/
+            cp /var/www/html/htaccess-sample /var/www/html/.htaccess
+            chmod -R o+w /var/www/html
+          fi
+          exec apache2-foreground
+        env:
         - name: TZ
           value: Atlantic/Canary
         image: docker.io/facturascripts/facturascripts:2025.81
