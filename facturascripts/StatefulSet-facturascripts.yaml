@@ -18,12 +18,7 @@ spec:
         name: facturascripts
     spec:
       containers:
-      - command:
-        - sh
-        - -c
-        - cp -a /usr/src/facturascripts/. /var/www/html/ && cp /var/www/html/htaccess-sample
-          /var/www/html/.htaccess && apache2-foreground
-        env:
+      - env:
         - name: TZ
           value: Atlantic/Canary
         image: docker.io/facturascripts/facturascripts:2025.81
