@@ -12,7 +12,7 @@ local app = argocdLib.argoproj.v1alpha1.application;
     + app.spec.source.withPath(path)
     + app.spec.destination.withServer('https://kubernetes.default.svc')
     + app.spec.destination.withNamespace(namespace)
-    + app.spec.syncPolicy.withSyncOptions(['ServerSideApply=true'])
+    + app.spec.syncPolicy.withSyncOptions(['ServerSideApply=true', 'CreateNamespace=true'])
     + app.spec.syncPolicy.automated.withPrune(true)
     + app.spec.syncPolicy.automated.withSelfHeal(true),
 
