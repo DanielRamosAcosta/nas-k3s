@@ -134,5 +134,9 @@
   "busybox": {
     "image": "busybox",
     "version": "1.37.0"
+  },
+  "facturascripts": {
+    "image": "docker.io/facturascripts/facturascripts",
+    "version": "2025.81"
   }
 }
