@@ -5,6 +5,7 @@
     "argocd/Application-booklore.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-cloudflare.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-deluge.yaml": "environments/argocd/main.jsonnet",
+    "argocd/Application-facturascripts.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-gluetun.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-grafana.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-immich.yaml": "environments/argocd/main.jsonnet",
