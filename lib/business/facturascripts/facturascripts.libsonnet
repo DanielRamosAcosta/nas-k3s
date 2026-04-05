@@ -28,7 +28,7 @@ local configPhpTemplate = importstr './facturascripts.config.php';
       container.withCommand([
         'sh',
         '-c',
-        'cp htaccess-sample .htaccess && apache2-foreground',
+        'cp /var/www/html/htaccess-sample /var/www/html/.htaccess && apache2-foreground',
       ]) +
       u.probes.withStartup.http('/deploy', 80),
     ]) + statefulSet.spec.template.spec.withInitContainers([
