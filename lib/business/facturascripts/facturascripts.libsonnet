@@ -25,11 +25,6 @@ local configPhpTemplate = importstr './facturascripts.config.php';
         volumeMount.new('plugins', '/var/www/html/Plugins'),
         volumeMount.new('myfiles', '/var/www/html/MyFiles'),
       ]) +
-      container.withCommand([
-        'sh',
-        '-c',
-        'cp -a /usr/src/facturascripts/. /var/www/html/ && cp /var/www/html/htaccess-sample /var/www/html/.htaccess && apache2-foreground',
-      ]) +
       u.probes.withStartup.http('/deploy', 80),
     ]) + statefulSet.spec.template.spec.withInitContainers([
       container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
