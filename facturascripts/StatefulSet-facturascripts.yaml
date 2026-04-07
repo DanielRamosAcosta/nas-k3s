@@ -30,8 +30,21 @@ spec:
           fi
           exec apache2-foreground
         env:
+        - name: APACHE_RUN_GROUP
+          valueFrom:
+            configMapKeyRef:
+              key: APACHE_RUN_GROUP
+              name: facturascripts-config-env
+        - name: APACHE_RUN_USER
+          valueFrom:
+            configMapKeyRef:
+              key: APACHE_RUN_USER
+              name: facturascripts-config-env
         - name: TZ
-          value: Atlantic/Canary
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: facturascripts-config-env
         image: docker.io/facturascripts/facturascripts:2025.81
         imagePullPolicy: IfNotPresent
         livenessProbe:

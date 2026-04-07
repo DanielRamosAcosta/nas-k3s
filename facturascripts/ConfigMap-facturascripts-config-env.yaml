@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  APACHE_RUN_GROUP: '#1000'
+  APACHE_RUN_USER: '#1000'
+  TZ: Atlantic/Canary
+kind: ConfigMap
+metadata:
+  labels:
+    app: facturascripts
+  name: facturascripts-config-env
+  namespace: business

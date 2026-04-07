@@ -103,6 +103,7 @@
     "deluge/Service-deluge.yaml": "environments/arr/main.jsonnet",
     "deluge/StatefulSet-deluge.yaml": "environments/arr/main.jsonnet",
     "facturascripts/ConfigMap-config-php.yaml": "environments/business/main.jsonnet",
+    "facturascripts/ConfigMap-facturascripts-config-env.yaml": "environments/business/main.jsonnet",
     "facturascripts/IngressRoute-facturascripts-ingressroute.yaml": "environments/business/main.jsonnet",
     "facturascripts/SealedSecret-facturascripts-db.yaml": "environments/business/main.jsonnet",
     "facturascripts/Service-facturascripts.yaml": "environments/business/main.jsonnet",
