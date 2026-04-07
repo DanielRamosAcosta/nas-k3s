@@ -17,9 +17,9 @@ local configPhpTemplate = importstr './facturascripts.config.php';
     statefulSet: statefulSet.new('facturascripts', replicas=1, containers=[
       container.new('facturascripts', u.image(versions.facturascripts.image, versions.facturascripts.version)) +
       container.withPorts([containerPort.new('http', 80)]) +
-      container.withEnv([
-        k.core.v1.envVar.new('TZ', 'Atlantic/Canary'),
-      ]) +
+      container.withEnv(
+        u.envVars.fromConfigMap(self.configEnv),
+      ) +
       container.withVolumeMounts([
         volumeMount.new(configVolumeName, '/var/www/html/config.php') + volumeMount.withSubPath('config.php'),
         volumeMount.new('plugins', '/var/www/html/Plugins'),
@@ -56,6 +56,12 @@ local configPhpTemplate = importstr './facturascripts.config.php';
     service: k.util.serviceFor(self.statefulSet),
 
     configTemplate: u.configMap.forFile('config.php', configPhpTemplate),
+
+    configEnv: u.configMap.forEnv(self.statefulSet, {
+      TZ: 'Atlantic/Canary',
+      APACHE_RUN_USER: '#1000',
+      APACHE_RUN_GROUP: '#1000',
+    }),
 
     sealedSecret: u.sealedSecret.wide.forEnvNamed('facturascripts-db', secrets.facturascripts),
 
