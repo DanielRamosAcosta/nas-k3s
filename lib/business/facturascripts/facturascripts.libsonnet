@@ -48,7 +48,7 @@ local configPhpTemplate = importstr './facturascripts.config.php';
     ]) + statefulSet.spec.template.spec.withVolumes([
       volume.fromEmptyDir(configVolumeName),
       volume.fromHostPath('plugins', '/data/facturascripts/plugins'),
-      volume.fromHostPath('myfiles', '/cold-data/facturascripts/myfiles'),
+      volume.fromHostPath('myfiles', '/data/facturascripts/myfiles'),
       u.volume.fromConfigMap(self.configTemplate),
       u.volume.fromSealedSecret(self.sealedSecret),
     ]),
