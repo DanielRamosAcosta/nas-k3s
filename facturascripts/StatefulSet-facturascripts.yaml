@@ -99,7 +99,7 @@ spec:
           path: /data/facturascripts/plugins
         name: plugins
       - hostPath:
-          path: /cold-data/facturascripts/myfiles
+          path: /data/facturascripts/myfiles
         name: myfiles
       - configMap:
           name: config-php
