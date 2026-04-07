@@ -135,6 +135,10 @@
     "image": "busybox",
     "version": "1.37.0"
   },
+  "alpine": {
+    "image": "alpine",
+    "version": "3.23.3"
+  },
   "facturascripts": {
     "image": "docker.io/facturascripts/facturascripts",
     "version": "2025.81"

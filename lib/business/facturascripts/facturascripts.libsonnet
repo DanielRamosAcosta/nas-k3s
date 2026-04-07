@@ -6,6 +6,7 @@ local configPhpTemplate = importstr './facturascripts.config.php';
 
 {
   local statefulSet = k.apps.v1.statefulSet,
+  local cronJob = k.batch.v1.cronJob,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
   local volume = k.core.v1.volume,
@@ -66,5 +67,35 @@ local configPhpTemplate = importstr './facturascripts.config.php';
     sealedSecret: u.sealedSecret.wide.forEnvNamed('facturascripts-db', secrets.facturascripts),
 
     ingressRoute: u.ingressRoute.from(self.service, 'facturas.danielramos.me'),
+
+    // Sync MyFiles from SSD to HDD daily at 3 AM
+    myfilesBackupCron: cronJob.new(
+      name='facturascripts-myfiles-backup',
+      schedule='0 3 * * *',
+      containers=[
+        container.new('rsync', u.image(versions.alpine.image, versions.alpine.version)) +
+        container.withCommand(['sh', '-c', |||
+          apk add --no-cache rsync > /dev/null
+          rsync -a --delete \
+            --exclude='Cache/' \
+            --exclude='Tmp/' \
+            --exclude='routes.json' \
+            --exclude='.snapshots/' \
+            /mnt/source/ /mnt/dest/
+        |||]) +
+        container.withVolumeMounts([
+          volumeMount.new('source', '/mnt/source', true),
+          volumeMount.new('dest', '/mnt/dest'),
+        ]),
+      ]
+    ) +
+    cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
+    cronJob.spec.withConcurrencyPolicy('Forbid') +
+    cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
+    cronJob.spec.withFailedJobsHistoryLimit(3) +
+    cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
+      volume.fromHostPath('source', '/data/facturascripts/myfiles'),
+      volume.fromHostPath('dest', '/cold-data/contabilidad'),
+    ]),
   },
 }
