@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: facturascripts
+  name: facturascripts-myfiles-backup
+  namespace: business
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: facturascripts-myfiles-backup
+        spec:
+          containers:
+          - command:
+            - sh
+            - -c
+            - |
+              rsync -a --delete \
+                --exclude='Cache/' \
+                --exclude='Tmp/' \
+                --exclude='routes.json' \
+                --exclude='.snapshots/' \
+                /mnt/source/ /mnt/dest/
+            image: instrumentisto/rsync-ssh:alpine3.23-r3
+            imagePullPolicy: IfNotPresent
+            name: rsync
+            volumeMounts:
+            - mountPath: /mnt/source
+              name: source
+              readOnly: true
+            - mountPath: /mnt/dest
+              name: dest
+          restartPolicy: OnFailure
+          securityContext:
+            runAsGroup: 1000
+            runAsUser: 1000
+          volumes:
+          - hostPath:
+              path: /data/facturascripts/myfiles
+            name: source
+          - hostPath:
+              path: /cold-data/contabilidad
+            name: dest
+  schedule: 0 3 * * *
+  successfulJobsHistoryLimit: 3
