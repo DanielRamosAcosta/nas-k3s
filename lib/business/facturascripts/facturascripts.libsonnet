@@ -73,9 +73,8 @@ local configPhpTemplate = importstr './facturascripts.config.php';
       name='facturascripts-myfiles-backup',
       schedule='0 3 * * *',
       containers=[
-        container.new('rsync', u.image(versions.alpine.image, versions.alpine.version)) +
+        container.new('rsync', u.image(versions.rsync.image, versions.rsync.version)) +
         container.withCommand(['sh', '-c', |||
-          apk add --no-cache rsync > /dev/null
           rsync -a --delete \
             --exclude='Cache/' \
             --exclude='Tmp/' \
@@ -89,6 +88,8 @@ local configPhpTemplate = importstr './facturascripts.config.php';
         ]),
       ]
     ) +
+    cronJob.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(1000) +
+    cronJob.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(1000) +
     cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
     cronJob.spec.withConcurrencyPolicy('Forbid') +
     cronJob.spec.withSuccessfulJobsHistoryLimit(3) +

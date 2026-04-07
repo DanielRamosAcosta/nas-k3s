@@ -135,9 +135,9 @@
     "image": "busybox",
     "version": "1.37.0"
   },
-  "alpine": {
-    "image": "alpine",
-    "version": "3.23.3"
+  "rsync": {
+    "image": "instrumentisto/rsync-ssh",
+    "version": "alpine3.23-r3"
   },
   "facturascripts": {
     "image": "docker.io/facturascripts/facturascripts",
