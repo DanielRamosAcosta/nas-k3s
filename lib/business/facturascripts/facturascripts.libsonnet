@@ -70,33 +70,33 @@ local configPhpTemplate = importstr './facturascripts.config.php';
 
     // Sync MyFiles from SSD to HDD daily at 3 AM
     myfilesBackupCron: cronJob.new(
-      name='facturascripts-myfiles-backup',
-      schedule='0 3 * * *',
-      containers=[
-        container.new('rsync', u.image(versions.rsync.image, versions.rsync.version)) +
-        container.withCommand(['sh', '-c', |||
-          rsync -a --delete \
-            --exclude='Cache/' \
-            --exclude='Tmp/' \
-            --exclude='routes.json' \
-            --exclude='.snapshots/' \
-            /mnt/source/ /mnt/dest/
-        |||]) +
-        container.withVolumeMounts([
-          volumeMount.new('source', '/mnt/source', true),
-          volumeMount.new('dest', '/mnt/dest'),
-        ]),
-      ]
-    ) +
-    cronJob.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(1000) +
-    cronJob.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(1000) +
-    cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
-    cronJob.spec.withConcurrencyPolicy('Forbid') +
-    cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
-    cronJob.spec.withFailedJobsHistoryLimit(3) +
-    cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
-      volume.fromHostPath('source', '/data/facturascripts/myfiles'),
-      volume.fromHostPath('dest', '/cold-data/contabilidad'),
-    ]),
+                         name='facturascripts-myfiles-backup',
+                         schedule='0 3 * * *',
+                         containers=[
+                           container.new('rsync', u.image(versions.rsync.image, versions.rsync.version)) +
+                           container.withCommand(['sh', '-c', |||
+                             rsync -a --delete \
+                               --exclude='Cache/' \
+                               --exclude='Tmp/' \
+                               --exclude='routes.json' \
+                               --exclude='.snapshots/' \
+                               /mnt/source/ /mnt/dest/
+                           |||]) +
+                           container.withVolumeMounts([
+                             volumeMount.new('source', '/mnt/source', true),
+                             volumeMount.new('dest', '/mnt/dest'),
+                           ]),
+                         ]
+                       ) +
+                       cronJob.spec.jobTemplate.spec.template.spec.securityContext.withRunAsUser(1000) +
+                       cronJob.spec.jobTemplate.spec.template.spec.securityContext.withRunAsGroup(1000) +
+                       cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
+                       cronJob.spec.withConcurrencyPolicy('Forbid') +
+                       cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
+                       cronJob.spec.withFailedJobsHistoryLimit(3) +
+                       cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
+                         volume.fromHostPath('source', '/data/facturascripts/myfiles'),
+                         volume.fromHostPath('dest', '/cold-data/contabilidad'),
+                       ]),
   },
 }
