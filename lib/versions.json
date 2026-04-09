@@ -9,7 +9,7 @@
   },
   "navidrome": {
     "image": "docker.io/deluan/navidrome",
-    "version": "0.60.3"
+    "version": "0.61.1"
   },
   "sftpgo": {
     "image": "docker.io/drakkan/sftpgo",
