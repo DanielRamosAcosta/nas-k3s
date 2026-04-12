@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: slskd
   name: slskd
   namespace: arr
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: slskd
@@ -116,5 +118,3 @@ spec:
       - configMap:
           name: slskd-yml
         name: slskd-yml
-  updateStrategy:
-    type: RollingUpdate

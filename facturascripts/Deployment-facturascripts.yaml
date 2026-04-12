@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: facturascripts
   name: facturascripts
   namespace: business
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: facturascripts
@@ -120,5 +122,3 @@ spec:
       - name: facturascripts-db
         secret:
           secretName: facturascripts-db
-  updateStrategy:
-    type: RollingUpdate

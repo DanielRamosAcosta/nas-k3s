@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: sftpgo
   name: sftpgo
   namespace: media
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: sftpgo
@@ -77,5 +79,3 @@ spec:
       - hostPath:
           path: /cold-data/sftpgo/data
         name: data
-  updateStrategy:
-    type: RollingUpdate

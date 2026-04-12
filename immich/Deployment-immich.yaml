@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: immich
   name: immich
   namespace: media
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: immich
@@ -136,5 +138,3 @@ spec:
         name: config-json
       - emptyDir: {}
         name: merged-config
-  updateStrategy:
-    type: RollingUpdate

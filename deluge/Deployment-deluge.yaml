@@ -1,69 +1,78 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
-    app: radarr
-  name: radarr
+    app: deluge
+  name: deluge
   namespace: arr
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      name: radarr
+      name: deluge
   template:
     metadata:
       annotations:
         reloader.stakater.com/auto: "true"
       labels:
-        name: radarr
+        name: deluge
     spec:
       containers:
       - env:
+        - name: DELUGE_LOGLEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: DELUGE_LOGLEVEL
+              name: deluge-config-env
         - name: PGID
           valueFrom:
             configMapKeyRef:
               key: PGID
-              name: radarr-config-env
+              name: deluge-config-env
         - name: PUID
           valueFrom:
             configMapKeyRef:
               key: PUID
-              name: radarr-config-env
-        - name: RADARR__LOG__CONSOLEFORMAT
-          valueFrom:
-            configMapKeyRef:
-              key: RADARR__LOG__CONSOLEFORMAT
-              name: radarr-config-env
+              name: deluge-config-env
         - name: TZ
           valueFrom:
             configMapKeyRef:
               key: TZ
-              name: radarr-config-env
+              name: deluge-config-env
         - name: UMASK
           valueFrom:
             configMapKeyRef:
               key: UMASK
-              name: radarr-config-env
-        image: ghcr.io/hotio/radarr:release-6.0.4.10291
+              name: deluge-config-env
+        image: docker.io/linuxserver/deluge:2.2.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /ping
-            port: 7878
+            path: /
+            port: 8112
             scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 30
           timeoutSeconds: 5
-        name: radarr
+        name: deluge
         ports:
-        - containerPort: 7878
-          name: http
+        - containerPort: 8112
+          name: web
+        - containerPort: 58846
+          name: daemon
+        - containerPort: 58946
+          name: peer-tcp
+        - containerPort: 58946
+          name: peer-udp
+          protocol: UDP
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /ping
-            port: 7878
+            path: /
+            port: 8112
             scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
@@ -75,10 +84,8 @@ spec:
           name: data
       volumes:
       - hostPath:
-          path: /data/arr/radarr
+          path: /data/arr/deluge
         name: config
       - hostPath:
           path: /cold-data/media
         name: data
-  updateStrategy:
-    type: RollingUpdate

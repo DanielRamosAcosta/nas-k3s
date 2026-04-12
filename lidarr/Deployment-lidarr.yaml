@@ -1,85 +1,84 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
-    app: beets
-  name: beets
-  namespace: media
+    app: lidarr
+  name: lidarr
+  namespace: arr
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
-      name: beets
+      name: lidarr
   template:
     metadata:
       annotations:
         reloader.stakater.com/auto: "true"
       labels:
-        name: beets
+        name: lidarr
     spec:
       containers:
       - env:
+        - name: LIDARR__LOG__CONSOLEFORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: LIDARR__LOG__CONSOLEFORMAT
+              name: lidarr-config-env
         - name: PGID
           valueFrom:
             configMapKeyRef:
               key: PGID
-              name: beets-config-env
+              name: lidarr-config-env
         - name: PUID
           valueFrom:
             configMapKeyRef:
               key: PUID
-              name: beets-config-env
+              name: lidarr-config-env
         - name: TZ
           valueFrom:
             configMapKeyRef:
               key: TZ
-              name: beets-config-env
+              name: lidarr-config-env
         - name: UMASK
           valueFrom:
             configMapKeyRef:
               key: UMASK
-              name: beets-config-env
-        image: lscr.io/linuxserver/beets:2.6.1-ls311
+              name: lidarr-config-env
+        image: ghcr.io/hotio/lidarr:release-3.1.0.4875
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
           httpGet:
-            path: /
-            port: 8337
+            path: /ping
+            port: 8686
             scheme: HTTP
           initialDelaySeconds: 15
           periodSeconds: 30
           timeoutSeconds: 5
-        name: beets
+        name: lidarr
         ports:
-        - containerPort: 8337
+        - containerPort: 8686
           name: http
         readinessProbe:
           failureThreshold: 3
           httpGet:
-            path: /
-            port: 8337
+            path: /ping
+            port: 8686
             scheme: HTTP
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 5
         volumeMounts:
+        - mountPath: /config
+          name: config
         - mountPath: /data
           name: data
-        - mountPath: /music
-          name: music
-        - mountPath: /config/config.yaml
-          name: config-yaml
-          subPath: config.yaml
       volumes:
       - hostPath:
-          path: /data/beets/data
-        name: data
+          path: /data/arr/lidarr
+        name: config
       - hostPath:
-          path: /cold-data/media/music/library/all
-        name: music
-      - configMap:
-          name: config-yaml
-        name: config-yaml
-  updateStrategy:
-    type: RollingUpdate
+          path: /cold-data/media
+        name: data

@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: booklore
   name: booklore
   namespace: media
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: booklore
@@ -124,5 +126,3 @@ spec:
       - configMap:
           name: logback-spring-xml
         name: logback-spring-xml
-  updateStrategy:
-    type: RollingUpdate

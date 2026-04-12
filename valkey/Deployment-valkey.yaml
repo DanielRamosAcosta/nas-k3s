@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: valkey
   name: valkey
   namespace: databases
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: valkey
@@ -37,5 +39,3 @@ spec:
           tcpSocket:
             port: 6379
           timeoutSeconds: 5
-  updateStrategy:
-    type: RollingUpdate

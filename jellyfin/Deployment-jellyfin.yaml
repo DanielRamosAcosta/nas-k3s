@@ -1,12 +1,14 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   labels:
     app: jellyfin
   name: jellyfin
   namespace: media
 spec:
+  minReadySeconds: 10
   replicas: 1
+  revisionHistoryLimit: 10
   selector:
     matchLabels:
       name: jellyfin
@@ -87,5 +89,3 @@ spec:
           path: /dev/dri
           type: Directory
         name: dri
-  updateStrategy:
-    type: RollingUpdate
