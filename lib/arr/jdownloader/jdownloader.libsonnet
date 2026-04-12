@@ -3,14 +3,14 @@ local versions = import '../../versions.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
+  local deployment = k.apps.v1.deployment,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: statefulSet.new('jdownloader', replicas=1, containers=[
+    deployment: deployment.new('jdownloader', replicas=1, containers=[
                    container.new('jdownloader', u.image(versions.jdownloader.image, versions.jdownloader.version)) +
                    container.withPorts([
                      containerPort.new('web', 5800),
@@ -25,14 +25,14 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    ]) +
                    u.probes.http('/', 5800),
                  ]) +
-                 statefulSet.spec.template.spec.withVolumes([
+                 deployment.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('config', '/data/jdownloader/config'),
                    u.volume.fromHostPath('downloads', '/cold-data/downloads'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.deployment),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       USER_ID: '1000',
       GROUP_ID: '100',
       KEEP_APP_RUNNING: '1',

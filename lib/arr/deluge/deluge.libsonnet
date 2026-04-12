@@ -3,13 +3,13 @@ local versions = import '../../versions.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
+  local deployment = k.apps.v1.deployment,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: statefulSet.new('deluge', replicas=1, containers=[
+    deployment: deployment.new('deluge', replicas=1, containers=[
                    container.new('deluge', u.image(versions.deluge.image, versions.deluge.version)) +
                    container.withPorts([
                      containerPort.new('web', 8112),
@@ -26,14 +26,14 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    ]) +
                    u.probes.http('/', 8112),
                  ]) +
-                 statefulSet.spec.template.spec.withVolumes([
+                 deployment.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('config', '/data/arr/deluge'),
                    u.volume.fromHostPath('data', '/cold-data/media'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.deployment),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       PUID: '1000',
       PGID: '100',
       UMASK: '002',

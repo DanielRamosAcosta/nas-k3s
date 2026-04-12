@@ -7,7 +7,6 @@ local secrets = import 'media/immich/immich.secrets.json';
 local immichConfig = importstr './immich.config.json';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
   local deployment = k.apps.v1.deployment,
   local service = k.core.v1.service,
   local container = k.core.v1.container,
@@ -16,7 +15,7 @@ local immichConfig = importstr './immich.config.json';
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: statefulSet.new('immich', replicas=1, containers=[
+    deployment: deployment.new('immich', replicas=1, containers=[
                    container.new('immich', u.image(versions.immich.image, versions.immich.version)) +
                    container.withPorts(
                      [containerPort.new('server', 2283)]
@@ -31,7 +30,7 @@ local immichConfig = importstr './immich.config.json';
                    ]) +
                    u.probes.withStartup.http('/api/server/ping', 2283),
                  ]) +
-                 statefulSet.spec.template.spec.withInitContainers(
+                 deployment.spec.template.spec.withInitContainers(
                    container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
                    container.withCommand(['sh', '-c', 'envsubst < /data/config.json > /output/immich.json']) +
                    container.withEnv(
@@ -42,15 +41,15 @@ local immichConfig = importstr './immich.config.json';
                      volumeMount.new('merged-config', '/output'),
                    ])
                  ) +
-                 statefulSet.spec.template.spec.withVolumes([
+                 deployment.spec.template.spec.withVolumes([
                    volume.fromHostPath('upload', '/cold-data/immich/upload'),
                    u.volume.fromConfigMap(self.immichConfigPublic),
                    volume.fromEmptyDir('merged-config'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='8081'),
+    service: k.util.serviceFor(self.deployment) + u.metrics(port='8081'),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       DB_HOSTNAME: 'postgres.databases.svc.cluster.local',
       DB_USERNAME: 'immich',
       REDIS_HOSTNAME: 'valkey.databases.svc.cluster.local',
@@ -64,7 +63,7 @@ local immichConfig = importstr './immich.config.json';
       DB_PASSWORD: postgresSecrets.userImmich,
     }),
 
-    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.immich),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.immich),
 
     immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
 

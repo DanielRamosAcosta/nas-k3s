@@ -4,7 +4,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 local secrets = import 'media/navidrome/navidrome.secrets.json';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
+  local deployment = k.apps.v1.deployment,
   local service = k.core.v1.service,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
@@ -12,7 +12,7 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: statefulSet.new('navidrome', replicas=1, containers=[
+    deployment: deployment.new('navidrome', replicas=1, containers=[
                    container.new('navidrome', u.image(versions.navidrome.image, versions.navidrome.version)) +
                    container.withPorts(
                      [containerPort.new('server', 4533)]
@@ -27,19 +27,19 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
                    ]) +
                    u.probes.http('/ping', 4533),
                  ]) +
-                 statefulSet.spec.template.spec.withVolumes([
+                 deployment.spec.template.spec.withVolumes([
                    volume.fromHostPath('library', '/cold-data/media/music/library'),
                    volume.fromHostPath('data', '/data/navidrome/data'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='8081'),
+    service: k.util.serviceFor(self.deployment) + u.metrics(port='8081'),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       ND_BASEURL: 'https://music.danielramos.me',
       ND_ENABLETRANSCODINGCONFIG: 'true',
     }),
 
-    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.navidrome),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.navidrome),
 
     ingressRoute: u.ingressRoute.from(self.service, 'music.danielramos.me'),
   },

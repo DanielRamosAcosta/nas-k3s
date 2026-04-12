@@ -10,7 +10,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: deployment.new('norznab', replicas=1, containers=[
+    deployment: deployment.new('norznab', replicas=1, containers=[
                    container.new('norznab', u.image(versions.norznab.image, versions.norznab.version)) +
                    container.withPorts([
                      containerPort.new('http', 3000),
@@ -23,9 +23,9 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  ]) +
                  deployment.spec.strategy.withType('Recreate'),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.deployment),
 
-    config: u.configMap.forEnv(self.statefulSet, {
+    config: u.configMap.forEnv(self.deployment, {
       DON_TORRENT_BASE_URL: 'https://dontorrent.pink',
       MARCIANO_TORRENT_BASE_URL: 'https://marcianotorrent.net',
       REQUEST_TIMEOUT_MS: '20000',
@@ -35,6 +35,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       NODE_USE_ENV_PROXY: '1',
     }),
 
-    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.norznab),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.norznab),
   },
 }

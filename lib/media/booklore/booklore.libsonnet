@@ -5,14 +5,14 @@ local secrets = import 'media/booklore/booklore.secrets.json';
 local logbackConfig = importstr './booklore.logback-spring.xml';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
+  local deployment = k.apps.v1.deployment,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: statefulSet.new('booklore', replicas=1, containers=[
+    deployment: deployment.new('booklore', replicas=1, containers=[
       container.new('booklore', u.image(versions.booklore.image, versions.booklore.version)) +
       container.withPorts([containerPort.new('server', 6060)]) +
       container.withEnv(
@@ -27,16 +27,16 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       ]) +
       u.probes.withStartup.http('/api/v1/healthcheck', 6060) +
       { startupProbe+: { failureThreshold: 60 } },
-    ]) + statefulSet.spec.template.spec.withVolumes([
+    ]) + deployment.spec.template.spec.withVolumes([
       volume.fromHostPath('data', '/cold-data/booklore/data'),
       volume.fromHostPath('books', '/cold-data/booklore/books'),
       volume.fromHostPath('bookdrop', '/cold-data/booklore/bookdrop'),
       u.injectFile(self.logbackConfiguration),
     ]),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.deployment),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       USER_ID: '0',
       GROUP_ID: '0',
       TZ: 'Atlantic/Canary',

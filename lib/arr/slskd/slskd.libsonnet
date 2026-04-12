@@ -6,13 +6,13 @@ local slskdConfig = import './slskd.config.json';
 local secrets = import 'arr/slskd/slskd.secrets.json';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
+  local deployment = k.apps.v1.deployment,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    statefulSet: statefulSet.new('slskd', replicas=1, containers=[
+    deployment: deployment.new('slskd', replicas=1, containers=[
                    container.new('slskd', u.image(versions.slskd.image, versions.slskd.version)) +
                    container.withPorts([
                      containerPort.new('http', 5030),
@@ -34,7 +34,7 @@ local secrets = import 'arr/slskd/slskd.secrets.json';
                    container.securityContext.withRunAsGroup(100) +
                    u.probes.withStartup.http('/health', 5030),
                  ]) +
-                 statefulSet.spec.template.spec.withVolumes([
+                 deployment.spec.template.spec.withVolumes([
                    u.volume.fromHostPath('data', '/data/arr/slskd/data'),
                    u.volume.fromHostPath('music', '/cold-data/media/music/library/all'),
                    u.volume.fromHostPath('downloads', '/cold-data/media/music/downloads'),
@@ -42,15 +42,15 @@ local secrets = import 'arr/slskd/slskd.secrets.json';
                    u.volume.fromConfigMap(self.configFile),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.deployment),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       SLSKD_REMOTE_CONFIGURATION: 'false',
       SLSKD_SHARED_DIR: '/music',
       TZ: 'Atlantic/Canary',
     }),
 
-    sealedSecret: u.sealedSecret.forEnv(self.statefulSet, secrets.slskd),
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.slskd),
 
     configFile: u.configMap.forFile('slskd.yml', std.manifestYamlDoc(u.withoutSchema(slskdConfig))),
   },

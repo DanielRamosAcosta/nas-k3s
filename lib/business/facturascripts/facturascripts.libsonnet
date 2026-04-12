@@ -5,7 +5,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 local configPhpTemplate = importstr './facturascripts.config.php';
 
 {
-  local statefulSet = k.apps.v1.statefulSet,
+  local deployment = k.apps.v1.deployment,
   local cronJob = k.batch.v1.cronJob,
   local container = k.core.v1.container,
   local containerPort = k.core.v1.containerPort,
@@ -15,7 +15,7 @@ local configPhpTemplate = importstr './facturascripts.config.php';
   new():: {
     local configVolumeName = 'config-output',
 
-    statefulSet: statefulSet.new('facturascripts', replicas=1, containers=[
+    deployment: deployment.new('facturascripts', replicas=1, containers=[
       container.new('facturascripts', u.image(versions.facturascripts.image, versions.facturascripts.version)) +
       container.withPorts([containerPort.new('http', 80)]) +
       container.withEnv(
@@ -36,7 +36,7 @@ local configPhpTemplate = importstr './facturascripts.config.php';
         exec apache2-foreground
       |||]) +
       u.probes.withStartup.http('/deploy', 80),
-    ]) + statefulSet.spec.template.spec.withInitContainers([
+    ]) + deployment.spec.template.spec.withInitContainers([
       container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
       container.withCommand(['sh', '-c', 'envsubst < /mnt/config-template/config.php > /mnt/config/config.php']) +
       container.withEnv(
@@ -46,7 +46,7 @@ local configPhpTemplate = importstr './facturascripts.config.php';
         u.volumeMount.fromFile(self.configTemplate, '/mnt/config-template'),
         volumeMount.new(configVolumeName, '/mnt/config'),
       ]),
-    ]) + statefulSet.spec.template.spec.withVolumes([
+    ]) + deployment.spec.template.spec.withVolumes([
       volume.fromEmptyDir(configVolumeName),
       volume.fromHostPath('plugins', '/data/facturascripts/plugins'),
       volume.fromHostPath('myfiles', '/data/facturascripts/myfiles'),
@@ -54,11 +54,11 @@ local configPhpTemplate = importstr './facturascripts.config.php';
       u.volume.fromSealedSecret(self.sealedSecret),
     ]),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.deployment),
 
     configTemplate: u.configMap.forFile('config.php', configPhpTemplate),
 
-    configEnv: u.configMap.forEnv(self.statefulSet, {
+    configEnv: u.configMap.forEnv(self.deployment, {
       TZ: 'Atlantic/Canary',
       APACHE_RUN_USER: '#1000',
       APACHE_RUN_GROUP: '#1000',
