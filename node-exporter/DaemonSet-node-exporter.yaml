@@ -25,7 +25,7 @@ spec:
         - --collector.netdev
         - --collector.netstat
         - --collector.netclass
-        image: quay.io/prometheus/node-exporter:v1.10.2
+        image: quay.io/prometheus/node-exporter:v1.11.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
