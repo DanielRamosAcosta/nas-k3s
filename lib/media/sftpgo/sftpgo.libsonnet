@@ -15,28 +15,28 @@ local sftpgoConfig = importstr './sftpgo.config.json';
 
   new():: {
     deployment: deployment.new('sftpgo', replicas=1, containers=[
-                   container.new('sftpgo', u.image(versions.sftpgo.image, versions.sftpgo.version)) +
-                   container.withPorts([
-                     containerPort.new('server', 8080),
-                     containerPort.new('metrics', 9219),
-                   ]) +
-                   container.withEnv(
-                     u.envVars.fromSealedSecret(self.sealedSecret) +
-                     u.envVars.fromSealedSecret(self.sealedSecretShared),
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('data', '/srv/sftpgo'),
-                     u.volumeMount.fromFile(self.configuration, '/etc/sftpgo'),
-                   ]) +
-                   u.probes.http('/healthz', 8080),
-                 ]) +
-                 deployment.spec.template.spec.securityContext.withRunAsUser(0) +
-                 deployment.spec.template.spec.securityContext.withRunAsGroup(0) +
-                 deployment.spec.template.spec.securityContext.withFsGroup(0) +
-                 deployment.spec.template.spec.withVolumes([
-                   u.injectFile(self.configuration),
-                   volume.fromHostPath('data', '/cold-data/sftpgo/data'),
-                 ]),
+                  container.new('sftpgo', u.image(versions.sftpgo.image, versions.sftpgo.version)) +
+                  container.withPorts([
+                    containerPort.new('server', 8080),
+                    containerPort.new('metrics', 9219),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromSealedSecret(self.sealedSecret) +
+                    u.envVars.fromSealedSecret(self.sealedSecretShared),
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('data', '/srv/sftpgo'),
+                    u.volumeMount.fromFile(self.configuration, '/etc/sftpgo'),
+                  ]) +
+                  u.probes.http('/healthz', 8080),
+                ]) +
+                deployment.spec.template.spec.securityContext.withRunAsUser(0) +
+                deployment.spec.template.spec.securityContext.withRunAsGroup(0) +
+                deployment.spec.template.spec.securityContext.withFsGroup(0) +
+                deployment.spec.template.spec.withVolumes([
+                  u.injectFile(self.configuration),
+                  volume.fromHostPath('data', '/cold-data/sftpgo/data'),
+                ]),
 
     service: k.util.serviceFor(self.deployment) + u.metrics(port='9219', path='/metrics'),
 

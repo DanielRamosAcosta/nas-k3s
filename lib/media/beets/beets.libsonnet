@@ -12,25 +12,25 @@ local beetsConfig = import './beets.config.json';
 
   new():: {
     deployment: deployment.new('beets', replicas=1, containers=[
-                   container.new('beets', u.image(versions.beets.image, versions.beets.version)) +
-                   container.withPorts([
-                     containerPort.new('http', 8337),
-                   ]) +
-                   container.withEnv(
-                     u.envVars.fromConfigMap(self.configEnv)
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('data', '/data'),
-                     volumeMount.new('music', '/music'),
-                     u.volumeMount.fromFile(self.configFile, '/config'),
-                   ]) +
-                   u.probes.http('/', 8337),
-                 ]) +
-                 deployment.spec.template.spec.withVolumes([
-                   u.volume.fromHostPath('data', '/data/beets/data'),
-                   u.volume.fromHostPath('music', '/cold-data/media/music/library/all'),
-                   u.volume.fromConfigMap(self.configFile),
-                 ]),
+                  container.new('beets', u.image(versions.beets.image, versions.beets.version)) +
+                  container.withPorts([
+                    containerPort.new('http', 8337),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv)
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('data', '/data'),
+                    volumeMount.new('music', '/music'),
+                    u.volumeMount.fromFile(self.configFile, '/config'),
+                  ]) +
+                  u.probes.http('/', 8337),
+                ]) +
+                deployment.spec.template.spec.withVolumes([
+                  u.volume.fromHostPath('data', '/data/beets/data'),
+                  u.volume.fromHostPath('music', '/cold-data/media/music/library/all'),
+                  u.volume.fromConfigMap(self.configFile),
+                ]),
 
     service: k.util.serviceFor(self.deployment),
 

@@ -11,17 +11,17 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
   new():: {
     deployment: deployment.new('norznab', replicas=1, containers=[
-                   container.new('norznab', u.image(versions.norznab.image, versions.norznab.version)) +
-                   container.withPorts([
-                     containerPort.new('http', 3000),
-                   ]) +
-                   container.withEnv(
-                     u.envVars.fromSealedSecret(self.sealedSecret) +
-                     u.envVars.fromConfigMap(self.config)
-                   ) +
-                   u.probes.tcp(3000),
-                 ]) +
-                 deployment.spec.strategy.withType('Recreate'),
+                  container.new('norznab', u.image(versions.norznab.image, versions.norznab.version)) +
+                  container.withPorts([
+                    containerPort.new('http', 3000),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromSealedSecret(self.sealedSecret) +
+                    u.envVars.fromConfigMap(self.config)
+                  ) +
+                  u.probes.tcp(3000),
+                ]) +
+                deployment.spec.strategy.withType('Recreate'),
 
     service: k.util.serviceFor(self.deployment),
 

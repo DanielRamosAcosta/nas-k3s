@@ -10,26 +10,26 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
   new():: {
     deployment: deployment.new('deluge', replicas=1, containers=[
-                   container.new('deluge', u.image(versions.deluge.image, versions.deluge.version)) +
-                   container.withPorts([
-                     containerPort.new('web', 8112),
-                     containerPort.new('daemon', 58846),
-                     containerPort.new('peer-tcp', 58946),
-                     containerPort.newUDP('peer-udp', 58946),
-                   ]) +
-                   container.withEnv(
-                     u.envVars.fromConfigMap(self.configEnv)
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('config', '/config'),
-                     volumeMount.new('data', '/data'),
-                   ]) +
-                   u.probes.http('/', 8112),
-                 ]) +
-                 deployment.spec.template.spec.withVolumes([
-                   u.volume.fromHostPath('config', '/data/arr/deluge'),
-                   u.volume.fromHostPath('data', '/cold-data/media'),
-                 ]),
+                  container.new('deluge', u.image(versions.deluge.image, versions.deluge.version)) +
+                  container.withPorts([
+                    containerPort.new('web', 8112),
+                    containerPort.new('daemon', 58846),
+                    containerPort.new('peer-tcp', 58946),
+                    containerPort.newUDP('peer-udp', 58946),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv)
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('config', '/config'),
+                    volumeMount.new('data', '/data'),
+                  ]) +
+                  u.probes.http('/', 8112),
+                ]) +
+                deployment.spec.template.spec.withVolumes([
+                  u.volume.fromHostPath('config', '/data/arr/deluge'),
+                  u.volume.fromHostPath('data', '/cold-data/media'),
+                ]),
 
     service: k.util.serviceFor(self.deployment),
 

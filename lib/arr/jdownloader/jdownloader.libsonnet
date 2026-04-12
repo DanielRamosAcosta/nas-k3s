@@ -11,24 +11,24 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
   new():: {
     deployment: deployment.new('jdownloader', replicas=1, containers=[
-                   container.new('jdownloader', u.image(versions.jdownloader.image, versions.jdownloader.version)) +
-                   container.withPorts([
-                     containerPort.new('web', 5800),
-                     containerPort.new('myjd', 3129),
-                   ]) +
-                   container.withEnv(
-                     u.envVars.fromConfigMap(self.configEnv)
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('config', '/config'),
-                     volumeMount.new('downloads', '/output'),
-                   ]) +
-                   u.probes.http('/', 5800),
-                 ]) +
-                 deployment.spec.template.spec.withVolumes([
-                   u.volume.fromHostPath('config', '/data/jdownloader/config'),
-                   u.volume.fromHostPath('downloads', '/cold-data/downloads'),
-                 ]),
+                  container.new('jdownloader', u.image(versions.jdownloader.image, versions.jdownloader.version)) +
+                  container.withPorts([
+                    containerPort.new('web', 5800),
+                    containerPort.new('myjd', 3129),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv)
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('config', '/config'),
+                    volumeMount.new('downloads', '/output'),
+                  ]) +
+                  u.probes.http('/', 5800),
+                ]) +
+                deployment.spec.template.spec.withVolumes([
+                  u.volume.fromHostPath('config', '/data/jdownloader/config'),
+                  u.volume.fromHostPath('downloads', '/cold-data/downloads'),
+                ]),
 
     service: k.util.serviceFor(self.deployment),
 

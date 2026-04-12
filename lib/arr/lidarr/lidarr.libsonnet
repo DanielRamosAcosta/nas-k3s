@@ -10,23 +10,23 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
   new():: {
     deployment: deployment.new('lidarr', replicas=1, containers=[
-                   container.new('lidarr', u.image(versions.lidarr.image, versions.lidarr.version)) +
-                   container.withPorts([
-                     containerPort.new('http', 8686),
-                   ]) +
-                   container.withEnv(
-                     u.envVars.fromConfigMap(self.configEnv)
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('config', '/config'),
-                     volumeMount.new('data', '/data'),
-                   ]) +
-                   u.probes.http('/ping', 8686),
-                 ]) +
-                 deployment.spec.template.spec.withVolumes([
-                   u.volume.fromHostPath('config', '/data/arr/lidarr'),
-                   u.volume.fromHostPath('data', '/cold-data/media'),
-                 ]),
+                  container.new('lidarr', u.image(versions.lidarr.image, versions.lidarr.version)) +
+                  container.withPorts([
+                    containerPort.new('http', 8686),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv)
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('config', '/config'),
+                    volumeMount.new('data', '/data'),
+                  ]) +
+                  u.probes.http('/ping', 8686),
+                ]) +
+                deployment.spec.template.spec.withVolumes([
+                  u.volume.fromHostPath('config', '/data/arr/lidarr'),
+                  u.volume.fromHostPath('data', '/cold-data/media'),
+                ]),
 
     service: k.util.serviceFor(self.deployment),
 

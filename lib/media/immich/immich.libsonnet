@@ -16,36 +16,36 @@ local immichConfig = importstr './immich.config.json';
 
   new():: {
     deployment: deployment.new('immich', replicas=1, containers=[
-                   container.new('immich', u.image(versions.immich.image, versions.immich.version)) +
-                   container.withPorts(
-                     [containerPort.new('server', 2283)]
-                   ) +
-                   container.withEnv(
-                     u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSealedSecret(self.sealedSecretShared),
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('upload', '/usr/src/app/upload'),
-                     volumeMount.new('merged-config', '/app/config') + volumeMount.withReadOnly(true),
-                   ]) +
-                   u.probes.withStartup.http('/api/server/ping', 2283),
-                 ]) +
-                 deployment.spec.template.spec.withInitContainers(
-                   container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
-                   container.withCommand(['sh', '-c', 'envsubst < /data/config.json > /output/immich.json']) +
-                   container.withEnv(
-                     u.envVars.fromSealedSecret(self.sealedSecret),
-                   ) +
-                   container.withVolumeMounts([
-                     u.volumeMount.fromFile(self.immichConfigPublic, '/data'),
-                     volumeMount.new('merged-config', '/output'),
-                   ])
-                 ) +
-                 deployment.spec.template.spec.withVolumes([
-                   volume.fromHostPath('upload', '/cold-data/immich/upload'),
-                   u.volume.fromConfigMap(self.immichConfigPublic),
-                   volume.fromEmptyDir('merged-config'),
-                 ]),
+                  container.new('immich', u.image(versions.immich.image, versions.immich.version)) +
+                  container.withPorts(
+                    [containerPort.new('server', 2283)]
+                  ) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv) +
+                    u.envVars.fromSealedSecret(self.sealedSecretShared),
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('upload', '/usr/src/app/upload'),
+                    volumeMount.new('merged-config', '/app/config') + volumeMount.withReadOnly(true),
+                  ]) +
+                  u.probes.withStartup.http('/api/server/ping', 2283),
+                ]) +
+                deployment.spec.template.spec.withInitContainers(
+                  container.new('render-config', u.image(versions.envsubst.image, versions.envsubst.version)) +
+                  container.withCommand(['sh', '-c', 'envsubst < /data/config.json > /output/immich.json']) +
+                  container.withEnv(
+                    u.envVars.fromSealedSecret(self.sealedSecret),
+                  ) +
+                  container.withVolumeMounts([
+                    u.volumeMount.fromFile(self.immichConfigPublic, '/data'),
+                    volumeMount.new('merged-config', '/output'),
+                  ])
+                ) +
+                deployment.spec.template.spec.withVolumes([
+                  volume.fromHostPath('upload', '/cold-data/immich/upload'),
+                  u.volume.fromConfigMap(self.immichConfigPublic),
+                  volume.fromEmptyDir('merged-config'),
+                ]),
 
     service: k.util.serviceFor(self.deployment) + u.metrics(port='8081'),
 

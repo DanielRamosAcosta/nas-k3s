@@ -13,24 +13,24 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
 
   new():: {
     deployment: deployment.new('navidrome', replicas=1, containers=[
-                   container.new('navidrome', u.image(versions.navidrome.image, versions.navidrome.version)) +
-                   container.withPorts(
-                     [containerPort.new('server', 4533)]
-                   ) +
-                   container.withEnv(
-                     u.envVars.fromConfigMap(self.configEnv) +
-                     u.envVars.fromSealedSecret(self.sealedSecret)
-                   ) +
-                   container.withVolumeMounts([
-                     volumeMount.new('library', '/library', true),
-                     volumeMount.new('data', '/data'),
-                   ]) +
-                   u.probes.http('/ping', 4533),
-                 ]) +
-                 deployment.spec.template.spec.withVolumes([
-                   volume.fromHostPath('library', '/cold-data/media/music/library'),
-                   volume.fromHostPath('data', '/data/navidrome/data'),
-                 ]),
+                  container.new('navidrome', u.image(versions.navidrome.image, versions.navidrome.version)) +
+                  container.withPorts(
+                    [containerPort.new('server', 4533)]
+                  ) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv) +
+                    u.envVars.fromSealedSecret(self.sealedSecret)
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('library', '/library', true),
+                    volumeMount.new('data', '/data'),
+                  ]) +
+                  u.probes.http('/ping', 4533),
+                ]) +
+                deployment.spec.template.spec.withVolumes([
+                  volume.fromHostPath('library', '/cold-data/media/music/library'),
+                  volume.fromHostPath('data', '/data/navidrome/data'),
+                ]),
 
     service: k.util.serviceFor(self.deployment) + u.metrics(port='8081'),
 
