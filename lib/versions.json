@@ -1,11 +1,11 @@
 {
   "immich": {
     "image": "ghcr.io/immich-app/immich-server",
-    "version": "v2.7.4"
+    "version": "v2.7.5"
   },
   "immichMl": {
     "image": "ghcr.io/immich-app/immich-machine-learning",
-    "version": "v2.7.4"
+    "version": "v2.7.5"
   },
   "navidrome": {
     "image": "docker.io/deluan/navidrome",
