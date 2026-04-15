@@ -1,10 +1,10 @@
 ---
 id: NASKS-47
 title: Desplegar FacturaScripts en el NAS (ERP/facturación)
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-04-02 22:52'
-updated_date: '2026-04-05 09:35'
+updated_date: '2026-04-12 01:06'
 labels:
   - refined
   - new-service
@@ -22,7 +22,7 @@ references:
 documentation:
   - 'https://facturascripts.com/documentacion'
 priority: medium
-ordinal: 1000
+ordinal: 0.0019073486328125
 ---
 
 ## Description

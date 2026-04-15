@@ -1,12 +1,11 @@
 ---
 id: NASKS-11
 title: Make K3s resilient to router/network outages
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-03-09 17:02'
-updated_date: '2026-03-16 11:05'
-labels:
-  - blocked
+updated_date: '2026-04-12 02:15'
+labels: []
 dependencies: []
 priority: high
 ordinal: 34000
@@ -17,15 +16,18 @@ ordinal: 34000
 <!-- SECTION:DESCRIPTION:BEGIN -->
 ## Problem
 
-When the power goes out, the router loses power and the NAS (connected to a UPS) either stays running or reboots before the router is back. In both cases, the DHCP-assigned IP `192.168.1.200` on `enp4s0` disappears from the interface.
+When the network cable is disconnected or the router loses power, `enp4s0` loses carrier. dhcpcd reacts by removing the IP `192.168.1.200` from the interface and deleting all routes. This causes a cascade of failures:
 
-K3s is configured with `node-ip: 192.168.1.200`. When that IP is missing, K3s enters a failure loop:
+1. Kubelet liveness/readiness probes to `192.168.1.200` fail with `network is unreachable`
+2. Pods with `hostNetwork: true` (node-exporter, nut-exporter) get killed and restarted
+3. CoreDNS loses its kubernetes watch and restarts, breaking cluster DNS
+4. Services depending on DNS (ArgoCD, Authelia) restart in cascade
+5. VictoriaMetrics loses scrape targets, creating gaps in metrics
+6. CPU spikes to 100% during recovery as K3s reconciles all pods
 
-```
-Failed to set some node status fields: failed to validate nodeIP: node IP: "192.168.1.200" not found in the host's network interfaces
-```
+Additionally, the `network-link-monitor` service was actively worsening the problem: it detected carrier loss and ran `ip link set enp4s0 down` + `dhcpcd -x enp4s0` to "recover", which destroyed the network config even faster, up to 3 times per outage.
 
-This causes pods to enter CrashLoopBackOff (e.g., SFTPGo was down ~15 min on 2026-03-09) and internal cluster networking breaks until the router comes back and DHCP reassigns the IP.
+Note: K3s does NOT have `node-ip` configured (contrary to what was originally assumed). It uses auto-detection. The root cause is dhcpcd removing the IP on carrier loss, not K3s configuration.
 
 ## Incident: 2026-03-09
 
@@ -36,40 +38,37 @@ This causes pods to enter CrashLoopBackOff (e.g., SFTPGo was down ~15 min on 202
 - ~11:34 - Router back, IP assigned, K3s recovers
 - SFTPGo was in CrashLoopBackOff for ~15 minutes
 
-## Options
+## Investigation: 2026-04-12
 
-### Option 1: Static IP (simple)
-Configure `enp4s0` with a static IP in NixOS instead of DHCP. The IP is always present on the interface regardless of router state.
+Reproduced the issue by disconnecting the NAS ethernet cable for 2 minutes, 3 times:
 
-**Pros:** Simple, reliable, no moving parts
-**Cons:** Must manually update config if network topology changes; need to hardcode DNS servers and gateway
+**Test 1 (baseline):** Cable disconnected. dhcpcd removed IP on carrier loss, kubelet probes failed (`dial tcp 192.168.1.200:9100: network is unreachable`), node-exporter/nut-exporter killed, CoreDNS crashed, Authelia restarted, metrics gap of 2.5 min, CPU spike to 100% on recovery.
 
-### Option 2: DHCP with static fallback (flexible)
-Use DHCP normally but configure a fallback static IP via `systemd-networkd`. If DHCP fails (router down), the static IP is assigned automatically.
+**Test 2 (dhcpcd `nocarrier`):** `nocarrier` is not a valid option in dhcpcd 10.2.4 — silently ignored. Same failure as test 1. Also confirmed `network-link-monitor` was making it worse by running `dhcpcd -x enp4s0` 3 times during the outage.
 
-**Pros:** Best of both worlds - automatic config from DHCP when available, static fallback when not
-**Cons:** Slightly more complex config
+**Test 3 (dhcpcd `nolink` + removed monitor):** dhcpcd ignored carrier loss entirely. IP stayed on the interface. Zero pod restarts. Zero metric gaps. No CPU spike.
 
-### Option 3: K3s dependency on network-online.target (weak)
-Add `After=network-online.target` + `Requires=network-online.target` to the K3s service.
+## Root cause
 
-**Pros:** Simple systemd change
-**Cons:** Only fixes boot timing; does NOT fix the case where the IP disappears while K3s is already running
+Two compounding issues:
+1. **dhcpcd** removes the IP from `enp4s0` when carrier is lost, even though the DHCP lease is still valid
+2. **network-link-monitor.service** aggressively tears down and rebuilds the network config on carrier loss, making recovery slower
 
-## Recommendation
+## Fix applied
 
-Option 1 or 2. Both solve the root cause (IP always present on the interface). Option 3 is insufficient on its own.
+1. Added `nolink` to dhcpcd config — dhcpcd no longer reacts to carrier loss events
+2. Removed `network-link-monitor` service and script — was counterproductive
 <!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 K3s continues to function when the router is powered off
-- [ ] #2 The IP 192.168.1.200 is always present on enp4s0 regardless of DHCP availability
-- [ ] #3 NAS can still reach the internet when the router is available
+- [x] #1 K3s continues to function when the network cable is disconnected
+- [x] #2 The IP 192.168.1.200 stays on enp4s0 during carrier loss
+- [x] #3 NAS can reach the internet when the cable is reconnected
 <!-- AC:END -->
 
 ## Implementation Notes
 
 <!-- SECTION:NOTES:BEGIN -->
-⏳ Bloqueada hasta 2026-04-02 — Daniel viaja a Tenerife y tendrá acceso físico al servidor.
+Resolved 2026-04-12. Changes in `nas` repo: `hosts/nas/services/network-monitor.nix` (removed service, added `nolink` to dhcpcd), deleted `hosts/nas/services/scripts/network-link-monitor.sh`.
 <!-- SECTION:NOTES:END -->
