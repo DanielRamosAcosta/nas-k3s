@@ -22,7 +22,7 @@ spec:
         - -promscrape.config=/etc/victoriametrics/victoriametrics.yml
         - -storageDataPath=/victoria-metrics-data
         - -retentionPeriod=100y
-        image: victoriametrics/victoria-metrics:v1.138.0
+        image: victoriametrics/victoria-metrics:v1.140.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
