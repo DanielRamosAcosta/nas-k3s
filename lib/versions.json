@@ -17,7 +17,7 @@
   },
   "authelia": {
     "image": "ghcr.io/authelia/authelia",
-    "version": "4.39.18"
+    "version": "4.39.19"
   },
   "valkey": {
     "image": "valkey/valkey",
