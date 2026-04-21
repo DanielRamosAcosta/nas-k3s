@@ -20,12 +20,7 @@ spec:
       containers:
       - args:
         - --device
-        - |-
-          "groups":
-          - "count": 10
-            "paths":
-            - "path": "/dev/dri/renderD128"
-          "name": "dri"
+        - '{"groups":[{"count":10,"paths":[{"path":"/dev/dri/renderD128"}]}],"name":"dri"}'
         image: ghcr.io/squat/generic-device-plugin:382f3461ae87b65c8a821ae65feccf346bbad792
         imagePullPolicy: IfNotPresent
         name: generic-device-plugin
