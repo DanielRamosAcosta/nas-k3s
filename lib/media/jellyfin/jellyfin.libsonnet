@@ -20,7 +20,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                     volumeMount.new('config', '/config'),
                     volumeMount.new('cache', '/cache'),
                     volumeMount.new('media', '/media', true),
-                    volumeMount.new('dri', '/dev/dri/renderD128') + volumeMount.withSubPath('renderD128'),
+                    volumeMount.new('dri', '/dev/dri'),
                   ]) +
                   u.probes.withStartup.http('/health', 8096),
                 ]) +
