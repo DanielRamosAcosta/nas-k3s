@@ -26,7 +26,7 @@ spec:
             "paths":
             - "path": "/dev/dri/renderD128"
           "name": "dri"
-        image: ghcr.io/squat/generic-device-plugin:7bafa49978eea5f7e18dd8c77ef45c2d0e486515
+        image: ghcr.io/squat/generic-device-plugin:382f3461ae87b65c8a821ae65feccf346bbad792
         imagePullPolicy: IfNotPresent
         name: generic-device-plugin
         securityContext:
