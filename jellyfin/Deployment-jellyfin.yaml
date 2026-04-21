@@ -50,6 +50,8 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 5
+        securityContext:
+          privileged: true
         startupProbe:
           failureThreshold: 30
           httpGet:
