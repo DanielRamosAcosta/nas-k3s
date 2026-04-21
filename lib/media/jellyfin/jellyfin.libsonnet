@@ -22,7 +22,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                     volumeMount.new('media', '/media', true),
                     volumeMount.new('dri', '/dev/dri'),
                   ]) +
-                  u.probes.withStartup.http('/health', 8096),
+                  u.probes.withStartup.http('/health', 8096) +
+                  container.securityContext.withPrivileged(true),
                 ]) +
                 deployment.spec.template.spec.withVolumes([
                   volume.fromHostPath('config', '/data/jellyfin/config'),
