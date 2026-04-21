@@ -13,7 +13,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  container.new('generic-device-plugin', u.image(versions.genericDevicePlugin.image, versions.genericDevicePlugin.version)) +
                  container.withArgs([
                    '--device',
-                   std.manifestYamlDoc({
+                   std.manifestJsonMinified({
                      name: 'dri',
                      groups: [{
                        count: 10,
