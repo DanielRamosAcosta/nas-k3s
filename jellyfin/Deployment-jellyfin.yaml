@@ -50,8 +50,9 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 10
           timeoutSeconds: 5
-        securityContext:
-          privileged: true
+        resources:
+          limits:
+            squat.ai/dri: "1"
         startupProbe:
           failureThreshold: 30
           httpGet:
@@ -68,8 +69,6 @@ spec:
         - mountPath: /media
           name: media
           readOnly: true
-        - mountPath: /dev/dri
-          name: dri
       securityContext:
         fsGroup: 1000
         supplementalGroups:
@@ -86,7 +85,3 @@ spec:
           path: /cold-data/media
           type: DirectoryOrCreate
         name: media
-      - hostPath:
-          path: /dev/dri
-          type: Directory
-        name: dri

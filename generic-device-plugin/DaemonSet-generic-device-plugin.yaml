@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: generic-device-plugin
+  name: generic-device-plugin
+  namespace: system
+spec:
+  minReadySeconds: 10
+  selector:
+    matchLabels:
+      name: generic-device-plugin
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: generic-device-plugin
+    spec:
+      containers:
+      - args:
+        - --device
+        - |-
+          "groups":
+          - "count": 10
+            "paths":
+            - "path": "/dev/dri/renderD128"
+          "name": "dri"
+        image: ghcr.io/squat/generic-device-plugin:7bafa49978eea5f7e18dd8c77ef45c2d0e486515
+        imagePullPolicy: IfNotPresent
+        name: generic-device-plugin
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - mountPath: /var/lib/kubelet/device-plugins
+          name: device-plugin
+        - mountPath: /dev
+          name: dev
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /var/lib/kubelet/device-plugins
+          type: Directory
+        name: device-plugin
+      - hostPath:
+          path: /dev
+          type: Directory
+        name: dev
+  updateStrategy:
+    type: RollingUpdate

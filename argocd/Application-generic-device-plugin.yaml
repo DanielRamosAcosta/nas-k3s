@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: argocd
+  name: generic-device-plugin
+  namespace: argocd
+spec:
+  destination:
+    namespace: system
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: generic-device-plugin
+    repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
+    targetRevision: manifests
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true
