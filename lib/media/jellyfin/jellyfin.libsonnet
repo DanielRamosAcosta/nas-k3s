@@ -20,16 +20,14 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                     volumeMount.new('config', '/config'),
                     volumeMount.new('cache', '/cache'),
                     volumeMount.new('media', '/media', true),
-                    volumeMount.new('dri', '/dev/dri'),
                   ]) +
-                  u.probes.withStartup.http('/health', 8096) +
-                  container.securityContext.withPrivileged(true),
+                  container.resources.withLimits({ 'squat.ai/dri': '1' }) +
+                  u.probes.withStartup.http('/health', 8096),
                 ]) +
                 deployment.spec.template.spec.withVolumes([
                   volume.fromHostPath('config', '/data/jellyfin/config'),
                   volume.fromHostPath('cache', '/data/jellyfin/cache'),
                   volume.fromHostPath('media', '/cold-data/media') + volume.hostPath.withType('DirectoryOrCreate'),
-                  volume.fromHostPath('dri', '/dev/dri') + volume.hostPath.withType('Directory'),
                 ]) +
                 deployment.spec.template.spec.securityContext.withSupplementalGroups([303, 26]) +
                 deployment.spec.template.spec.securityContext.withFsGroup(1000),

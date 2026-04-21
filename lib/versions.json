@@ -67,6 +67,10 @@
     "image": "docker.io/jellyfin/jellyfin",
     "version": "10.11.6"
   },
+  "genericDevicePlugin": {
+    "image": "ghcr.io/squat/generic-device-plugin",
+    "version": "7bafa49978eea5f7e18dd8c77ef45c2d0e486515"
+  },
   "jdownloader": {
     "image": "docker.io/jlesage/jdownloader-2",
     "version": "v26.03.1"
