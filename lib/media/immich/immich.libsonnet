@@ -95,10 +95,14 @@ local immichConfig = importstr './immich.config.json';
         plugin: {
           geoblock: {
             silentStartUp: false,
+            // `allowLocalRequests: false` is intentional. Combined with
+            // Traefik's `externalTrafficPolicy: Local`, the plugin now
+            // sees the real client IP (not the k3s CNI gateway), so
+            // there's no reason to blanket-allow private ranges.
             allowLocalRequests: false,
             logLocalRequests: true,
-            logAllowedRequests: true,
-            logApiRequests: true,
+            logAllowedRequests: false,
+            logApiRequests: false,
             api: 'https://get.geojs.io/v1/ip/country/{ip}',
             apiTimeoutMs: '500',
             cacheSize: '1024',
