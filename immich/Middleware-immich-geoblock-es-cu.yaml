@@ -11,8 +11,8 @@ spec:
       allowLocalRequests: false
       allowUnknownCountries: false
       api: https://get.geojs.io/v1/ip/country/{ip}
-      apiTimeoutMs: "500"
-      cacheSize: "1024"
+      apiTimeoutMs: 500
+      cacheSize: 1024
       countries:
       - ES
       - CU

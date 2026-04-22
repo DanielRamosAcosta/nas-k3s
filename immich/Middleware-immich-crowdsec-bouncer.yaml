@@ -11,8 +11,8 @@ spec:
       crowdsecLapiHost: crowdsec-service.system.svc.cluster.local:8080
       crowdsecLapiKeyFile: /etc/crowdsec-bouncer/BOUNCER_KEY
       crowdsecLapiScheme: http
-      crowdsecMode: live
-      enabled: "true"
+      crowdsecMode: stream
+      enabled: true
       forwardedHeadersTrustedIPs:
       - 173.245.48.0/20
       - 103.21.244.0/22
@@ -37,3 +37,4 @@ spec:
       - 2a06:98c0::/29
       - 2c0f:f248::/32
       logLevel: INFO
+      updateIntervalSeconds: 60
