@@ -8,7 +8,7 @@ metadata:
 spec:
   plugin:
     geoblock:
-      allowLocalRequests: true
+      allowLocalRequests: false
       allowUnknownCountries: false
       api: https://get.geojs.io/v1/ip/country/{ip}
       apiTimeoutMs: "500"
@@ -17,8 +17,8 @@ spec:
       - ES
       - CU
       forceMonthlyUpdate: true
-      logAllowedRequests: false
-      logApiRequests: false
-      logLocalRequests: false
+      logAllowedRequests: true
+      logApiRequests: true
+      logLocalRequests: true
       silentStartUp: false
       unknownCountryApiResponse: nil
