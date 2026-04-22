@@ -39,8 +39,14 @@
           [if std.length(middlewares) > 0 then 'middlewares']: middlewares,
         },
       ] + extraRoutes,
+      // When a certResolver is set, declare `tls.domains` explicitly so Traefik
+      // emits a cert for this specific host via the resolver, instead of
+      // silently falling back to a wildcard cert from the default TLSStore.
       tls: if certResolver != null
-      then { certResolver: certResolver }
+      then {
+        certResolver: certResolver,
+        domains: [{ main: host }],
+      }
       else { store: { name: 'default' } },
     },
   },
