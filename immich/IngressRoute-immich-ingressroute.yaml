@@ -22,6 +22,5 @@ spec:
     - name: immich
       port: 2283
   tls:
-    certResolver: letsencrypt
-    domains:
-    - main: photos.danielramos.me
+    store:
+      name: default

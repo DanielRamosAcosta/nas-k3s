@@ -6,5 +6,9 @@ metadata:
   name: default
   namespace: system
 spec:
-  defaultCertificate:
-    secretName: cloudflare-origin-cert
+  defaultGeneratedCert:
+    domain:
+      main: danielramos.me
+      sans:
+      - '*.danielramos.me'
+    resolver: letsencrypt
