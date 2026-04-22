@@ -131,6 +131,13 @@ local helm = tanka.helm.new(std.thisFile);
       service: {
         type: 'LoadBalancer',
         ipFamilyPolicy: 'PreferDualStack',
+        // Preserve the real client IP at the Traefik container. k3s's
+        // default Cluster policy SNATs incoming traffic to the node
+        // CNI gateway (10.42.0.1), which breaks per-IP middlewares
+        // like the GeoBlock plugin and Crowdsec's IP-based scenarios.
+        // On a single-node NAS `Local` has no traffic distribution
+        // downside.
+        spec: { externalTrafficPolicy: 'Local' },
       },
       ingressClass: {
         enabled: true,
