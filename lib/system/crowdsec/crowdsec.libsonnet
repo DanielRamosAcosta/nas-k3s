@@ -125,11 +125,18 @@ local helm = tanka.helm.new(std.thisFile);
         ],
 
         env: [
-          // Hub collections installed at startup (the CROWDSEC_COLLECTIONS
-          // env var is read by the entrypoint).
+          // Hub collections (bundles of parsers + scenarios) installed
+          // at startup by the image entrypoint.
           {
             name: 'COLLECTIONS',
-            value: 'crowdsecurity/traefik crowdsecurity/linux crowdsecurity/http-cve crowdsecurity/base-http-scenarios crowdsecurity/geoip-enrich',
+            value: 'crowdsecurity/traefik crowdsecurity/linux crowdsecurity/http-cve crowdsecurity/base-http-scenarios',
+          },
+          // Parsers: geoip-enrich tags events with country info, used by
+          // scenarios that can filter/ban on country. It's a parser, not
+          // a collection, so it goes in PARSERS.
+          {
+            name: 'PARSERS',
+            value: 'crowdsecurity/geoip-enrich',
           },
           // MaxMind GeoLite2-Country for the geoip-enrich parser.
           // Credentials are passed to geoipupdate at DB refresh time.
