@@ -48,15 +48,11 @@ local helm = tanka.helm.new(std.thisFile);
             sslmode:  disable
         |||,
 
-        // Enable bidirectional sharing with Crowdsec Central API and
-        // the Console. This publishes manual/tainted decisions to the
-        // community blocklist so other users benefit.
-        'console.yaml': |||
-          share_manual_decisions: true
-          share_tainted: true
-          share_custom: true
-          share_context: false
-        |||,
+        // NB: we intentionally do NOT render `console.yaml` here. The
+        // chart mounts it read-only from the ConfigMap, which breaks
+        // `cscli console enroll` at container start. We let Crowdsec
+        // manage that file itself — sharing flags default to sane
+        // values (share_manual_decisions + share_tainted on).
       },
 
       // --- LAPI ------------------------------------------------------------
@@ -84,6 +80,24 @@ local helm = tanka.helm.new(std.thisFile);
                 key: 'USER_PASSWORD',
               },
             },
+          },
+          // Console enrollment: the chart's docker_start.sh reads
+          // ENROLL_KEY / ENROLL_INSTANCE_NAME and runs
+          // `cscli console enroll --name $INSTANCE $KEY` on startup,
+          // registering this machine against app.crowdsec.net.
+          { name: 'ENROLL_INSTANCE_NAME', value: 'nas-k3s' },
+          {
+            name: 'ENROLL_KEY',
+            valueFrom: { secretKeyRef: { name: 'crowdsec-console', key: 'CROWDSEC_CONSOLE_ENROLLMENT_KEY' } },
+          },
+          // Pre-register the Traefik bouncer with a known key. The
+          // entrypoint iterates BOUNCER_KEY_* env vars and runs
+          // `cscli bouncers add` for each. The plugin reads the same
+          // key from a mounted Secret in the Traefik pod (see
+          // traefik.libsonnet).
+          {
+            name: 'BOUNCER_KEY_traefik',
+            valueFrom: { secretKeyRef: { name: 'crowdsec-bouncer-key', key: 'BOUNCER_KEY' } },
           },
         ],
 
@@ -167,6 +181,12 @@ local helm = tanka.helm.new(std.thisFile);
     // Once Phase 2 wires a postStart hook, this becomes automatic.
     consoleEnrollmentSealedSecret: u.sealedSecret.forEnvNamed('crowdsec-console', {
       CROWDSEC_CONSOLE_ENROLLMENT_KEY: secrets.crowdsecConsoleEnrollmentKey,
+    }),
+    // Bouncer API key shared between Crowdsec LAPI (pre-registration
+    // via BOUNCER_KEY_traefik env) and the Traefik bouncer plugin
+    // (mounted as a file, read via `crowdsecLapiKeyFile`).
+    bouncerKeySealedSecret: u.sealedSecret.forEnvNamed('crowdsec-bouncer-key', {
+      BOUNCER_KEY: secrets.bouncerKey,
     }),
     // Mirror the cluster-wide Postgres password for the `crowdsec` DB
     // user into the system namespace so LAPI can mount it as env.

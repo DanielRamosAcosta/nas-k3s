@@ -34,14 +34,19 @@ local helm = tanka.helm.new(std.thisFile);
         '--entryPoints.websecure.forwardedHeaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32',
         '--entryPoints.web.forwardedHeaders.trustedIPs=173.245.48.0/20,103.21.244.0/22,103.22.200.0/22,103.31.4.0/22,141.101.64.0/18,108.162.192.0/18,190.93.240.0/20,188.114.96.0/20,197.234.240.0/22,198.41.128.0/17,162.158.0.0/15,104.16.0.0/13,104.24.0.0/14,172.64.0.0/13,131.0.72.0/22,2400:cb00::/32,2606:4700::/32,2803:f800::/32,2405:b500::/32,2405:8100::/32,2a06:98c0::/29,2c0f:f248::/32',
       ],
-      // Community plugins loaded by Traefik. GeoBlock provides synchronous
-      // country-based filtering (applied per-route via Middleware CR).
-      // Crowdsec bouncer plugin will be added in Phase 2 of NASKS-53.
+      // Community plugins loaded by Traefik.
+      //   - `geoblock` provides synchronous country-based filtering.
+      //   - `bouncer` consults Crowdsec LAPI to block IPs with active
+      //     decisions (community blocklist + locally-detected attacks).
       experimental: {
         plugins: {
           geoblock: {
             moduleName: 'github.com/PascalMinder/geoblock',
             version: 'v0.3.7',
+          },
+          bouncer: {
+            moduleName: 'github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin',
+            version: 'v1.5.1',
           },
         },
       },
@@ -74,12 +79,25 @@ local helm = tanka.helm.new(std.thisFile);
               type: 'DirectoryOrCreate',
             },
           },
+          {
+            // Crowdsec bouncer API key, shared with the LAPI via
+            // a SealedSecret in the `system` namespace. The plugin
+            // reads the key from this file (crowdsecLapiKeyFile in
+            // the Middleware CR), keeping it out of ConfigMap/CR YAML.
+            name: 'crowdsec-bouncer-key',
+            secret: { secretName: 'crowdsec-bouncer-key' },
+          },
         ],
       },
       additionalVolumeMounts: [
         {
           name: 'acme',
           mountPath: '/data',
+        },
+        {
+          name: 'crowdsec-bouncer-key',
+          mountPath: '/etc/crowdsec-bouncer',
+          readOnly: true,
         },
       ],
       ports: {

@@ -87,6 +87,53 @@ local immichConfig = importstr './immich.config.json';
     // (PascalMinder/geoblock) calls an external geo API per new IP (with
     // an in-memory cache of 1024 entries). Applied to photos only — other
     // services already have geo-block at the Cloudflare edge.
+    // Crowdsec bouncer: in-band lookup against the in-cluster LAPI.
+    // Blocks IPs with an active Crowdsec decision (community blocklist
+    // + whatever the agent has detected from Traefik logs). The API
+    // key is read from a file mounted into the Traefik pod, not from
+    // the Middleware spec itself, so it never lands in git.
+    crowdsecBouncer: {
+      apiVersion: 'traefik.io/v1alpha1',
+      kind: 'Middleware',
+      metadata: { name: 'immich-crowdsec-bouncer' },
+      spec: {
+        plugin: {
+          bouncer: {
+            enabled: 'true',
+            logLevel: 'INFO',
+            crowdsecMode: 'live',
+            crowdsecLapiScheme: 'http',
+            crowdsecLapiHost: 'crowdsec-service.system.svc.cluster.local:8080',
+            crowdsecLapiKeyFile: '/etc/crowdsec-bouncer/BOUNCER_KEY',
+            forwardedHeadersTrustedIPs: [
+              '173.245.48.0/20',
+              '103.21.244.0/22',
+              '103.22.200.0/22',
+              '103.31.4.0/22',
+              '141.101.64.0/18',
+              '108.162.192.0/18',
+              '190.93.240.0/20',
+              '188.114.96.0/20',
+              '197.234.240.0/22',
+              '198.41.128.0/17',
+              '162.158.0.0/15',
+              '104.16.0.0/13',
+              '104.24.0.0/14',
+              '172.64.0.0/13',
+              '131.0.72.0/22',
+              '2400:cb00::/32',
+              '2606:4700::/32',
+              '2803:f800::/32',
+              '2405:b500::/32',
+              '2405:8100::/32',
+              '2a06:98c0::/29',
+              '2c0f:f248::/32',
+            ],
+          },
+        },
+      },
+    },
+
     geoBlockEsCu: {
       apiVersion: 'traefik.io/v1alpha1',
       kind: 'Middleware',
@@ -121,13 +168,17 @@ local immichConfig = importstr './immich.config.json';
       services: [{ name: this.service.metadata.name, port: this.service.spec.ports[0].port }],
       middlewares: [
         { name: this.geoBlockEsCu.metadata.name },
+        { name: this.crowdsecBouncer.metadata.name },
         { name: this.authRateLimit.metadata.name },
       ],
     },
     ingressRoute: u.ingressRoute.from(
       self.service,
       'photos.danielramos.me',
-      [{ name: this.geoBlockEsCu.metadata.name }],
+      [
+        { name: this.geoBlockEsCu.metadata.name },
+        { name: this.crowdsecBouncer.metadata.name },
+      ],
       [authRoute],
     ),
 
