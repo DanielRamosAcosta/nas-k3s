@@ -95,10 +95,10 @@ local immichConfig = importstr './immich.config.json';
         plugin: {
           geoblock: {
             silentStartUp: false,
-            allowLocalRequests: true,
-            logLocalRequests: false,
-            logAllowedRequests: false,
-            logApiRequests: false,
+            allowLocalRequests: false,
+            logLocalRequests: true,
+            logAllowedRequests: true,
+            logApiRequests: true,
             api: 'https://get.geojs.io/v1/ip/country/{ip}',
             apiTimeoutMs: '500',
             cacheSize: '1024',
