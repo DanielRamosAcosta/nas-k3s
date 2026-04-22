@@ -115,6 +115,7 @@
     "crowdsec/RoleBinding-crowdsec-configmap-updater-binding.yaml": "environments/system/main.jsonnet",
     "crowdsec/SealedSecret-crowdsec-console.yaml": "environments/system/main.jsonnet",
     "crowdsec/SealedSecret-crowdsec-maxmind.yaml": "environments/system/main.jsonnet",
+    "crowdsec/SealedSecret-crowdsec-postgres-password.yaml": "environments/system/main.jsonnet",
     "crowdsec/Secret-crowdsec-lapi-secrets.yaml": "environments/system/main.jsonnet",
     "crowdsec/Service-crowdsec-agent-service.yaml": "environments/system/main.jsonnet",
     "crowdsec/Service-crowdsec-service.yaml": "environments/system/main.jsonnet",

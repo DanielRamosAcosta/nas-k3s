@@ -21,7 +21,7 @@ spec:
     metadata:
       annotations:
         checksum/lapi-configmap: e6e75337dda5be50a6cd2d5db35ad52e5cfdff2707eb1110327af5b6185d015d
-        checksum/lapi-secret: 99e281f9e97dd95e0c52b43716705151d8025f5b38770cb8bcee540cbb5e2d61
+        checksum/lapi-secret: 747721c896ada6772819cc23bbae81d5a023fa9b5704829446eb7dccb1b78884
         reloader.stakater.com/auto: "true"
       labels:
         k8s-app: crowdsec
@@ -54,7 +54,7 @@ spec:
           valueFrom:
             secretKeyRef:
               key: USER_PASSWORD
-              name: postgres-create-user-crowdsec-sealed-secret
+              name: crowdsec-postgres-password
         image: crowdsecurity/crowdsec:v1.7.7
         imagePullPolicy: IfNotPresent
         livenessProbe:
