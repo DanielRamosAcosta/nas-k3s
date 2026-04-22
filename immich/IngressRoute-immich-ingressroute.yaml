@@ -13,6 +13,7 @@ spec:
     match: Host(`photos.danielramos.me`)
     middlewares:
     - name: immich-geoblock-es-cu
+    - name: immich-crowdsec-bouncer
     services:
     - name: immich
       port: 2283
@@ -20,6 +21,7 @@ spec:
     match: Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)
     middlewares:
     - name: immich-geoblock-es-cu
+    - name: immich-crowdsec-bouncer
     - name: immich-auth-ratelimit
     services:
     - name: immich

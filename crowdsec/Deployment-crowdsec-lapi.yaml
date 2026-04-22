@@ -20,8 +20,8 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/lapi-configmap: e6e75337dda5be50a6cd2d5db35ad52e5cfdff2707eb1110327af5b6185d015d
-        checksum/lapi-secret: 462d8ee501bb7d2cc424b183839987a67f6c9295b6c7d5b4a3745e18bfc1642c
+        checksum/lapi-configmap: 019312792dae271706ab52bb85f26bec484ac2afe0e1a9262dd06468ea123be2
+        checksum/lapi-secret: bd5a3ba0a5a3e3d167783fe1a23239eb073cd7b39fdfd0313c08843d9741a90b
         reloader.stakater.com/auto: "true"
       labels:
         k8s-app: crowdsec
@@ -55,6 +55,18 @@ spec:
             secretKeyRef:
               key: USER_PASSWORD
               name: crowdsec-postgres-password
+        - name: ENROLL_INSTANCE_NAME
+          value: nas-k3s
+        - name: ENROLL_KEY
+          valueFrom:
+            secretKeyRef:
+              key: CROWDSEC_CONSOLE_ENROLLMENT_KEY
+              name: crowdsec-console
+        - name: BOUNCER_KEY_traefik
+          valueFrom:
+            secretKeyRef:
+              key: BOUNCER_KEY
+              name: crowdsec-bouncer-key
         image: crowdsecurity/crowdsec:v1.7.7
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -112,9 +124,6 @@ spec:
         - mountPath: /staging/etc/crowdsec/local_api_credentials.yaml
           name: crowdsec-lapi-cscli-credentials-volume
           subPath: lapi_cscli_credentials.yaml
-        - mountPath: /etc/crowdsec/console.yaml
-          name: crowdsec-console-volume
-          subPath: console.yaml
         - mountPath: /etc/crowdsec/config.yaml.local
           name: crowdsec-config-local-volume
           subPath: config.yaml.local
@@ -130,9 +139,6 @@ spec:
       - name: crowdsec-lapi-cscli-credentials-volume
         secret:
           secretName: crowdsec-lapi-cscli-credentials
-      - configMap:
-          name: crowdsec-console
-        name: crowdsec-console-volume
       - configMap:
           name: crowdsec-config-local
         name: crowdsec-config-local-volume

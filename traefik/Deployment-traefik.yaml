@@ -45,6 +45,8 @@ spec:
         - --ping=true
         - --metrics.prometheus=true
         - --metrics.prometheus.entrypoint=metrics
+        - --experimental.plugins.bouncer.moduleName=github.com/maxlerebourg/crowdsec-bouncer-traefik-plugin
+        - --experimental.plugins.bouncer.version=v1.5.1
         - --experimental.plugins.geoblock.moduleName=github.com/PascalMinder/geoblock
         - --experimental.plugins.geoblock.version=v0.3.7
         - --providers.kubernetescrd
@@ -131,6 +133,9 @@ spec:
           name: plugins
         - mountPath: /data
           name: acme
+        - mountPath: /etc/crowdsec-bouncer
+          name: crowdsec-bouncer-key
+          readOnly: true
       hostNetwork: false
       priorityClassName: system-cluster-critical
       securityContext:
@@ -156,5 +161,8 @@ spec:
           path: /data/traefik
           type: DirectoryOrCreate
         name: acme
+      - name: crowdsec-bouncer-key
+        secret:
+          secretName: crowdsec-bouncer-key
       - emptyDir: {}
         name: plugins
