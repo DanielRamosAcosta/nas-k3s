@@ -87,7 +87,7 @@ local immichConfig = importstr './immich.config.json';
       self.service,
       'photos.danielramos.me',
       [],
-      'letsencrypt',
+      null,
       [{
         match: 'Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)',
         kind: 'Rule',

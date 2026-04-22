@@ -11,6 +11,22 @@
       },
     },
   },
+  tlsStoreGenerated(resolver, mainDomain, sans=[]):: {
+    apiVersion: 'traefik.io/v1alpha1',
+    kind: 'TLSStore',
+    metadata: {
+      name: 'default',
+    },
+    spec: {
+      defaultGeneratedCert: {
+        resolver: resolver,
+        domain: {
+          main: mainDomain,
+          sans: sans,
+        },
+      },
+    },
+  },
   from(service, hostOrMap, middlewares=[], certResolver=null, extraRoutes=[])::
     if std.type(hostOrMap) == 'string' then
       self.fromDefaultPort(service, hostOrMap, middlewares, certResolver, extraRoutes)

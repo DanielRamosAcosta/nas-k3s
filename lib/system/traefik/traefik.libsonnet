@@ -124,10 +124,28 @@ local helm = tanka.helm.new(std.thisFile);
       },
     },
   }) + {
-    sealedSecret: u.sealedSecret.forTls('cloudflare-origin-cert', secrets.cloudflareOriginCert),
-    tls_store: u.ingressRoute.tlsStore(self.sealedSecret),
+    // TLSStore default now uses a Let's Encrypt-generated wildcard cert
+    // (`*.danielramos.me` + apex) via the letsencrypt resolver. This replaces
+    // the previous Cloudflare Origin Cert so that:
+    //   - Orange-proxied services keep working (CF strict accepts publicly
+    //     trusted certs, LE included).
+    //   - Gray-cloud services (e.g. photos.danielramos.me) get a browser-
+    //     trusted cert without per-route certResolver tricks (Traefik was
+    //     short-circuiting LE emission when a wildcard matched the SNI).
+    tls_store: u.ingressRoute.tlsStoreGenerated(
+      'letsencrypt',
+      'danielramos.me',
+      ['*.danielramos.me'],
+    ),
     cfDnsApiTokenSealedSecret: u.sealedSecret.forEnvNamed('traefik-cf-dns-api-token', {
       CF_DNS_API_TOKEN: secrets.cfDnsApiToken,
     }),
+    // Legacy CF Origin cert kept in SealedSecrets for quick rollback; not
+    // referenced by any resource currently. Can be removed after LE wildcard
+    // has been stable for a few weeks.
+    legacyCloudflareOriginSealedSecret: u.sealedSecret.forTls(
+      'cloudflare-origin-cert',
+      secrets.cloudflareOriginCert,
+    ),
   },
 }
