@@ -1,4 +1,5 @@
 local u = import '../../utils.libsonnet';
+local cloudflare = import '../../utils/cloudflare.libsonnet';
 local versions = import '../../versions.json';
 local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
@@ -99,36 +100,19 @@ local immichConfig = importstr './immich.config.json';
       spec: {
         plugin: {
           bouncer: {
-            enabled: 'true',
+            enabled: true,
             logLevel: 'INFO',
-            crowdsecMode: 'live',
+            // `stream` mode caches LAPI decisions locally and refreshes
+            // every `updateIntervalSeconds` instead of calling LAPI on
+            // every request (cheap per-hit, slight lag picking up new
+            // bans). For photo browsing on a homelab this is the right
+            // trade-off.
+            crowdsecMode: 'stream',
+            updateIntervalSeconds: 60,
             crowdsecLapiScheme: 'http',
             crowdsecLapiHost: 'crowdsec-service.system.svc.cluster.local:8080',
             crowdsecLapiKeyFile: '/etc/crowdsec-bouncer/BOUNCER_KEY',
-            forwardedHeadersTrustedIPs: [
-              '173.245.48.0/20',
-              '103.21.244.0/22',
-              '103.22.200.0/22',
-              '103.31.4.0/22',
-              '141.101.64.0/18',
-              '108.162.192.0/18',
-              '190.93.240.0/20',
-              '188.114.96.0/20',
-              '197.234.240.0/22',
-              '198.41.128.0/17',
-              '162.158.0.0/15',
-              '104.16.0.0/13',
-              '104.24.0.0/14',
-              '172.64.0.0/13',
-              '131.0.72.0/22',
-              '2400:cb00::/32',
-              '2606:4700::/32',
-              '2803:f800::/32',
-              '2405:b500::/32',
-              '2405:8100::/32',
-              '2a06:98c0::/29',
-              '2c0f:f248::/32',
-            ],
+            forwardedHeadersTrustedIPs: cloudflare.allCidrs,
           },
         },
       },
@@ -151,8 +135,8 @@ local immichConfig = importstr './immich.config.json';
             logAllowedRequests: false,
             logApiRequests: false,
             api: 'https://get.geojs.io/v1/ip/country/{ip}',
-            apiTimeoutMs: '500',
-            cacheSize: '1024',
+            apiTimeoutMs: 500,
+            cacheSize: 1024,
             forceMonthlyUpdate: true,
             allowUnknownCountries: false,
             unknownCountryApiResponse: 'nil',
@@ -162,23 +146,25 @@ local immichConfig = importstr './immich.config.json';
       },
     },
 
+    // Both the main route and the /api/auth route carry the same
+    // baseline defenses (geo-block + Crowdsec bouncer). The auth route
+    // adds a stricter rate limit on top.
+    local baselineMiddlewares = [
+      { name: this.geoBlockEsCu.metadata.name },
+      { name: this.crowdsecBouncer.metadata.name },
+    ],
     local authRoute = {
       match: 'Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)',
       kind: 'Rule',
       services: [{ name: this.service.metadata.name, port: this.service.spec.ports[0].port }],
-      middlewares: [
-        { name: this.geoBlockEsCu.metadata.name },
-        { name: this.crowdsecBouncer.metadata.name },
+      middlewares: baselineMiddlewares + [
         { name: this.authRateLimit.metadata.name },
       ],
     },
     ingressRoute: u.ingressRoute.from(
       self.service,
       'photos.danielramos.me',
-      [
-        { name: this.geoBlockEsCu.metadata.name },
-        { name: this.crowdsecBouncer.metadata.name },
-      ],
+      baselineMiddlewares,
       [authRoute],
     ),
 

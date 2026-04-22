@@ -123,12 +123,10 @@ local helm = tanka.helm.new(std.thisFile);
           config: { enabled: false },
         },
 
-        // `acquisition` (the chart's k8s-native pod log tail) is unused;
-        // we pull logs from Loki instead via `additionalAcquisition`.
-        acquisition: [],
         // Loki acquisition: pull Traefik access logs via LogQL from the
         // monitoring Loki instance. Type=traefik lets crowdsec's Traefik
-        // parser match the stream.
+        // parser match the stream. (The chart's k8s-native `acquisition`
+        // pod-tail is left at its default empty list.)
         additionalAcquisition: [
           {
             source: 'loki',
