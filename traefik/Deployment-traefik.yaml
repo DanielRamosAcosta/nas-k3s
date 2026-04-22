@@ -53,7 +53,7 @@ spec:
         - --entryPoints.web.http.redirections.entryPoint.to=:443
         - --entryPoints.web.http.redirections.entryPoint.scheme=https
         - --entryPoints.websecure.http.tls=true
-        - --log.level=DEBUG
+        - --log.level=INFO
         - --certificatesresolvers.letsencrypt.acme.email=danielramosacosta1@gmail.com
         - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
         - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
