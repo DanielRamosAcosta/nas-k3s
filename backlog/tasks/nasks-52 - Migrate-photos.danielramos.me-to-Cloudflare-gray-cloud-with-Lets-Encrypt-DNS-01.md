@@ -3,10 +3,10 @@ id: NASKS-52
 title: >-
   Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt
   DNS-01
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-04-22 17:59'
-updated_date: '2026-04-22 18:02'
+updated_date: '2026-04-22 18:38'
 labels:
   - infra
   - traefik
@@ -115,16 +115,108 @@ Chosen path: **expose Immich directly (DNS-only, gray cloud)**. Risk posture acc
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Traefik deployment has `CF_DNS_API_TOKEN` env var populated from the new `traefik-cf-dns-api-token` SealedSecret
-- [ ] #2 Traefik persistence enabled with hostPath `/data/traefik` mounted at `/data`
-- [ ] #3 Traefik `additionalArguments` include the letsencrypt ACME resolver (DNS-01, cloudflare provider, email `danielramosacosta1@gmail.com`, storage `/data/acme.json`)
-- [ ] #4 `lib/utils/ingressRoute.libsonnet` helper `from()` extended with optional `certResolver` and `extraRoutes` params, backward compatible with all existing callers
+- [x] #1 Traefik deployment has `CF_DNS_API_TOKEN` env var populated from the new `traefik-cf-dns-api-token` SealedSecret
+- [x] #2 Traefik persistence enabled with hostPath `/data/traefik` mounted at `/data`
+- [x] #3 Traefik `additionalArguments` include the letsencrypt ACME resolver (DNS-01, cloudflare provider, email `danielramosacosta1@gmail.com`, storage `/data/acme.json`)
+- [x] #4 `lib/utils/ingressRoute.libsonnet` helper `from()` extended with optional `certResolver` and `extraRoutes` params, backward compatible with all existing callers
 - [ ] #5 Immich IngressRoute uses `certResolver='letsencrypt'` and declares an extra route for `PathPrefix(/api/auth)` with the new `authRateLimit` middleware (Traefik RateLimit, average=2, burst=5)
-- [ ] #6 `tk eval environments/media` compiles without errors
-- [ ] #7 `tk eval environments/system` compiles without errors
-- [ ] #8 Commit pushed to main; CI-generated manifests branch updated
-- [ ] #9 ArgoCD sync of `traefik` and `immich` apps completes green
-- [ ] #10 External `curl --resolve photos.danielramos.me:443:<public-ip>` shows a Let's Encrypt-issued certificate (issuer contains 'Let's Encrypt' or 'R3'/'E1' etc.)
-- [ ] #11 Cloudflare DNS record `photos` toggled to DNS-only (gray cloud)
+- [x] #6 `tk eval environments/media` compiles without errors
+- [x] #7 `tk eval environments/system` compiles without errors
+- [x] #8 Commit pushed to main; CI-generated manifests branch updated
+- [x] #9 ArgoCD sync of `traefik` and `immich` apps completes green
+- [x] #10 External `curl --resolve photos.danielramos.me:443:<public-ip>` shows a Let's Encrypt-issued certificate (issuer contains 'Let's Encrypt' or 'R3'/'E1' etc.)
+- [x] #11 Cloudflare DNS record `photos` toggled to DNS-only (gray cloud)
 - [ ] #12 Father confirms he can upload videos &gt;100 MB from outside the home network
 <!-- AC:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+## Notes from implementation
+
+### Design decision flipped during execution: specific cert → wildcard cert
+
+Original plan: per-route `certResolver=letsencrypt` with `tls.domains=[{main: photos.danielramos.me}]` on Immich's IngressRoute.
+
+What actually happened: after deploying, DEBUG logs on Traefik revealed the resolver was being short-circuited:
+
+```
+Looking for provided certificate(s) to validate ["photos.danielramos.me"]...
+No ACME certificate generation required for domains ["photos.danielramos.me"]
+Serving default certificate for request: "photos.danielramos.me"
+```
+
+Root cause: the existing TLSStore default was backed by the Cloudflare Origin wildcard cert (`*.danielramos.me`). Traefik's cert-selection logic considered the SNI "already covered" by the wildcard and skipped the per-route resolver entirely.
+
+### Pivot
+
+Instead of forcing the per-route resolver, switched TLSStore default from `defaultCertificate` (sealed CF Origin) to `defaultGeneratedCert` pointed at the letsencrypt resolver for `danielramos.me` + `*.danielramos.me`. Traefik now issues a publicly trusted wildcard via DNS-01 Cloudflare and uses it for every SNI without an explicit override.
+
+Benefits over the original plan:
+- Orange-proxied services keep working (CF strict accepts LE as public CA).
+- Gray-cloud services get a browser-trusted cert automatically, no per-route gymnastics.
+- One wildcard to rotate instead of per-service specific certs.
+- Retired dependency on CF Origin Cert (legacy SealedSecret kept under a `legacy` name for quick rollback; unused by any live resource).
+
+### Cleanup commits after pivot
+
+- `refactor: drop dead certResolver/tls.domains plumbing after wildcard flip` — removed the `certResolver` param from `ingressRoute.from()`, kept only `extraRoutes` (needed for Immich's /api/auth rate-limit route).
+- `chore(traefik): revert log level to INFO` — DEBUG was temporary for diagnosis.
+
+### Rate limit middleware
+
+Still implemented as planned: Traefik `RateLimit` middleware `immich-auth-ratelimit` (average=2 req/s, burst=5, period=1s), applied only to `Host(photos) && PathPrefix(/api/auth)` via `extraRoutes` in the IngressRoute.
+
+### Storage on NAS
+
+`/data/traefik` was pre-created on the NAS with UID 65532 ownership (Traefik's non-root UID) before the rollout, so no init-container permission gymnastics were needed. `acme.json` persists there and was ~13 KB after first wildcard emission.
+
+### CF API token
+
+Strict-scoped SealedSecret `traefik-cf-dns-api-token` in namespace `system`. CF token scope: `Zone:DNS:Edit` on `danielramos.me` only, no TTL. Created via Playwright subagent, sealed via `scripts/encrypt-secret.sh`, consumed by Traefik as `CF_DNS_API_TOKEN` env var (read by lego's cloudflare provider).
+
+### Verification (external)
+
+check-host.net from IN/SE/US nodes: HTTP 200 from `148.3.209.14` (NAS public IP) directly, no Cloudflare in path. Cert issuer: Let's Encrypt R12, SAN `*.danielramos.me` + `danielramos.me`. curl verify = 0 (valid chain, no `-k` needed).
+
+Local macOS curl kept seeing `104.21.x.x` (Cloudflare) in `%{remote_ip}` — turned out to be iCloud Private Relay rewriting egress, not an actual routing issue.
+<!-- SECTION:NOTES:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+## Outcome
+
+Migration completed successfully. `photos.danielramos.me` now resolves directly to the NAS public IP and serves a Let's Encrypt wildcard cert issued via DNS-01 Cloudflare — **no more 100 MB upload ceiling**.
+
+## What shipped
+
+| Area | Change |
+|---|---|
+| Traefik | New letsencrypt certResolver (DNS-01 / Cloudflare API), `CF_DNS_API_TOKEN` env from sealed secret, hostPath persistence at `/data/traefik` for `acme.json`, TLSStore default flipped to `defaultGeneratedCert` (LE wildcard) |
+| Helper | `lib/utils/ingressRoute.libsonnet` gained `extraRoutes` param (backward compatible) and a new `tlsStoreGenerated(resolver, main, sans)` helper |
+| Immich | IngressRoute now has a secondary route matching `PathPrefix(/api/auth)` with a `RateLimit` middleware (avg=2/s, burst=5) to blunt brute-force now that Cloudflare's WAF is not in front |
+| CF dashboard | `photos` record toggled orange → gray (DNS-only) |
+
+## Pivot from the original design (worth remembering)
+
+Planned: per-route `certResolver` on Immich's IngressRoute with explicit `tls.domains`.
+
+Reality: Traefik short-circuited the per-route resolver because the existing TLSStore default (CF Origin wildcard) already matched the SNI. Logs: `No ACME certificate generation required for domains`.
+
+Fix: retire CF Origin as default and emit an LE wildcard via `TLSStore.defaultGeneratedCert`. Cleaner overall: one cert covers all services, orange *and* gray, and no per-route gymnastics.
+
+## Verified
+
+- External (IN/SE/US nodes via check-host.net): HTTP 200 from `148.3.209.14`, no Cloudflare hop, LE cert validates.
+- All other `*.danielramos.me` services (auth, media, argocd, grafana, music) still healthy and now serving the LE wildcard through CF strict mode without issue.
+- `acme.json` persisting on `/data/traefik` (13 KB after first emission), owned by UID 65532.
+
+## Follow-ups (not blocking)
+
+- Remove the legacy `cloudflare-origin-cert` SealedSecret from `lib/system/traefik/` once the LE wildcard has been stable for a couple of weeks. Currently kept as fast rollback.
+- Add Crowdsec bouncer to Traefik (fail2ban-like, gratuitous abuse protection now that we're gray).
+- Authelia `forwardAuth` middleware in front of Immich as a second login barrier.
+- Geo-block (Spain only) if Traefik logs show abuse from weird geos.
+- Confirmation step (#12): wait for Daniel's father to retry uploading the trip videos and confirm they complete.
+<!-- SECTION:FINAL_SUMMARY:END -->
