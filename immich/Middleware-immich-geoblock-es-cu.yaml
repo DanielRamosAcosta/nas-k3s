@@ -17,8 +17,8 @@ spec:
       - ES
       - CU
       forceMonthlyUpdate: true
-      logAllowedRequests: true
-      logApiRequests: true
+      logAllowedRequests: false
+      logApiRequests: false
       logLocalRequests: true
       silentStartUp: false
       unknownCountryApiResponse: nil
