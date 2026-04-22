@@ -27,12 +27,12 @@
       },
     },
   },
-  from(service, hostOrMap, middlewares=[], certResolver=null, extraRoutes=[])::
+  from(service, hostOrMap, middlewares=[], extraRoutes=[])::
     if std.type(hostOrMap) == 'string' then
-      self.fromDefaultPort(service, hostOrMap, middlewares, certResolver, extraRoutes)
+      self.fromDefaultPort(service, hostOrMap, middlewares, extraRoutes)
     else
       self.fromPortToHostMap(service, hostOrMap),
-  fromDefaultPort(service, host, middlewares, certResolver=null, extraRoutes=[]):: {
+  fromDefaultPort(service, host, middlewares, extraRoutes=[]):: {
     apiVersion: 'traefik.io/v1alpha1',
     kind: 'IngressRoute',
     metadata: {
@@ -55,15 +55,7 @@
           [if std.length(middlewares) > 0 then 'middlewares']: middlewares,
         },
       ] + extraRoutes,
-      // When a certResolver is set, declare `tls.domains` explicitly so Traefik
-      // emits a cert for this specific host via the resolver, instead of
-      // silently falling back to a wildcard cert from the default TLSStore.
-      tls: if certResolver != null
-      then {
-        certResolver: certResolver,
-        domains: [{ main: host }],
-      }
-      else { store: { name: 'default' } },
+      tls: { store: { name: 'default' } },
     },
   },
   fromPortToHostMap(service, portToHostMap):: {

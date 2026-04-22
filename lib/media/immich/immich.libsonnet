@@ -83,21 +83,13 @@ local immichConfig = importstr './immich.config.json';
       },
     },
 
-    ingressRoute: u.ingressRoute.from(
-      self.service,
-      'photos.danielramos.me',
-      [],
-      null,
-      [{
-        match: 'Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)',
-        kind: 'Rule',
-        services: [{
-          name: this.service.metadata.name,
-          port: this.service.spec.ports[0].port,
-        }],
-        middlewares: [{ name: this.authRateLimit.metadata.name }],
-      }]
-    ),
+    local authRoute = {
+      match: 'Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)',
+      kind: 'Rule',
+      services: [{ name: this.service.metadata.name, port: this.service.spec.ports[0].port }],
+      middlewares: [{ name: this.authRateLimit.metadata.name }],
+    },
+    ingressRoute: u.ingressRoute.from(self.service, 'photos.danielramos.me', [], [authRoute]),
 
     // Machine Learning Service
     mlDeployment: deployment.new('immich-machine-learning', replicas=1, containers=[
