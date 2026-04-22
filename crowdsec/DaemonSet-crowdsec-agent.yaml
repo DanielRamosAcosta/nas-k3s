@@ -42,7 +42,9 @@ spec:
           value: http://crowdsec-service.system:8080
         - name: COLLECTIONS
           value: crowdsecurity/traefik crowdsecurity/linux crowdsecurity/http-cve
-            crowdsecurity/base-http-scenarios crowdsecurity/geoip-enrich
+            crowdsecurity/base-http-scenarios
+        - name: PARSERS
+          value: crowdsecurity/geoip-enrich
         - name: MAXMIND_ACCOUNT_ID
           valueFrom:
             secretKeyRef:
