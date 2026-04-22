@@ -1,0 +1,138 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: crowdsec
+    app.kubernetes.io/managed-by: Helmraiser
+    k8s-app: crowdsec
+    type: lapi
+    version: v1
+  name: crowdsec-lapi
+  namespace: system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: crowdsec
+      type: lapi
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        checksum/lapi-configmap: e6e75337dda5be50a6cd2d5db35ad52e5cfdff2707eb1110327af5b6185d015d
+        checksum/lapi-secret: 99e281f9e97dd95e0c52b43716705151d8025f5b38770cb8bcee540cbb5e2d61
+        reloader.stakater.com/auto: "true"
+      labels:
+        k8s-app: crowdsec
+        type: lapi
+        version: v1
+    spec:
+      containers:
+      - env:
+        - name: LOCAL_API_URL
+          value: http://localhost:8080
+        - name: DISABLE_AGENT
+          value: "true"
+        - name: INSECURE_SKIP_VERIFY
+          value: "false"
+        - name: CS_LAPI_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: csLapiSecret
+              name: crowdsec-lapi-secrets
+        - name: REGISTRATION_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: registrationToken
+              name: crowdsec-lapi-secrets
+        - name: CUSTOM_HOSTNAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_PASSWORD
+              name: postgres-create-user-crowdsec-sealed-secret
+        image: crowdsecurity/crowdsec:v1.7.7
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: lapi
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        name: crowdsec-lapi
+        ports:
+        - containerPort: 8080
+          name: lapi
+          protocol: TCP
+        - containerPort: 6060
+          name: metrics
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /health
+            port: lapi
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /health
+            port: lapi
+            scheme: HTTP
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /docker_start.sh
+          name: crowdsec-docker-start-script
+          subPath: docker_start.sh
+        - mountPath: /staging/etc/crowdsec/online_api_credentials.yaml
+          name: crowdsec-capi-credentials-volume
+          subPath: online_api_credentials.yaml
+        - mountPath: /staging/etc/crowdsec/local_api_credentials.yaml
+          name: crowdsec-lapi-cscli-credentials-volume
+          subPath: lapi_cscli_credentials.yaml
+        - mountPath: /etc/crowdsec/console.yaml
+          name: crowdsec-console-volume
+          subPath: console.yaml
+        - mountPath: /etc/crowdsec/config.yaml.local
+          name: crowdsec-config-local-volume
+          subPath: config.yaml.local
+      priorityClassName: null
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - configMap:
+          name: crowdsec-docker-start-script-configmap
+        name: crowdsec-docker-start-script
+      - name: crowdsec-capi-credentials-volume
+        secret:
+          secretName: crowdsec-capi-credentials
+      - name: crowdsec-lapi-cscli-credentials-volume
+        secret:
+          secretName: crowdsec-lapi-cscli-credentials
+      - configMap:
+          name: crowdsec-console
+        name: crowdsec-console-volume
+      - configMap:
+          name: crowdsec-config-local
+        name: crowdsec-config-local-volume

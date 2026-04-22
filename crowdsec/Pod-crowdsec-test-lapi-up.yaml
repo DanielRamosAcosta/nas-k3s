@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    helm.sh/hook: test
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+  labels:
+    app: crowdsec
+    app.kubernetes.io/managed-by: Helmraiser
+  name: crowdsec-test-lapi-up
+  namespace: system
+spec:
+  containers:
+  - command:
+    - /bin/sh
+    - -ec
+    - |
+      curl -XGET http://crowdsec-service:8080/health
+    image: curlimages/curl
+    name: crowdsec-test-lapi-up
+  restartPolicy: Never

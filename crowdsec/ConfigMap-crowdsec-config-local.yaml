@@ -1,0 +1,28 @@
+apiVersion: v1
+data:
+  config.yaml.local: |
+    api:
+      server:
+        auto_registration:
+          enabled: true
+          token: "${REGISTRATION_TOKEN}"
+          allowed_ranges:
+            - "127.0.0.1/32"
+            - "10.0.0.0/8"
+            - "172.16.0.0/12"
+            - "192.168.0.0/16"
+    db_config:
+      type:     postgresql
+      user:     crowdsec
+      password: ${DB_PASSWORD}
+      db_name:  crowdsec
+      host:     postgres.databases.svc.cluster.local
+      port:     5432
+      sslmode:  disable
+kind: ConfigMap
+metadata:
+  labels:
+    app: crowdsec
+    app.kubernetes.io/managed-by: Helmraiser
+  name: crowdsec-config-local
+  namespace: system

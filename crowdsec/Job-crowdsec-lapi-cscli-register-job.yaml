@@ -1,0 +1,71 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    helm.sh/hook: pre-install,pre-upgrade
+    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
+    helm.sh/hook-weight: "0"
+  labels:
+    app: crowdsec
+    app.kubernetes.io/managed-by: Helmraiser
+    k8s-app: crowdsec
+    type: lapi-cscli-register-job
+    version: v1
+  name: crowdsec-lapi-cscli-register-job
+  namespace: system
+spec:
+  template:
+    metadata:
+      labels:
+        k8s-app: crowdsec
+        type: lapi-cscli-register-job
+        version: v1
+    spec:
+      containers:
+      - command:
+        - /bin/bash
+        - -c
+        - |
+          set -ex
+          KUBECTL=/kubectl-bin/kubectl
+          echo "Checking if the secret crowdsec-lapi-cscli-credentials already exists..."
+          if $KUBECTL -n system get secret crowdsec-lapi-cscli-credentials >/dev/null 2>&1; then
+            echo "Secret already exists. Skipping registration."
+            exit 0
+          fi
+
+          echo "Secret does not exist. Generating cscli credentials for LAPI."
+
+          echo "url: http://127.0.0.1:8080" > /tmp/lapi-cscli-credentials.yaml
+          echo "login: lapi-cscli" >> /tmp/lapi-cscli-credentials.yaml
+          echo "password: $(head -c 32 /dev/urandom | base64)" >> /tmp/lapi-cscli-credentials.yaml
+
+          echo "Creating secret crowdsec-lapi-cscli-credentials..."
+
+          $KUBECTL create secret generic crowdsec-lapi-cscli-credentials \
+            -n system \
+            --from-file=lapi_cscli_credentials.yaml=/tmp/lapi-cscli-credentials.yaml
+        image: crowdsecurity/crowdsec:v1.7.7
+        imagePullPolicy: IfNotPresent
+        name: lapi-cscli-register
+        volumeMounts:
+        - mountPath: /kubectl-bin
+          name: kubectl-bin
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - |
+          cp "$(command -v kubectl)" /kubectl-bin/kubectl
+          chmod 0755 /kubectl-bin/kubectl
+        image: alpine/kubectl:latest
+        imagePullPolicy: IfNotPresent
+        name: install-kubectl
+        volumeMounts:
+        - mountPath: /kubectl-bin
+          name: kubectl-bin
+      restartPolicy: OnFailure
+      serviceAccountName: crowdsec-configmap-updater-sa
+      volumes:
+      - emptyDir: {}
+        name: kubectl-bin

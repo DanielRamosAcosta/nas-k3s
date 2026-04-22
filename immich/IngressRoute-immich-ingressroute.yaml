@@ -11,12 +11,15 @@ spec:
   routes:
   - kind: Rule
     match: Host(`photos.danielramos.me`)
+    middlewares:
+    - name: immich-geoblock-es-cu
     services:
     - name: immich
       port: 2283
   - kind: Rule
     match: Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)
     middlewares:
+    - name: immich-geoblock-es-cu
     - name: immich-auth-ratelimit
     services:
     - name: immich

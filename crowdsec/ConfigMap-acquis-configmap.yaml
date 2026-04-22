@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  acquis.yaml: |-
+    ---
+    labels:
+      type: traefik
+    query: '{namespace="system",pod=~"traefik-.*"}'
+    source: loki
+    url: http://loki.monitoring.svc.cluster.local:3100/
+kind: ConfigMap
+metadata:
+  labels:
+    app: crowdsec
+    app.kubernetes.io/managed-by: Helmraiser
+  name: acquis-configmap
+  namespace: system
