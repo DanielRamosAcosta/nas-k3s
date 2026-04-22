@@ -40,8 +40,8 @@
         },
       ] + extraRoutes,
       tls: if certResolver != null
-           then { certResolver: certResolver }
-           else { store: { name: 'default' } },
+      then { certResolver: certResolver }
+      else { store: { name: 'default' } },
     },
   },
   fromPortToHostMap(service, portToHostMap):: {
