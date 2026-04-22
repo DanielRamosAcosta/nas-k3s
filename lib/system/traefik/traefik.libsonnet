@@ -96,9 +96,7 @@ local helm = tanka.helm.new(std.thisFile);
       },
       logs: {
         general: {
-          // TEMPORARY: DEBUG while diagnosing ACME DNS-01 for photos.danielramos.me.
-          // Revert to INFO once the letsencrypt cert is obtained and stable.
-          level: 'DEBUG',
+          level: 'INFO',
         },
       },
       providers: {
