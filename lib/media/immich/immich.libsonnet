@@ -15,6 +15,7 @@ local immichConfig = importstr './immich.config.json';
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
+    local this = self,
     deployment: deployment.new('immich', replicas=1, containers=[
                   container.new('immich', u.image(versions.immich.image, versions.immich.version)) +
                   container.withPorts(
@@ -67,7 +68,36 @@ local immichConfig = importstr './immich.config.json';
 
     immichConfigPublic: u.configMap.forFile('config.json', immichConfig),
 
-    ingressRoute: u.ingressRoute.from(self.service, 'photos.danielramos.me'),
+    // Rate limit against brute-force on /api/auth when photos.danielramos.me is
+    // exposed directly (Cloudflare gray cloud, no WAF in front).
+    authRateLimit: {
+      apiVersion: 'traefik.io/v1alpha1',
+      kind: 'Middleware',
+      metadata: { name: 'immich-auth-ratelimit' },
+      spec: {
+        rateLimit: {
+          average: 2,
+          burst: 5,
+          period: '1s',
+        },
+      },
+    },
+
+    ingressRoute: u.ingressRoute.from(
+      self.service,
+      'photos.danielramos.me',
+      [],
+      'letsencrypt',
+      [{
+        match: 'Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)',
+        kind: 'Rule',
+        services: [{
+          name: this.service.metadata.name,
+          port: this.service.spec.ports[0].port,
+        }],
+        middlewares: [{ name: this.authRateLimit.metadata.name }],
+      }]
+    ),
 
     // Machine Learning Service
     mlDeployment: deployment.new('immich-machine-learning', replicas=1, containers=[

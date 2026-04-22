@@ -20,6 +20,52 @@ local helm = tanka.helm.new(std.thisFile);
           effect: 'NoSchedule',
         },
       ],
+      // Let's Encrypt ACME resolver (DNS-01 via Cloudflare API).
+      // Used only by services on gray cloud (e.g. photos.danielramos.me).
+      // Orange-proxied services keep the default TLSStore (cloudflare-origin-cert).
+      additionalArguments: [
+        '--certificatesresolvers.letsencrypt.acme.email=danielramosacosta1@gmail.com',
+        '--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json',
+        '--certificatesresolvers.letsencrypt.acme.dnschallenge=true',
+        '--certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare',
+      ],
+      env: [
+        {
+          name: 'CF_DNS_API_TOKEN',
+          valueFrom: {
+            secretKeyRef: {
+              name: 'traefik-cf-dns-api-token',
+              key: 'CF_DNS_API_TOKEN',
+            },
+          },
+        },
+      ],
+      // The chart always creates a volume named `persistence.name` mounted at
+      // `persistence.path`. We park its default emptyDir at /var/unused and
+      // mount our real hostPath-backed /data via additionalVolumes below, so
+      // acme.json persists across pod restarts under /data/traefik on the NAS.
+      persistence: {
+        enabled: false,
+        name: 'unused-data',
+        path: '/var/unused',
+      },
+      deployment+: {
+        additionalVolumes: [
+          {
+            name: 'acme',
+            hostPath: {
+              path: '/data/traefik',
+              type: 'DirectoryOrCreate',
+            },
+          },
+        ],
+      },
+      additionalVolumeMounts: [
+        {
+          name: 'acme',
+          mountPath: '/data',
+        },
+      ],
       ports: {
         metrics: {
           port: 9100,
@@ -66,9 +112,6 @@ local helm = tanka.helm.new(std.thisFile);
           },
         },
       },
-      persistence: {
-        enabled: false,
-      },
       service: {
         type: 'LoadBalancer',
         ipFamilyPolicy: 'PreferDualStack',
@@ -81,5 +124,8 @@ local helm = tanka.helm.new(std.thisFile);
   }) + {
     sealedSecret: u.sealedSecret.forTls('cloudflare-origin-cert', secrets.cloudflareOriginCert),
     tls_store: u.ingressRoute.tlsStore(self.sealedSecret),
+    cfDnsApiTokenSealedSecret: u.sealedSecret.forEnvNamed('traefik-cf-dns-api-token', {
+      CF_DNS_API_TOKEN: secrets.cfDnsApiToken,
+    }),
   },
 }

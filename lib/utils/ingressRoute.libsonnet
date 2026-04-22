@@ -11,12 +11,12 @@
       },
     },
   },
-  from(service, hostOrMap, middlewares=[])::
+  from(service, hostOrMap, middlewares=[], certResolver=null, extraRoutes=[])::
     if std.type(hostOrMap) == 'string' then
-      self.fromDefaultPort(service, hostOrMap, middlewares)
+      self.fromDefaultPort(service, hostOrMap, middlewares, certResolver, extraRoutes)
     else
       self.fromPortToHostMap(service, hostOrMap),
-  fromDefaultPort(service, host, middlewares):: {
+  fromDefaultPort(service, host, middlewares, certResolver=null, extraRoutes=[]):: {
     apiVersion: 'traefik.io/v1alpha1',
     kind: 'IngressRoute',
     metadata: {
@@ -38,10 +38,10 @@
           ],
           [if std.length(middlewares) > 0 then 'middlewares']: middlewares,
         },
-      ],
-      tls: {
-        store: { name: 'default' },
-      },
+      ] + extraRoutes,
+      tls: if certResolver != null
+           then { certResolver: certResolver }
+           else { store: { name: 'default' } },
     },
   },
   fromPortToHostMap(service, portToHostMap):: {
