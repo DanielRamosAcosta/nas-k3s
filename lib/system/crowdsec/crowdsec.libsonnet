@@ -1,4 +1,5 @@
 local secrets = import 'crowdsec.secrets.json';
+local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local tanka = import 'github.com/grafana/jsonnet-libs/tanka-util/main.libsonnet';
 local u = import 'utils.libsonnet';
 
@@ -76,7 +77,10 @@ local helm = tanka.helm.new(std.thisFile);
             name: 'DB_PASSWORD',
             valueFrom: {
               secretKeyRef: {
-                name: 'postgres-create-user-crowdsec-sealed-secret',
+                // Cluster-wide sealed secret — the one in databases/ is
+                // only decrypted in that namespace, so we mirror it here
+                // (see postgresPasswordSealedSecret below).
+                name: 'crowdsec-postgres-password',
                 key: 'USER_PASSWORD',
               },
             },
@@ -156,6 +160,11 @@ local helm = tanka.helm.new(std.thisFile);
     // Once Phase 2 wires a postStart hook, this becomes automatic.
     consoleEnrollmentSealedSecret: u.sealedSecret.forEnvNamed('crowdsec-console', {
       CROWDSEC_CONSOLE_ENROLLMENT_KEY: secrets.crowdsecConsoleEnrollmentKey,
+    }),
+    // Mirror the cluster-wide Postgres password for the `crowdsec` DB
+    // user into the system namespace so LAPI can mount it as env.
+    postgresPasswordSealedSecret: u.sealedSecret.wide.forEnvNamed('crowdsec-postgres-password', {
+      USER_PASSWORD: postgresSecrets.userCrowdsec,
     }),
   },
 }
