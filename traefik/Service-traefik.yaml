@@ -10,6 +10,7 @@ metadata:
   name: traefik
   namespace: system
 spec:
+  externalTrafficPolicy: Local
   ipFamilyPolicy: PreferDualStack
   ports:
   - name: web
