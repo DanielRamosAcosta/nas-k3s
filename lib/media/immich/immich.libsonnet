@@ -83,13 +83,49 @@ local immichConfig = importstr './immich.config.json';
       },
     },
 
+    // Geo-block: only allow requests from ES + CU. Traefik plugin
+    // (PascalMinder/geoblock) calls an external geo API per new IP (with
+    // an in-memory cache of 1024 entries). Applied to photos only — other
+    // services already have geo-block at the Cloudflare edge.
+    geoBlockEsCu: {
+      apiVersion: 'traefik.io/v1alpha1',
+      kind: 'Middleware',
+      metadata: { name: 'immich-geoblock-es-cu' },
+      spec: {
+        plugin: {
+          geoblock: {
+            silentStartUp: false,
+            allowLocalRequests: true,
+            logLocalRequests: false,
+            logAllowedRequests: false,
+            logApiRequests: false,
+            api: 'https://get.geojs.io/v1/ip/country/{ip}',
+            apiTimeoutMs: '500',
+            cacheSize: '1024',
+            forceMonthlyUpdate: true,
+            allowUnknownCountries: false,
+            unknownCountryApiResponse: 'nil',
+            countries: ['ES', 'CU'],
+          },
+        },
+      },
+    },
+
     local authRoute = {
       match: 'Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)',
       kind: 'Rule',
       services: [{ name: this.service.metadata.name, port: this.service.spec.ports[0].port }],
-      middlewares: [{ name: this.authRateLimit.metadata.name }],
+      middlewares: [
+        { name: this.geoBlockEsCu.metadata.name },
+        { name: this.authRateLimit.metadata.name },
+      ],
     },
-    ingressRoute: u.ingressRoute.from(self.service, 'photos.danielramos.me', [], [authRoute]),
+    ingressRoute: u.ingressRoute.from(
+      self.service,
+      'photos.danielramos.me',
+      [{ name: this.geoBlockEsCu.metadata.name }],
+      [authRoute],
+    ),
 
     // Machine Learning Service
     mlDeployment: deployment.new('immich-machine-learning', replicas=1, containers=[

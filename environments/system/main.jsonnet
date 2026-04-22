@@ -1,4 +1,5 @@
 local cloudflare = import 'system/cloudflare/cloudflare.libsonnet';
+local crowdsec = import 'system/crowdsec/crowdsec.libsonnet';
 local genericDevicePlugin = import 'system/generic-device-plugin/generic-device-plugin.libsonnet';
 local gluetun = import 'system/gluetun/gluetun.libsonnet';
 local reloader = import 'system/reloader/reloader.libsonnet';
@@ -9,6 +10,7 @@ local u = import 'utils.libsonnet';
 
 u.Environment({
   cloudflare: cloudflare.new(),
+  crowdsec: crowdsec.new(),
   'generic-device-plugin': genericDevicePlugin.new(),
   gluetun: gluetun.new(),
   reloader: reloader.new(),
