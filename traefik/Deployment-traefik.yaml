@@ -54,6 +54,10 @@ spec:
         - --entryPoints.web.http.redirections.entryPoint.scheme=https
         - --entryPoints.websecure.http.tls=true
         - --log.level=INFO
+        - --certificatesresolvers.letsencrypt.acme.email=danielramosacosta1@gmail.com
+        - --certificatesresolvers.letsencrypt.acme.storage=/data/acme.json
+        - --certificatesresolvers.letsencrypt.acme.dnschallenge=true
+        - --certificatesresolvers.letsencrypt.acme.dnschallenge.provider=cloudflare
         env:
         - name: POD_NAME
           valueFrom:
@@ -65,6 +69,11 @@ spec:
               fieldPath: metadata.namespace
         - name: USER
           value: traefik
+        - name: CF_DNS_API_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: CF_DNS_API_TOKEN
+              name: traefik-cf-dns-api-token
         image: docker.io/traefik:v3.6.10
         imagePullPolicy: IfNotPresent
         lifecycle: null
@@ -110,10 +119,12 @@ spec:
             - ALL
           readOnlyRootFilesystem: true
         volumeMounts:
-        - mountPath: /data
-          name: data
+        - mountPath: /var/unused
+          name: unused-data
         - mountPath: /tmp
           name: tmp
+        - mountPath: /data
+          name: acme
       hostNetwork: false
       priorityClassName: system-cluster-critical
       securityContext:
@@ -132,6 +143,10 @@ spec:
         operator: Exists
       volumes:
       - emptyDir: {}
-        name: data
+        name: unused-data
       - emptyDir: {}
         name: tmp
+      - hostPath:
+          path: /data/traefik
+          type: DirectoryOrCreate
+        name: acme

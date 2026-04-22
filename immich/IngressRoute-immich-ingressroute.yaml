@@ -14,6 +14,12 @@ spec:
     services:
     - name: immich
       port: 2283
+  - kind: Rule
+    match: Host(`photos.danielramos.me`) && PathPrefix(`/api/auth`)
+    middlewares:
+    - name: immich-auth-ratelimit
+    services:
+    - name: immich
+      port: 2283
   tls:
-    store:
-      name: default
+    certResolver: letsencrypt

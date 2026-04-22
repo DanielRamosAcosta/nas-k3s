@@ -1,0 +1,12 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  labels:
+    app: immich
+  name: immich-auth-ratelimit
+  namespace: media
+spec:
+  rateLimit:
+    average: 2
+    burst: 5
+    period: 1s
