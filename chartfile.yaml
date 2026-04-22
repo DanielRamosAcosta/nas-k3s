@@ -10,6 +10,8 @@ repositories:
   url: https://argoproj.github.io/argo-helm
 - name: stakater
   url: https://stakater.github.io/stakater-charts
+- name: crowdsec
+  url: https://crowdsecurity.github.io/helm-charts
 requires:
 - chart: traefik/traefik
   version: 39.0.5
@@ -19,4 +21,6 @@ requires:
   version: 9.4.10
 - chart: stakater/reloader
   version: 2.2.9
+- chart: crowdsec/crowdsec
+  version: 0.23.0
 version: 1
