@@ -126,11 +126,13 @@ local immichConfig = importstr './immich.config.json';
         plugin: {
           geoblock: {
             silentStartUp: false,
-            // `allowLocalRequests: false` is intentional. Combined with
-            // Traefik's `externalTrafficPolicy: Local`, the plugin now
-            // sees the real client IP (not the k3s CNI gateway), so
-            // there's no reason to blanket-allow private ranges.
-            allowLocalRequests: false,
+            // Allow private ranges so LAN clients hitting Traefik via
+            // the local DNS alias (photos.danielramos.me → 192.168.1.200)
+            // aren't 403'd. External Cloudflare traffic still carries a
+            // real public IP in X-Forwarded-For thanks to the trusted CF
+            // CIDRs + externalTrafficPolicy=Local, so the country check
+            // still applies to everything that isn't already on the LAN.
+            allowLocalRequests: true,
             logLocalRequests: true,
             logAllowedRequests: false,
             logApiRequests: false,
