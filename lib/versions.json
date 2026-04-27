@@ -101,7 +101,7 @@
   },
   "invidiousCompanion": {
     "image": "quay.io/invidious/invidious-companion",
-    "version": "master-5c372ba"
+    "version": "master-11cc6ac"
   },
   "beets": {
     "image": "lscr.io/linuxserver/beets",
