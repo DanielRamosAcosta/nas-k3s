@@ -1,4 +1,5 @@
 local u = import '../../utils.libsonnet';
+local secrets = import './victoriametrics.secrets.json';
 local versions = import '../../versions.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
@@ -21,6 +22,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                      '-promscrape.config=/etc/victoriametrics/victoriametrics.yml',
                      '-storageDataPath=/victoria-metrics-data',
                      '-retentionPeriod=100y',
+                     '-licenseFile=/etc/vm-license/vm-license',
                    ]) +
                    container.withPorts([
                      containerPort.new('http', 8428),
@@ -28,18 +30,22 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    container.withVolumeMounts([
                      volumeMount.new(dataVolumeName, '/victoria-metrics-data'),
                      u.volumeMount.fromFile(self.configuration, '/etc/victoriametrics'),
+                     u.volumeMount.fromSealedSecretFile(self.sealedSecretLicense, '/etc/vm-license'),
                    ]) +
                    u.probes.withStartup.http('/-/healthy', 8428),
                  ]) +
                  statefulSet.spec.template.spec.withServiceAccount('victoriametrics') +
                  statefulSet.spec.template.spec.withVolumes([
                    u.injectFile(self.configuration),
+                   u.volume.fromSealedSecret(self.sealedSecretLicense),
                    volume.fromHostPath(dataVolumeName, '/data/victoriametrics/data'),
                  ]),
 
     service: k.util.serviceFor(self.statefulSet),
 
     configuration: u.configMap.forFile('victoriametrics.yml', configuration),
+
+    sealedSecretLicense: u.sealedSecret.forFile('vm-license', secrets.victoriametrics.LICENSE),
 
     rbac: u.rbac('victoriametrics', 'monitoring', rules=[
       policyRule.withApiGroups(['']) +
