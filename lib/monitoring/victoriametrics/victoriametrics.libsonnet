@@ -22,6 +22,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                      '-promscrape.config=/etc/victoriametrics/victoriametrics.yml',
                      '-storageDataPath=/victoria-metrics-data',
                      '-retentionPeriod=100y',
+                     '-downsampling.period=90d:1m',
+                     '-downsampling.period=360d:5m',
                      '-licenseFile=/etc/vm-license/vm-license',
                    ]) +
                    container.withPorts([
