@@ -22,7 +22,8 @@ spec:
         - -promscrape.config=/etc/victoriametrics/victoriametrics.yml
         - -storageDataPath=/victoria-metrics-data
         - -retentionPeriod=100y
-        image: victoriametrics/victoria-metrics:v1.140.0
+        - -licenseFile=/etc/vm-license/vm-license
+        image: victoriametrics/victoria-metrics:v1.140.0-enterprise
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -60,11 +61,17 @@ spec:
         - mountPath: /etc/victoriametrics/victoriametrics.yml
           name: victoriametrics-yml
           subPath: victoriametrics.yml
+        - mountPath: /etc/vm-license/vm-license
+          name: vm-license-sealed-secret
+          subPath: vm-license
       serviceAccount: victoriametrics
       volumes:
       - configMap:
           name: victoriametrics-yml
         name: victoriametrics-yml
+      - name: vm-license-sealed-secret
+        secret:
+          secretName: vm-license-sealed-secret
       - hostPath:
           path: /data/victoriametrics/data
         name: data

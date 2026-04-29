@@ -316,6 +316,7 @@
     "victoriametrics/ClusterRole-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/ClusterRoleBinding-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/ConfigMap-victoriametrics-yml.yaml": "environments/monitoring/main.jsonnet",
+    "victoriametrics/SealedSecret-vm-license-sealed-secret.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/Service-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/ServiceAccount-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/StatefulSet-victoriametrics.yaml": "environments/monitoring/main.jsonnet"
