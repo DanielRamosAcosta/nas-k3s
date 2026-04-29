@@ -1,6 +1,6 @@
 local u = import '../../utils.libsonnet';
-local secrets = import './victoriametrics.secrets.json';
 local versions = import '../../versions.json';
+local secrets = import './victoriametrics.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
