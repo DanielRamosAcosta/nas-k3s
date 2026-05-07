@@ -29,11 +29,11 @@
   },
   "loki": {
     "image": "docker.io/grafana/loki",
-    "version": "3.6.8"
+    "version": "3.7.1"
   },
   "promtail": {
     "image": "docker.io/grafana/promtail",
-    "version": "3.6.7"
+    "version": "3.6.10"
   },
   "victoriametrics": {
     "image": "victoriametrics/victoria-metrics",
