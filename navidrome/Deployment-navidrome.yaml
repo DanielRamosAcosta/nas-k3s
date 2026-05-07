@@ -51,7 +51,7 @@ spec:
             secretKeyRef:
               key: ND_SPOTIFY_SECRET
               name: navidrome-sealed-secret
-        image: docker.io/deluan/navidrome:0.60.3
+        image: docker.io/deluan/navidrome:0.61.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
