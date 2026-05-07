@@ -4,7 +4,7 @@ title: Centralizar SMTP con relay Postfix (boky/postfix)
 status: Done
 assignee: []
 created_date: '2026-03-20 19:05'
-updated_date: '2026-03-21 09:40'
+updated_date: '2026-04-29 06:17'
 labels:
   - infrastructure
   - smtp
@@ -16,7 +16,7 @@ references:
   - lib/media/gitea/gitea.libsonnet
   - lib/monitoring/grafana/grafana.libsonnet
 priority: medium
-ordinal: 1000
+ordinal: 2000
 ---
 
 ## Description

@@ -10,6 +10,23 @@ K3s homelab infrastructure-as-code using **Jsonnet + Tanka** for declarative Kub
 
 - **jq** — Available for inspecting/transforming JSON (e.g. `tk eval ... | jq '.field'`)
 
+## Observability: logs
+
+**Always query logs via Loki through the `grafanaSelfHosted` MCP server. Do NOT use `kubectl logs` for log inspection.**
+
+Loki aggregates logs from every pod in the cluster and lets you filter by time range, level, and pattern without needing the pod to still exist. `kubectl logs` only sees the current container instance and loses history on restarts.
+
+Typical flow:
+1. `mcp__grafanaSelfHosted__list_datasources` with `type: loki` → get the datasource `uid` (currently `P8E80F9AEF21F6940`).
+2. `mcp__grafanaSelfHosted__query_loki_logs` with a LogQL selector. Useful labels: `namespace`, `pod`, `container`, `service_name`, `level`.
+   - Example: `{namespace="media", pod=~"immich.*"} |~ "(?i)error|warn|fail"`
+3. If unsure about labels, use `list_loki_label_values` (e.g. `labelName: namespace`) before querying.
+4. For noisy streams, prefer `query_loki_patterns` or `find_error_pattern_logs` to cluster errors.
+
+Namespace cheatsheet: `argocd`, `arr`, `business`, `databases`, `kube-system`, `media`, `monitoring`, `system`. (Apps are grouped by category, not per-app namespace — e.g. immich lives in `media`, not `immich`.)
+
+`kubectl logs` is only acceptable as a last resort when Loki/Promtail is itself broken.
+
 ## Key Commands
 
 ```bash
