@@ -25,7 +25,7 @@
   },
   "grafana": {
     "image": "docker.io/grafana/grafana-oss",
-    "version": "13.0.0"
+    "version": "13.0.1"
   },
   "loki": {
     "image": "docker.io/grafana/loki",
