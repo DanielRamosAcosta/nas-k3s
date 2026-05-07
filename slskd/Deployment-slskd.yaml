@@ -51,7 +51,7 @@ spec:
             secretKeyRef:
               key: SLSKD_SLSK_USERNAME
               name: slskd-sealed-secret
-        image: slskd/slskd:0.24.5
+        image: slskd/slskd:0.25.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
