@@ -28,7 +28,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     config: u.configMap.forEnv(self.deployment, {
       DON_TORRENT_BASE_URL: 'https://dontorrent.racing',
       MARCIANO_TORRENT_BASE_URL: 'https://marcianotorrent.net',
-      REQUEST_TIMEOUT_MS: '20000',
+      REQUEST_TIMEOUT_MS: '120000',
       HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
       HTTPS_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
       NO_PROXY: 'localhost,127.0.0.1,.svc.cluster.local',
