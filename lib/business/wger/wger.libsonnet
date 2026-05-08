@@ -123,7 +123,7 @@ local nginxConfContent = importstr './wger.nginx.conf';
       AUTH_PROXY_HEADER: 'Remote-User',
       AUTH_PROXY_USER_EMAIL_HEADER: 'Remote-Email',
       AUTH_PROXY_USER_NAME_HEADER: 'Remote-Name',
-      AUTH_PROXY_TRUSTED_IPS: '10.42.0.0/16',
+      AUTH_PROXY_TRUSTED_IPS: '127.0.0.1,10.42.0.0/16',
       AUTH_PROXY_CREATE_UNKNOWN_USER: 'True',
 
       ENABLE_EMAIL: 'True',
