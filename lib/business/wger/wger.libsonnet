@@ -95,10 +95,11 @@ local nginxConfContent = importstr './wger.nginx.conf';
       DJANGO_DB_ENGINE: 'django.db.backends.postgresql',
       DJANGO_DB_HOST: 'postgres.databases.svc.cluster.local',
       DJANGO_DB_PORT: '5432',
-      DJANGO_DB_NAME: 'wger',
+      DJANGO_DB_DATABASE: 'wger',
       DJANGO_DB_USER: 'wger',
       DJANGO_PERFORM_MIGRATIONS: 'True',
       DJANGO_COLLECTSTATIC_ON_STARTUP: 'True',
+      WGER_USE_GUNICORN: 'True',
 
       USE_CELERY: 'True',
       CELERY_WORKER_CONCURRENCY: '2',
@@ -115,11 +116,13 @@ local nginxConfContent = importstr './wger.nginx.conf';
 
       EXPOSE_PROMETHEUS_METRICS: 'True',
 
-      EMAIL_BACKEND: 'django.core.mail.backends.smtp.EmailBackend',
+      ENABLE_EMAIL: 'True',
       EMAIL_HOST: 'smtp-relay.system.svc.cluster.local',
       EMAIL_PORT: '587',
+      EMAIL_HOST_USER: '',
+      EMAIL_HOST_PASSWORD: '',
       EMAIL_USE_TLS: 'False',
-      DEFAULT_FROM_EMAIL: 'NAS <nas@mail.danielramos.me>',
+      FROM_EMAIL: 'NAS <nas@mail.danielramos.me>',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.wger),
