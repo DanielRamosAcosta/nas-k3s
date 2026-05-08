@@ -49,7 +49,8 @@ local nginxConfContent = importstr './wger.nginx.conf';
                   volume.fromEmptyDir(staticVolumeName),
                   volume.fromHostPath(mediaVolumeName, '/cold-data/wger/media'),
                   { name: this.nginxConfig.metadata.name, configMap: { name: this.nginxConfig.metadata.name } },
-                ]),
+                ]) +
+                deployment.spec.template.spec.withEnableServiceLinks(false),
 
     celeryWorker: deployment.new('wger-celery-worker', replicas=1, containers=[
                     container.new('celery-worker', u.image(versions.wger.image, versions.wger.version)) +
@@ -61,7 +62,8 @@ local nginxConfContent = importstr './wger.nginx.conf';
                   ]) +
                   deployment.spec.template.spec.withVolumes([
                     volume.fromHostPath(mediaVolumeName, '/cold-data/wger/media'),
-                  ]),
+                  ]) +
+                  deployment.spec.template.spec.withEnableServiceLinks(false),
 
     celeryBeat: deployment.new('wger-celery-beat', replicas=1, containers=[
                   container.new('celery-beat', u.image(versions.wger.image, versions.wger.version)) +
@@ -73,7 +75,8 @@ local nginxConfContent = importstr './wger.nginx.conf';
                 ]) +
                 deployment.spec.template.spec.withVolumes([
                   volume.fromHostPath(beatVolumeName, '/data/wger/celery-beat'),
-                ]),
+                ]) +
+                deployment.spec.template.spec.withEnableServiceLinks(false),
 
     service: k.util.serviceFor(self.deployment) + u.metrics(port='8000', path='/prometheus/metrics'),
 
@@ -107,6 +110,7 @@ local nginxConfContent = importstr './wger.nginx.conf';
       CELERY_BACKEND: 'redis://valkey.databases.svc.cluster.local:6379/4',
       DJANGO_CACHE_BACKEND: 'django_redis.cache.RedisCache',
       DJANGO_CACHE_LOCATION: 'redis://valkey.databases.svc.cluster.local:6379/2',
+      DJANGO_CACHE_CLIENT_CLASS: 'django_redis.client.DefaultClient',
 
       SYNC_EXERCISES_CELERY: 'True',
       SYNC_EXERCISE_IMAGES_CELERY: 'False',
