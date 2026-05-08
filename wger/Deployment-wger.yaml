@@ -96,6 +96,11 @@ spec:
             configMapKeyRef:
               key: DJANGO_CACHE_BACKEND
               name: wger-config-env
+        - name: DJANGO_CACHE_CLIENT_CLASS
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_CACHE_CLIENT_CLASS
+              name: wger-config-env
         - name: DJANGO_CACHE_LOCATION
           valueFrom:
             configMapKeyRef:
@@ -293,6 +298,7 @@ spec:
           name: static
         - mountPath: /home/wger/media
           name: media
+      enableServiceLinks: false
       volumes:
       - emptyDir: {}
         name: static
