@@ -137,6 +137,7 @@ local helm = tanka.helm.new(std.thisFile);
       providers: {
         kubernetesCRD: {
           enabled: true,
+          allowCrossNamespace: true,
           allowEmptyServices: true,
         },
         kubernetesIngress: {

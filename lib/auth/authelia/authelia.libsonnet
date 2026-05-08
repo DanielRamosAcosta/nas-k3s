@@ -68,5 +68,18 @@ local usersDatabase = importstr './users_database.yml';
     sealedSecretShared: u.sealedSecret.wide.forEnvNamed('authelia-shared-sealed-secret', { AUTHELIA_STORAGE_POSTGRES_PASSWORD: postgresSecrets.userAuthelia }),
 
     ingressRoute: u.ingressRoute.from(self.service, 'auth.danielramos.me'),
+
+    forwardAuthMiddleware: {
+      apiVersion: 'traefik.io/v1alpha1',
+      kind: 'Middleware',
+      metadata: { name: 'authelia-forwardauth', namespace: 'auth' },
+      spec: {
+        forwardAuth: {
+          address: 'http://authelia.auth.svc.cluster.local:9091/api/authz/forward-auth',
+          trustForwardHeader: true,
+          authResponseHeaders: ['Remote-User', 'Remote-Email', 'Remote-Name', 'Remote-Groups'],
+        },
+      },
+    },
   },
 }
