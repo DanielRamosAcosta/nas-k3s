@@ -120,6 +120,12 @@ local nginxConfContent = importstr './wger.nginx.conf';
 
       EXPOSE_PROMETHEUS_METRICS: 'True',
 
+      AUTH_PROXY_HEADER: 'Remote-User',
+      AUTH_PROXY_USER_EMAIL_HEADER: 'Remote-Email',
+      AUTH_PROXY_USER_NAME_HEADER: 'Remote-Name',
+      AUTH_PROXY_TRUSTED_IPS: '10.42.0.0/16',
+      AUTH_PROXY_CREATE_UNKNOWN_USER: 'True',
+
       ENABLE_EMAIL: 'True',
       EMAIL_HOST: 'smtp-relay.system.svc.cluster.local',
       EMAIL_PORT: '587',
@@ -133,6 +139,6 @@ local nginxConfContent = importstr './wger.nginx.conf';
 
     sealedSecretShared: u.sealedSecret.wide.forEnvNamed('wger-shared-sealed-secret', { DJANGO_DB_PASSWORD: postgresSecrets.userWger }),
 
-    ingressRoute: u.ingressRoute.from(self.service, 'gym.danielramos.me'),
+    ingressRoute: u.ingressRoute.from(self.service, 'gym.danielramos.me', middlewares=[u.middleware.autheliaForwardAuth()]),
   },
 }

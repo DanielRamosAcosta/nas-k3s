@@ -7,6 +7,7 @@ local files = import 'utils/files.libsonnet';
 local ingressRoute = import 'utils/ingressRoute.libsonnet';
 local labels = import 'utils/labels.libsonnet';
 local metricsMod = import 'utils/metrics.libsonnet';
+local middlewareMod = import 'utils/middleware.libsonnet';
 local probes = import 'utils/probes.libsonnet';
 local rbac = import 'utils/rbac.libsonnet';
 local sealedSecret = import 'utils/sealedSecret.libsonnet';
@@ -37,6 +38,7 @@ local volumeMountMod = import 'utils/volumeMount.libsonnet';
   ingressRoute: ingressRoute,
   rbac(name, namespace, rules):: rbac.new(name, namespace, rules),
   metrics(port, path='/metrics'):: metricsMod.annotations(port, path),
+  middleware: middlewareMod,
   argocd: argocdUtil,
   command: command,
   probes: probes,
