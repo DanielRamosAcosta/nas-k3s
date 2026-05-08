@@ -1,15 +1,17 @@
 ---
 id: NASKS-58
 title: 'fix(immich): permitir tráfico LAN en GeoBlock tras alias DNS local'
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-04-23 09:28'
+updated_date: '2026-04-29 06:17'
 labels:
   - bug
   - immich
   - crowdsec
 dependencies: []
 priority: high
+ordinal: 0.000476837158203125
 ---
 
 ## Description

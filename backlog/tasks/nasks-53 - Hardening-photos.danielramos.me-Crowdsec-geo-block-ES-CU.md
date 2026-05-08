@@ -4,7 +4,7 @@ title: 'Hardening photos.danielramos.me: Crowdsec + geo-block ES/CU'
 status: Done
 assignee: []
 created_date: '2026-04-22 18:44'
-updated_date: '2026-04-22 19:57'
+updated_date: '2026-04-29 06:17'
 labels:
   - infra
   - traefik
@@ -13,6 +13,7 @@ labels:
   - refined
 dependencies: []
 priority: medium
+ordinal: 49000
 ---
 
 ## Description

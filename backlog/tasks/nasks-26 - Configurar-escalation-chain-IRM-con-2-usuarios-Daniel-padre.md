@@ -4,14 +4,14 @@ title: Configurar escalation chain IRM con 2 usuarios (Daniel + padre)
 status: Done
 assignee: []
 created_date: '2026-03-18 08:20'
-updated_date: '2026-03-21 18:37'
+updated_date: '2026-04-29 06:17'
 labels:
   - infrastructure
   - monitoring
   - refined
 dependencies: []
 priority: medium
-ordinal: 2000
+ordinal: 4000
 ---
 
 ## Description
