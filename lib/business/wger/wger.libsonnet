@@ -139,6 +139,15 @@ local nginxConfContent = importstr './wger.nginx.conf';
 
     sealedSecretShared: u.sealedSecret.wide.forEnvNamed('wger-shared-sealed-secret', { DJANGO_DB_PASSWORD: postgresSecrets.userWger }),
 
-    ingressRoute: u.ingressRoute.from(self.service, 'gym.danielramos.me', middlewares=[u.middleware.autheliaForwardAuth()]),
+    ingressRoute: u.ingressRoute.from(
+      self.service,
+      'gym.danielramos.me',
+      middlewares=[u.middleware.autheliaForwardAuth()],
+      extraRoutes=[{
+        match: 'Host(`gym.danielramos.me`) && PathPrefix(`/api`)',
+        kind: 'Rule',
+        services: [{ name: this.service.metadata.name, port: this.service.spec.ports[0].port }],
+      }],
+    ),
   },
 }
