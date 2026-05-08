@@ -6,7 +6,7 @@ data:
   MARCIANO_TORRENT_BASE_URL: https://marcianotorrent.net
   NO_PROXY: localhost,127.0.0.1,.svc.cluster.local
   NODE_USE_ENV_PROXY: "1"
-  REQUEST_TIMEOUT_MS: "20000"
+  REQUEST_TIMEOUT_MS: "120000"
 kind: ConfigMap
 metadata:
   labels:
