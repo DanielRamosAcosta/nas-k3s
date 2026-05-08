@@ -35,6 +35,7 @@
     "argocd/Application-traefik.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-valkey.yaml": "environments/argocd/main.jsonnet",
     "argocd/Application-victoriametrics.yaml": "environments/argocd/main.jsonnet",
+    "argocd/Application-wger.yaml": "environments/argocd/main.jsonnet",
     "argocd/ClusterRole-argocd-application-controller.yaml": "environments/argocd/main.jsonnet",
     "argocd/ClusterRole-argocd-notifications-controller.yaml": "environments/argocd/main.jsonnet",
     "argocd/ClusterRole-argocd-server.yaml": "environments/argocd/main.jsonnet",
@@ -321,5 +322,14 @@
     "victoriametrics/SealedSecret-vm-license-sealed-secret.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/Service-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/ServiceAccount-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
-    "victoriametrics/StatefulSet-victoriametrics.yaml": "environments/monitoring/main.jsonnet"
+    "victoriametrics/StatefulSet-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
+    "wger/ConfigMap-wger-config-env.yaml": "environments/business/main.jsonnet",
+    "wger/ConfigMap-wger-nginx-conf.yaml": "environments/business/main.jsonnet",
+    "wger/Deployment-wger-celery-beat.yaml": "environments/business/main.jsonnet",
+    "wger/Deployment-wger-celery-worker.yaml": "environments/business/main.jsonnet",
+    "wger/Deployment-wger.yaml": "environments/business/main.jsonnet",
+    "wger/IngressRoute-wger-ingressroute.yaml": "environments/business/main.jsonnet",
+    "wger/SealedSecret-wger-sealed-secret.yaml": "environments/business/main.jsonnet",
+    "wger/SealedSecret-wger-shared-sealed-secret.yaml": "environments/business/main.jsonnet",
+    "wger/Service-wger.yaml": "environments/business/main.jsonnet"
 }

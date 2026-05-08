@@ -1,0 +1,220 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: wger
+  name: wger-celery-beat
+  namespace: business
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: wger-celery-beat
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: wger-celery-beat
+    spec:
+      containers:
+      - command:
+        - /start-beat
+        env:
+        - name: ALLOW_GUEST_USERS
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOW_GUEST_USERS
+              name: wger-config-env
+        - name: ALLOW_REGISTRATION
+          valueFrom:
+            configMapKeyRef:
+              key: ALLOW_REGISTRATION
+              name: wger-config-env
+        - name: CACHE_API_EXERCISES_CELERY
+          valueFrom:
+            configMapKeyRef:
+              key: CACHE_API_EXERCISES_CELERY
+              name: wger-config-env
+        - name: CELERY_BACKEND
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_BACKEND
+              name: wger-config-env
+        - name: CELERY_BROKER
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_BROKER
+              name: wger-config-env
+        - name: CELERY_WORKER_CONCURRENCY
+          valueFrom:
+            configMapKeyRef:
+              key: CELERY_WORKER_CONCURRENCY
+              name: wger-config-env
+        - name: CSRF_TRUSTED_ORIGINS
+          valueFrom:
+            configMapKeyRef:
+              key: CSRF_TRUSTED_ORIGINS
+              name: wger-config-env
+        - name: DEFAULT_FROM_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              key: DEFAULT_FROM_EMAIL
+              name: wger-config-env
+        - name: DJANGO_CACHE_BACKEND
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_CACHE_BACKEND
+              name: wger-config-env
+        - name: DJANGO_CACHE_LOCATION
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_CACHE_LOCATION
+              name: wger-config-env
+        - name: DJANGO_COLLECTSTATIC_ON_STARTUP
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_COLLECTSTATIC_ON_STARTUP
+              name: wger-config-env
+        - name: DJANGO_DB_ENGINE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DB_ENGINE
+              name: wger-config-env
+        - name: DJANGO_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DB_HOST
+              name: wger-config-env
+        - name: DJANGO_DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DB_NAME
+              name: wger-config-env
+        - name: DJANGO_DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DB_PORT
+              name: wger-config-env
+        - name: DJANGO_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DB_USER
+              name: wger-config-env
+        - name: DJANGO_DEBUG
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DEBUG
+              name: wger-config-env
+        - name: DJANGO_PERFORM_MIGRATIONS
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_PERFORM_MIGRATIONS
+              name: wger-config-env
+        - name: EMAIL_BACKEND
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_BACKEND
+              name: wger-config-env
+        - name: EMAIL_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_HOST
+              name: wger-config-env
+        - name: EMAIL_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_PORT
+              name: wger-config-env
+        - name: EMAIL_USE_TLS
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_USE_TLS
+              name: wger-config-env
+        - name: EXPOSE_PROMETHEUS_METRICS
+          valueFrom:
+            configMapKeyRef:
+              key: EXPOSE_PROMETHEUS_METRICS
+              name: wger-config-env
+        - name: NUMBER_OF_PROXIES
+          valueFrom:
+            configMapKeyRef:
+              key: NUMBER_OF_PROXIES
+              name: wger-config-env
+        - name: SITE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: SITE_URL
+              name: wger-config-env
+        - name: SYNC_EXERCISES_CELERY
+          valueFrom:
+            configMapKeyRef:
+              key: SYNC_EXERCISES_CELERY
+              name: wger-config-env
+        - name: SYNC_EXERCISE_IMAGES_CELERY
+          valueFrom:
+            configMapKeyRef:
+              key: SYNC_EXERCISE_IMAGES_CELERY
+              name: wger-config-env
+        - name: SYNC_EXERCISE_VIDEOS_CELERY
+          valueFrom:
+            configMapKeyRef:
+              key: SYNC_EXERCISE_VIDEOS_CELERY
+              name: wger-config-env
+        - name: SYNC_INGREDIENTS_CELERY
+          valueFrom:
+            configMapKeyRef:
+              key: SYNC_INGREDIENTS_CELERY
+              name: wger-config-env
+        - name: TIME_ZONE
+          valueFrom:
+            configMapKeyRef:
+              key: TIME_ZONE
+              name: wger-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: wger-config-env
+        - name: USE_CELERY
+          valueFrom:
+            configMapKeyRef:
+              key: USE_CELERY
+              name: wger-config-env
+        - name: WGER_INSTANCE
+          valueFrom:
+            configMapKeyRef:
+              key: WGER_INSTANCE
+              name: wger-config-env
+        - name: X_FORWARDED_PROTO_HEADER_SET
+          valueFrom:
+            configMapKeyRef:
+              key: X_FORWARDED_PROTO_HEADER_SET
+              name: wger-config-env
+        - name: SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SECRET_KEY
+              name: wger-sealed-secret
+        - name: SIGNING_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SIGNING_KEY
+              name: wger-sealed-secret
+        - name: DJANGO_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DJANGO_DB_PASSWORD
+              name: wger-shared-sealed-secret
+        image: docker.io/wger/server:2.5
+        imagePullPolicy: IfNotPresent
+        name: celery-beat
+        volumeMounts:
+        - mountPath: /home/wger/beat
+          name: beat
+      volumes:
+      - hostPath:
+          path: /data/wger/celery-beat
+        name: beat

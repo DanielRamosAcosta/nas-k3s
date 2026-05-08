@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: wger
+  name: wger-ingressroute
+  namespace: business
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`gym.danielramos.me`)
+    services:
+    - name: wger
+      port: 80
+  tls:
+    store:
+      name: default

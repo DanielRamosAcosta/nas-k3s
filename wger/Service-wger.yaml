@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /prometheus/metrics
+    prometheus.io/port: "8000"
+    prometheus.io/scrape: "true"
+  labels:
+    app: wger
+    name: wger
+  name: wger
+  namespace: business
+spec:
+  ports:
+  - name: nginx-http
+    port: 80
+    targetPort: 80
+  - name: wger-gunicorn
+    port: 8000
+    targetPort: 8000
+  selector:
+    name: wger
