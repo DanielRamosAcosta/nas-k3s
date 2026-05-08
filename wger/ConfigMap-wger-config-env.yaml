@@ -2,6 +2,11 @@ apiVersion: v1
 data:
   ALLOW_GUEST_USERS: "False"
   ALLOW_REGISTRATION: "False"
+  AUTH_PROXY_CREATE_UNKNOWN_USER: "True"
+  AUTH_PROXY_HEADER: Remote-User
+  AUTH_PROXY_TRUSTED_IPS: 10.42.0.0/16
+  AUTH_PROXY_USER_EMAIL_HEADER: Remote-Email
+  AUTH_PROXY_USER_NAME_HEADER: Remote-Name
   CACHE_API_EXERCISES_CELERY: "False"
   CELERY_BACKEND: redis://valkey.databases.svc.cluster.local:6379/4
   CELERY_BROKER: redis://valkey.databases.svc.cluster.local:6379/3

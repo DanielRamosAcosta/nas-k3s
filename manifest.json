@@ -84,6 +84,7 @@
     "authelia/ConfigMap-users-database-yml.yaml": "environments/auth/main.jsonnet",
     "authelia/Deployment-authelia.yaml": "environments/auth/main.jsonnet",
     "authelia/IngressRoute-authelia-ingressroute.yaml": "environments/auth/main.jsonnet",
+    "authelia/Middleware-authelia-forwardauth.yaml": "environments/auth/main.jsonnet",
     "authelia/SealedSecret-authelia-sealed-secret.yaml": "environments/auth/main.jsonnet",
     "authelia/SealedSecret-authelia-shared-sealed-secret.yaml": "environments/auth/main.jsonnet",
     "authelia/SealedSecret-authelia-user-passwords.yaml": "environments/auth/main.jsonnet",

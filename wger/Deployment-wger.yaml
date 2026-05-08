@@ -66,6 +66,31 @@ spec:
             configMapKeyRef:
               key: ALLOW_REGISTRATION
               name: wger-config-env
+        - name: AUTH_PROXY_CREATE_UNKNOWN_USER
+          valueFrom:
+            configMapKeyRef:
+              key: AUTH_PROXY_CREATE_UNKNOWN_USER
+              name: wger-config-env
+        - name: AUTH_PROXY_HEADER
+          valueFrom:
+            configMapKeyRef:
+              key: AUTH_PROXY_HEADER
+              name: wger-config-env
+        - name: AUTH_PROXY_TRUSTED_IPS
+          valueFrom:
+            configMapKeyRef:
+              key: AUTH_PROXY_TRUSTED_IPS
+              name: wger-config-env
+        - name: AUTH_PROXY_USER_EMAIL_HEADER
+          valueFrom:
+            configMapKeyRef:
+              key: AUTH_PROXY_USER_EMAIL_HEADER
+              name: wger-config-env
+        - name: AUTH_PROXY_USER_NAME_HEADER
+          valueFrom:
+            configMapKeyRef:
+              key: AUTH_PROXY_USER_NAME_HEADER
+              name: wger-config-env
         - name: CACHE_API_EXERCISES_CELERY
           valueFrom:
             configMapKeyRef:

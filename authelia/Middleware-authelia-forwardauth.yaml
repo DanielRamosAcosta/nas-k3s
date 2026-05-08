@@ -1,0 +1,16 @@
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  labels:
+    app: authelia
+  name: authelia-forwardauth
+  namespace: auth
+spec:
+  forwardAuth:
+    address: http://authelia.auth.svc.cluster.local:9091/api/authz/forward-auth
+    authResponseHeaders:
+    - Remote-User
+    - Remote-Email
+    - Remote-Name
+    - Remote-Groups
+    trustForwardHeader: true
