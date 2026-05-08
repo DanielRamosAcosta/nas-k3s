@@ -1,10 +1,10 @@
 ---
 id: NASKS-61
 title: Desplegar wger (workout/fitness tracker) reutilizando Postgres y Valkey
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-05-07 20:50'
-updated_date: '2026-05-08 07:27'
+updated_date: '2026-05-08 15:49'
 labels:
   - app
   - business
