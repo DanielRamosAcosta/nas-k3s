@@ -58,11 +58,6 @@ spec:
             configMapKeyRef:
               key: CSRF_TRUSTED_ORIGINS
               name: wger-config-env
-        - name: DEFAULT_FROM_EMAIL
-          valueFrom:
-            configMapKeyRef:
-              key: DEFAULT_FROM_EMAIL
-              name: wger-config-env
         - name: DJANGO_CACHE_BACKEND
           valueFrom:
             configMapKeyRef:
@@ -78,6 +73,11 @@ spec:
             configMapKeyRef:
               key: DJANGO_COLLECTSTATIC_ON_STARTUP
               name: wger-config-env
+        - name: DJANGO_DB_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_DB_DATABASE
+              name: wger-config-env
         - name: DJANGO_DB_ENGINE
           valueFrom:
             configMapKeyRef:
@@ -87,11 +87,6 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: DJANGO_DB_HOST
-              name: wger-config-env
-        - name: DJANGO_DB_NAME
-          valueFrom:
-            configMapKeyRef:
-              key: DJANGO_DB_NAME
               name: wger-config-env
         - name: DJANGO_DB_PORT
           valueFrom:
@@ -113,15 +108,20 @@ spec:
             configMapKeyRef:
               key: DJANGO_PERFORM_MIGRATIONS
               name: wger-config-env
-        - name: EMAIL_BACKEND
-          valueFrom:
-            configMapKeyRef:
-              key: EMAIL_BACKEND
-              name: wger-config-env
         - name: EMAIL_HOST
           valueFrom:
             configMapKeyRef:
               key: EMAIL_HOST
+              name: wger-config-env
+        - name: EMAIL_HOST_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_HOST_PASSWORD
+              name: wger-config-env
+        - name: EMAIL_HOST_USER
+          valueFrom:
+            configMapKeyRef:
+              key: EMAIL_HOST_USER
               name: wger-config-env
         - name: EMAIL_PORT
           valueFrom:
@@ -133,10 +133,20 @@ spec:
             configMapKeyRef:
               key: EMAIL_USE_TLS
               name: wger-config-env
+        - name: ENABLE_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              key: ENABLE_EMAIL
+              name: wger-config-env
         - name: EXPOSE_PROMETHEUS_METRICS
           valueFrom:
             configMapKeyRef:
               key: EXPOSE_PROMETHEUS_METRICS
+              name: wger-config-env
+        - name: FROM_EMAIL
+          valueFrom:
+            configMapKeyRef:
+              key: FROM_EMAIL
               name: wger-config-env
         - name: NUMBER_OF_PROXIES
           valueFrom:
@@ -187,6 +197,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: WGER_INSTANCE
+              name: wger-config-env
+        - name: WGER_USE_GUNICORN
+          valueFrom:
+            configMapKeyRef:
+              key: WGER_USE_GUNICORN
               name: wger-config-env
         - name: X_FORWARDED_PROTO_HEADER_SET
           valueFrom:

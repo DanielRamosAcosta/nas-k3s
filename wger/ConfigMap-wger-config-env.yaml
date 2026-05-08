@@ -7,22 +7,24 @@ data:
   CELERY_BROKER: redis://valkey.databases.svc.cluster.local:6379/3
   CELERY_WORKER_CONCURRENCY: "2"
   CSRF_TRUSTED_ORIGINS: https://gym.danielramos.me
-  DEFAULT_FROM_EMAIL: NAS <nas@mail.danielramos.me>
   DJANGO_CACHE_BACKEND: django_redis.cache.RedisCache
   DJANGO_CACHE_LOCATION: redis://valkey.databases.svc.cluster.local:6379/2
   DJANGO_COLLECTSTATIC_ON_STARTUP: "True"
+  DJANGO_DB_DATABASE: wger
   DJANGO_DB_ENGINE: django.db.backends.postgresql
   DJANGO_DB_HOST: postgres.databases.svc.cluster.local
-  DJANGO_DB_NAME: wger
   DJANGO_DB_PORT: "5432"
   DJANGO_DB_USER: wger
   DJANGO_DEBUG: "False"
   DJANGO_PERFORM_MIGRATIONS: "True"
-  EMAIL_BACKEND: django.core.mail.backends.smtp.EmailBackend
   EMAIL_HOST: smtp-relay.system.svc.cluster.local
+  EMAIL_HOST_PASSWORD: ""
+  EMAIL_HOST_USER: ""
   EMAIL_PORT: "587"
   EMAIL_USE_TLS: "False"
+  ENABLE_EMAIL: "True"
   EXPOSE_PROMETHEUS_METRICS: "True"
+  FROM_EMAIL: NAS <nas@mail.danielramos.me>
   NUMBER_OF_PROXIES: "1"
   SITE_URL: https://gym.danielramos.me
   SYNC_EXERCISE_IMAGES_CELERY: "False"
@@ -33,6 +35,7 @@ data:
   TZ: Europe/Madrid
   USE_CELERY: "True"
   WGER_INSTANCE: https://wger.de
+  WGER_USE_GUNICORN: "True"
   X_FORWARDED_PROTO_HEADER_SET: "True"
 kind: ConfigMap
 metadata:
