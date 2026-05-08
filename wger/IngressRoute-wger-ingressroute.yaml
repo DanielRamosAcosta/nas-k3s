@@ -17,6 +17,11 @@ spec:
     services:
     - name: wger
       port: 80
+  - kind: Rule
+    match: Host(`gym.danielramos.me`) && PathPrefix(`/api`)
+    services:
+    - name: wger
+      port: 80
   tls:
     store:
       name: default
