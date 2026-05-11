@@ -1,4 +1,5 @@
 .idea
+.claude/settings.local.json
 clean.js
 temp.*
 ._DS_Store
