@@ -49,7 +49,7 @@
   },
   "nutExporter": {
     "image": "ghcr.io/druggeri/nut_exporter",
-    "version": "3.2.5"
+    "version": "3.3.0"
   },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
