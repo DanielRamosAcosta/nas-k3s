@@ -53,7 +53,7 @@
   },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
-    "version": "v2.18.0"
+    "version": "v2.19.0"
   },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
