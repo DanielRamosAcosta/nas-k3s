@@ -137,7 +137,7 @@
   },
   "busybox": {
     "image": "busybox",
-    "version": "1.37.0"
+    "version": "1.38.0"
   },
   "rsync": {
     "image": "instrumentisto/rsync-ssh",
