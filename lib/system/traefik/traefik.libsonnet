@@ -34,6 +34,14 @@ local helm = tanka.helm.new(std.thisFile);
         // Crowdsec detection).
         '--entryPoints.websecure.forwardedHeaders.trustedIPs=' + std.join(',', cloudflare.allCidrs),
         '--entryPoints.web.forwardedHeaders.trustedIPs=' + std.join(',', cloudflare.allCidrs),
+        // Raise the read timeout from Traefik's 60s default. `readTimeout`
+        // bounds reading the *entire* request including the body, so the
+        // default silently kills any upload that takes longer than a minute
+        // to transfer — e.g. large immich video uploads (a 1.35GiB clip can
+        // never finish in 60s on a home uplink, and even ~120MB clips hit it).
+        // 1h gives ample headroom; large uploads are the only long requests.
+        '--entryPoints.websecure.transport.respondingTimeouts.readTimeout=3600s',
+        '--entryPoints.web.transport.respondingTimeouts.readTimeout=3600s',
       ],
       // Community plugins loaded by Traefik.
       //   - `geoblock` provides synchronous country-based filtering.
@@ -132,6 +140,13 @@ local helm = tanka.helm.new(std.thisFile);
       logs: {
         general: {
           level: 'INFO',
+        },
+        // Per-request access logs (one line per request, with status code,
+        // size and duration) so upload failures and the like are visible in
+        // Loki via {service="traefik"}. JSON format keeps the fields parseable.
+        access: {
+          enabled: true,
+          format: 'json',
         },
       },
       providers: {
