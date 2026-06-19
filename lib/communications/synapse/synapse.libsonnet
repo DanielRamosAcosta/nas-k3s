@@ -7,10 +7,6 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 local homeserverTemplate = importstr './synapse.homeserver.yaml';
 local logConfigContent = importstr './synapse.log.yaml';
 
-local initEnv(this) =
-  u.envVars.fromSealedSecret(this.sealedSecret) +
-  u.envVars.fromSealedSecret(this.sealedSecretDb);
-
 {
   local deployment = k.apps.v1.deployment,
   local container = k.core.v1.container,
@@ -20,13 +16,6 @@ local initEnv(this) =
 
   new():: {
     local this = self,
-
-    homeserverConfig: u.configMap.forFile('homeserver.yaml', homeserverTemplate) + { metadata+: { name: 'synapse-homeserver-tpl' } },
-    logConfig: u.configMap.forFile('log.yaml', logConfigContent) + { metadata+: { name: 'synapse-log-config' } },
-
-    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.synapse),
-    sealedSecretDb: u.sealedSecret.wide.forEnvNamed('synapse-db-sealed-secret', { SYNAPSE_DB_PASSWORD: postgresSecrets.userSynapse }),
-    signingKey: u.sealedSecret.forFile('signing.key', secrets.signingKey),
 
     deployment: deployment.new('synapse', replicas=1, containers=[
                   container.new('synapse', u.image(versions.synapse.image, versions.synapse.version)) +
@@ -47,7 +36,10 @@ local initEnv(this) =
                 deployment.spec.template.spec.withInitContainers([
                   container.new('config-init', u.image(versions.envsubst.image, versions.envsubst.version)) +
                   container.withCommand(['/bin/sh', '-c', 'envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml']) +
-                  container.withEnv(initEnv(this)) +
+                  container.withEnv(
+                    u.envVars.fromSealedSecret(this.sealedSecret) +
+                    u.envVars.fromSealedSecret(this.sealedSecretDb)
+                  ) +
                   container.withVolumeMounts([
                     volumeMount.new('synapse-homeserver-tpl', '/tpl/homeserver.yaml') + volumeMount.withSubPath('homeserver.yaml'),
                     volumeMount.new('config', '/config'),
@@ -66,5 +58,12 @@ local initEnv(this) =
     service: k.util.serviceFor(self.deployment) + u.metrics(port='9090', path='/metrics'),
 
     ingressRoute: u.ingressRoute.from(self.service, 'matrix.danielramos.me'),
+
+    homeserverConfig: u.configMap.forFile('homeserver.yaml', homeserverTemplate) + { metadata+: { name: 'synapse-homeserver-tpl' } },
+    logConfig: u.configMap.forFile('log.yaml', logConfigContent) + { metadata+: { name: 'synapse-log-config' } },
+
+    sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.synapse),
+    sealedSecretDb: u.sealedSecret.wide.forEnvNamed('synapse-db-sealed-secret', { SYNAPSE_DB_PASSWORD: postgresSecrets.userSynapse }),
+    signingKey: u.sealedSecret.forFile('signing.key', secrets.signingKey),
   },
 }
