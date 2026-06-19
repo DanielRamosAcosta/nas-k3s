@@ -19,9 +19,9 @@ data:
     No se requiere ninguna acción.\"\n    exit 0\nfi\n\n# Crear base de datos dedicada
     con el usuario como owner\necho \"\U0001F4E6 Creando base de datos '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
     psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -v ON_ERROR_STOP=1
-    <<SQL\nCREATE DATABASE \"$USER_NAME\" OWNER \"$USER_NAME\" TEMPLATE template0;\nSQL\n\n#
-    Revocar acceso público y dar acceso exclusivo al owner\necho \"\U0001F512 Configurando
-    permisos exclusivos para '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
+    <<SQL\nCREATE DATABASE \"$USER_NAME\" OWNER \"$USER_NAME\" ENCODING 'UTF8' LC_COLLATE
+    'C' LC_CTYPE 'C' TEMPLATE template0;\nSQL\n\n# Revocar acceso público y dar acceso
+    exclusivo al owner\necho \"\U0001F512 Configurando permisos exclusivos para '$USER_NAME'...\"\nPGPASSWORD=\"$POSTGRES_PASSWORD\"
     psql -h \"$POSTGRES_HOST\" -p \"$POSTGRES_PORT\" -U \"$POSTGRES_USER\" -v ON_ERROR_STOP=1
     <<SQL\nREVOKE CONNECT ON DATABASE \"$USER_NAME\" FROM PUBLIC;\nGRANT  CONNECT
     ON DATABASE \"$USER_NAME\" TO \"$USER_NAME\";\nSQL\n\n# Revocar acceso del usuario
