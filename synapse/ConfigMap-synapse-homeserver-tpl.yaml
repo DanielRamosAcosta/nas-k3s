@@ -39,6 +39,14 @@ data:
     app_service_config_files:
       - /appservice/registration.yaml
 
+    # Required for mautrix end-to-bridge encryption: deliver to-device messages
+    # and device-list/OTK updates to appservices via transactions (MSC2409 +
+    # MSC3202), since Synapse no longer lets appservice users use /sync.
+    experimental_features:
+      msc3202_device_masquerading: true
+      msc3202_transaction_extensions: true
+      msc2409_to_device_messages_enabled: true
+
     password_config:
       enabled: false
 
