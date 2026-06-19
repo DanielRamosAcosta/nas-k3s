@@ -7,6 +7,7 @@ media_store_path: /media
 
 listeners:
   - port: 8008
+    type: http
     x_forwarded: true
     bind_addresses: ['0.0.0.0']
     resources:
