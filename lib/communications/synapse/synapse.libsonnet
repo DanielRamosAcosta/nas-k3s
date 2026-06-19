@@ -45,15 +45,8 @@ local initEnv(this) =
                   u.probes.withStartup.http('/_matrix/client/versions', 8008),
                 ]) +
                 deployment.spec.template.spec.withInitContainers([
-                  container.new('config-init', u.image(versions.busybox.image, versions.busybox.version)) +
-                  container.withCommand(['/bin/sh', '-c', |||
-                    sed \
-                      -e "s/__MACAROON_SECRET_KEY__/${MACAROON_SECRET_KEY}/g" \
-                      -e "s/__REGISTRATION_SHARED_SECRET__/${REGISTRATION_SHARED_SECRET}/g" \
-                      -e "s/__FORM_SECRET__/${FORM_SECRET}/g" \
-                      -e "s/__SYNAPSE_DB_PASSWORD__/${SYNAPSE_DB_PASSWORD}/g" \
-                      /tpl/homeserver.yaml > /config/homeserver.yaml
-                  |||]) +
+                  container.new('config-init', u.image(versions.envsubst.image, versions.envsubst.version)) +
+                  container.withCommand(['/bin/sh', '-c', 'envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml']) +
                   container.withEnv(initEnv(this)) +
                   container.withVolumeMounts([
                     volumeMount.new('synapse-homeserver-tpl', '/tpl/homeserver.yaml') + volumeMount.withSubPath('homeserver.yaml'),
