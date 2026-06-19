@@ -4,6 +4,7 @@ title: Retirar legacy cloudflare-origin-cert SealedSecret de Traefik
 status: To Do
 assignee: []
 created_date: '2026-04-22 20:37'
+updated_date: '2026-06-19 16:56'
 labels:
   - cleanup
   - traefik
@@ -11,6 +12,7 @@ labels:
   - followup-nasks-52
 dependencies: []
 priority: low
+ordinal: 60000
 ---
 
 ## Description

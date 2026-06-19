@@ -4,6 +4,7 @@ title: Re-enroll Crowdsec LAPI en Crowdsec Console (app.crowdsec.net)
 status: To Do
 assignee: []
 created_date: '2026-04-22 20:34'
+updated_date: '2026-06-19 16:56'
 labels:
   - infra
   - crowdsec
@@ -11,6 +12,7 @@ labels:
   - followup-nasks-53
 dependencies: []
 priority: low
+ordinal: 57000
 ---
 
 ## Description

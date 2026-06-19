@@ -6,10 +6,12 @@ title: >-
 status: To Do
 assignee: []
 created_date: '2026-04-21 22:20'
+updated_date: '2026-06-19 16:56'
 labels:
   - monitoring
   - grafana
 dependencies: []
+ordinal: 56000
 ---
 
 ## Description

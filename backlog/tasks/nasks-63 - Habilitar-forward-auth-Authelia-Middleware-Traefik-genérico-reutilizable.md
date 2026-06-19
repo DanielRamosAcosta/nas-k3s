@@ -4,13 +4,14 @@ title: Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizab
 status: To Do
 assignee: []
 created_date: '2026-05-08 06:55'
-updated_date: '2026-05-08 07:26'
+updated_date: '2026-06-19 16:56'
 labels:
   - auth
   - infra
   - system
 dependencies: []
 priority: medium
+ordinal: 64000
 ---
 
 ## Description

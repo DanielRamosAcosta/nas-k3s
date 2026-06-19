@@ -4,6 +4,7 @@ title: Grafana dashboard para Crowdsec (agent + LAPI metrics)
 status: To Do
 assignee: []
 created_date: '2026-04-22 20:36'
+updated_date: '2026-06-19 16:56'
 labels:
   - observability
   - grafana
@@ -11,6 +12,7 @@ labels:
   - followup-nasks-53
 dependencies: []
 priority: low
+ordinal: 58000
 ---
 
 ## Description

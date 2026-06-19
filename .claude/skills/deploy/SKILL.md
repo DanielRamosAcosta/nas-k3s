@@ -34,6 +34,8 @@ Before starting, determine which services are affected by the current changes:
 
 ## Step 4 — Watch ArgoCD detect the change
 
+**Do NOT run `argocd app sync`.** ArgoCD is notified automatically via webhook on every push to GitHub — manual sync is never needed and skips the normal GitOps flow.
+
 Do NOT use `sleep`. Instead, actively poll for the rollout:
 
 1. First, wait for the `manifests` branch to update (CI exports manifests on push to main):

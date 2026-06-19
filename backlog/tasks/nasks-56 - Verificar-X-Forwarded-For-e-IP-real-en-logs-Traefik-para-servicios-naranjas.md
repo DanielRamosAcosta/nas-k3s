@@ -4,6 +4,7 @@ title: Verificar X-Forwarded-For e IP real en logs Traefik para servicios naranj
 status: To Do
 assignee: []
 created_date: '2026-04-22 20:36'
+updated_date: '2026-06-19 16:56'
 labels:
   - infra
   - traefik
@@ -11,6 +12,7 @@ labels:
   - followup-nasks-53
 dependencies: []
 priority: low
+ordinal: 59000
 ---
 
 ## Description

@@ -4,6 +4,7 @@ title: 'Mergear con seguridad PR #75 — FacturaScripts 2025.81 → 2026.1'
 status: To Do
 assignee: []
 created_date: '2026-05-07 20:44'
+updated_date: '2026-06-19 16:56'
 labels:
   - business
   - facturascripts
@@ -16,6 +17,7 @@ references:
   - lib/business/facturascripts/facturascripts.libsonnet
   - lib/versions.json
 priority: medium
+ordinal: 62000
 ---
 
 ## Description
