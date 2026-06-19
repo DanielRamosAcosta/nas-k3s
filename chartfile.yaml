@@ -5,7 +5,7 @@ repositories:
 - name: traefik
   url: https://helm.traefik.io/traefik
 - name: sealed-secrets
-  url: https://bitnami-labs.github.io/sealed-secrets
+  url: https://bitnami.github.io/sealed-secrets
 - name: argo-cd
   url: https://argoproj.github.io/argo-helm
 - name: stakater
