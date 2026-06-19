@@ -23,7 +23,7 @@ Typical flow:
 3. If unsure about labels, use `list_loki_label_values` (e.g. `labelName: namespace`) before querying.
 4. For noisy streams, prefer `query_loki_patterns` or `find_error_pattern_logs` to cluster errors.
 
-Namespace cheatsheet: `argocd`, `arr`, `business`, `databases`, `kube-system`, `media`, `monitoring`, `system`. (Apps are grouped by category, not per-app namespace — e.g. immich lives in `media`, not `immich`.)
+Namespace cheatsheet: `argocd`, `arr`, `business`, `communications`, `databases`, `kube-system`, `media`, `monitoring`, `system`. (Apps are grouped by category, not per-app namespace — e.g. immich lives in `media`, not `immich`.)
 
 `kubectl logs` is only acceptable as a last resort when Loki/Promtail is itself broken.
 
@@ -59,7 +59,7 @@ argocd app sync <app-name> --grpc-web                  # Sync a single app
 ### Directory Layout
 - **`lib/`** - Jsonnet libraries defining each application. Each app is a `.libsonnet` module with a `new(version)` factory that returns all its K8s resources (StatefulSet/Deployment, Service, ConfigMap, Secret, IngressRoute).
   - `utils.libsonnet` - Shared helpers for hostPath volumes, secrets, config maps, ingress routes, RBAC, volume mounts, and Traefik middleware
-  - `secrets.json` - Plaintext secrets (gitignored, encrypted at rest via age)
+  - `<appname>.secrets.json` - Kubeseal-encrypted secret values (gitignored), one per app alongside its `.libsonnet`
   - Subdirectories: `arr/`, `auth/`, `databases/`, `media/`, `monitoring/`, `system/`
 - **`environments/`** - Tanka environment definitions. Each has `main.jsonnet` (imports libs, wires versions) + `spec.json` (namespace, API server).
   - `versions.json` - Centralized container image versions for all apps
