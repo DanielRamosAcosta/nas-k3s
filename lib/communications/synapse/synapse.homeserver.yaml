@@ -4,7 +4,6 @@ public_baseurl: "https://matrix.danielramos.me"
 data_directory: /data
 signing_key_path: /keys/signing.key
 media_store_path: /media
-log_config: /log-config/log.yaml
 
 listeners:
   - port: 8008

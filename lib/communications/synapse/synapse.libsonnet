@@ -5,7 +5,6 @@ local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 local homeserverTemplate = importstr './synapse.homeserver.yaml';
-local logConfigContent = importstr './synapse.log.yaml';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -26,7 +25,6 @@ local logConfigContent = importstr './synapse.log.yaml';
                   ]) +
                   container.withVolumeMounts([
                     volumeMount.new('config', '/config'),
-                    volumeMount.new('synapse-log-config', '/log-config/log.yaml') + volumeMount.withSubPath('log.yaml'),
                     u.volumeMount.fromSealedSecretFile(this.signingKey, '/keys'),
                     volumeMount.new('media', '/media'),
                     volumeMount.new('data', '/data'),
@@ -47,7 +45,6 @@ local logConfigContent = importstr './synapse.log.yaml';
                 ]) +
                 deployment.spec.template.spec.withVolumes([
                   u.volume.fromConfigMap(this.homeserverConfig),
-                  u.volume.fromConfigMap(this.logConfig),
                   { name: 'config', emptyDir: {} },
                   u.volume.fromSealedSecret(this.signingKey),
                   volume.fromHostPath('media', '/cold-data/synapse/media'),
@@ -60,7 +57,6 @@ local logConfigContent = importstr './synapse.log.yaml';
     ingressRoute: u.ingressRoute.from(self.service, 'matrix.danielramos.me'),
 
     homeserverConfig: u.configMap.forFile('homeserver.yaml', homeserverTemplate) + { metadata+: { name: 'synapse-homeserver-tpl' } },
-    logConfig: u.configMap.forFile('log.yaml', logConfigContent) + { metadata+: { name: 'synapse-log-config' } },
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.synapse),
     sealedSecretDb: u.sealedSecret.wide.forEnvNamed('synapse-db-sealed-secret', { SYNAPSE_DB_PASSWORD: postgresSecrets.userSynapse }),
