@@ -63,6 +63,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     userFacturascripts: self.createUser('facturascripts', secrets.userFacturascripts, self.createUserMigration, self.sealedSecret),
     userCrowdsec: self.createUser('crowdsec', secrets.userCrowdsec, self.createUserMigration, self.sealedSecret),
     userWger: self.createUser('wger', secrets.userWger, self.createUserMigration, self.sealedSecret),
+    userSynapse: self.createUser('synapse', secrets.userSynapse, self.createUserMigration, self.sealedSecret),
 
     createUserMigration: u.configMap.forFile('postgres.create-user.sh', createUserMigration),
 

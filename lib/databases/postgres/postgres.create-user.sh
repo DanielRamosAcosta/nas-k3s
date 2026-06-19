@@ -40,7 +40,7 @@ fi
 # Crear base de datos dedicada con el usuario como owner
 echo "📦 Creando base de datos '$USER_NAME'..."
 PGPASSWORD="$POSTGRES_PASSWORD" psql -h "$POSTGRES_HOST" -p "$POSTGRES_PORT" -U "$POSTGRES_USER" -v ON_ERROR_STOP=1 <<SQL
-CREATE DATABASE "$USER_NAME" OWNER "$USER_NAME" TEMPLATE template0;
+CREATE DATABASE "$USER_NAME" OWNER "$USER_NAME" ENCODING 'UTF8' LC_COLLATE 'C' LC_CTYPE 'C' TEMPLATE template0;
 SQL
 
 # Revocar acceso público y dar acceso exclusivo al owner
