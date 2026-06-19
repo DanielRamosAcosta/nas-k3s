@@ -63,6 +63,8 @@ spec:
         - mountPath: /keys/signing.key
           name: signing-key-sealed-secret
           subPath: signing.key
+        - mountPath: /appservice
+          name: appservice
         - mountPath: /media
           name: media
         - mountPath: /data
@@ -72,7 +74,8 @@ spec:
       - command:
         - /bin/sh
         - -c
-        - envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml
+        - envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml && envsubst <
+          /tpl/registration.yaml > /appservice/registration.yaml
         env:
         - name: FORM_SECRET
           valueFrom:
@@ -104,6 +107,16 @@ spec:
             secretKeyRef:
               key: SYNAPSE_DB_PASSWORD
               name: synapse-db-sealed-secret
+        - name: AS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: AS_TOKEN
+              name: whatsapp-appservice-sealed-secret
+        - name: HS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: HS_TOKEN
+              name: whatsapp-appservice-sealed-secret
         image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
         imagePullPolicy: IfNotPresent
         name: config-init
@@ -111,14 +124,24 @@ spec:
         - mountPath: /tpl/homeserver.yaml
           name: synapse-homeserver-tpl
           subPath: homeserver.yaml
+        - mountPath: /tpl/registration.yaml
+          name: synapse-registration-tpl
+          subPath: registration.yaml
         - mountPath: /config
           name: config
+        - mountPath: /appservice
+          name: appservice
       volumes:
       - configMap:
           name: synapse-homeserver-tpl
         name: synapse-homeserver-tpl
+      - configMap:
+          name: synapse-registration-tpl
+        name: synapse-registration-tpl
       - emptyDir: {}
         name: config
+      - emptyDir: {}
+        name: appservice
       - name: signing-key-sealed-secret
         secret:
           secretName: signing-key-sealed-secret
