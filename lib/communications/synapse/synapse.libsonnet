@@ -5,6 +5,7 @@ local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 local homeserverTemplate = importstr './synapse.homeserver.yaml';
+local registrationTemplate = importstr './synapse.registration.yaml';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -26,6 +27,7 @@ local homeserverTemplate = importstr './synapse.homeserver.yaml';
                   container.withVolumeMounts([
                     volumeMount.new('config', '/config'),
                     u.volumeMount.fromSealedSecretFile(this.signingKey, '/keys'),
+                    volumeMount.new('appservice', '/appservice'),
                     volumeMount.new('media', '/media'),
                     volumeMount.new('data', '/data'),
                   ]) +
@@ -33,19 +35,24 @@ local homeserverTemplate = importstr './synapse.homeserver.yaml';
                 ]) +
                 deployment.spec.template.spec.withInitContainers([
                   container.new('config-init', u.image(versions.envsubst.image, versions.envsubst.version)) +
-                  container.withCommand(['/bin/sh', '-c', 'envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml']) +
+                  container.withCommand(['/bin/sh', '-c', 'envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml && envsubst < /tpl/registration.yaml > /appservice/registration.yaml']) +
                   container.withEnv(
                     u.envVars.fromSealedSecret(this.sealedSecret) +
-                    u.envVars.fromSealedSecret(this.sealedSecretDb)
+                    u.envVars.fromSealedSecret(this.sealedSecretDb) +
+                    u.envVars.fromSealedSecret(this.appserviceSecret)
                   ) +
                   container.withVolumeMounts([
                     volumeMount.new('synapse-homeserver-tpl', '/tpl/homeserver.yaml') + volumeMount.withSubPath('homeserver.yaml'),
+                    volumeMount.new('synapse-registration-tpl', '/tpl/registration.yaml') + volumeMount.withSubPath('registration.yaml'),
                     volumeMount.new('config', '/config'),
+                    volumeMount.new('appservice', '/appservice'),
                   ]),
                 ]) +
                 deployment.spec.template.spec.withVolumes([
                   u.volume.fromConfigMap(this.homeserverConfig),
+                  u.volume.fromConfigMap(this.registrationConfig),
                   { name: 'config', emptyDir: {} },
+                  { name: 'appservice', emptyDir: {} },
                   u.volume.fromSealedSecret(this.signingKey),
                   volume.fromHostPath('media', '/cold-data/synapse/media'),
                   { name: 'data', emptyDir: {} },
@@ -57,9 +64,11 @@ local homeserverTemplate = importstr './synapse.homeserver.yaml';
     ingressRoute: u.ingressRoute.from(self.service, 'matrix.danielramos.me'),
 
     homeserverConfig: u.configMap.forFile('homeserver.yaml', homeserverTemplate) + { metadata+: { name: 'synapse-homeserver-tpl' } },
+    registrationConfig: u.configMap.forFile('registration.yaml', registrationTemplate) + { metadata+: { name: 'synapse-registration-tpl' } },
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.synapse),
     sealedSecretDb: u.sealedSecret.wide.forEnvNamed('synapse-db-sealed-secret', { SYNAPSE_DB_PASSWORD: postgresSecrets.userSynapse }),
     signingKey: u.sealedSecret.forFile('signing.key', secrets.signingKey),
+    appserviceSecret: u.sealedSecret.forEnvNamed('whatsapp-appservice-sealed-secret', secrets.whatsappAppservice),
   },
 }

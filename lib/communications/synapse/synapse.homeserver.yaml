@@ -33,6 +33,9 @@ report_stats: false
 suppress_key_server_warning: true
 enable_metrics: true
 
+app_service_config_files:
+  - /appservice/registration.yaml
+
 password_config:
   enabled: false
 
