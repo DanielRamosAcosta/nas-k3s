@@ -78,13 +78,7 @@ spec:
       - command:
         - /bin/sh
         - -c
-        - |
-          sed \
-            -e "s/__MACAROON_SECRET_KEY__/${MACAROON_SECRET_KEY}/g" \
-            -e "s/__REGISTRATION_SHARED_SECRET__/${REGISTRATION_SHARED_SECRET}/g" \
-            -e "s/__FORM_SECRET__/${FORM_SECRET}/g" \
-            -e "s/__SYNAPSE_DB_PASSWORD__/${SYNAPSE_DB_PASSWORD}/g" \
-            /tpl/homeserver.yaml > /config/homeserver.yaml
+        - envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml
         env:
         - name: FORM_SECRET
           valueFrom:
@@ -106,7 +100,7 @@ spec:
             secretKeyRef:
               key: SYNAPSE_DB_PASSWORD
               name: synapse-db-sealed-secret
-        image: busybox:1.37.0
+        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
         imagePullPolicy: IfNotPresent
         name: config-init
         volumeMounts:

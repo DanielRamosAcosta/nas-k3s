@@ -32,13 +32,13 @@ data:
         host: postgres.databases.svc.cluster.local
         port: 5432
         database: synapse
-        password: "__SYNAPSE_DB_PASSWORD__"
+        password: "${SYNAPSE_DB_PASSWORD}"
         cp_min: 5
         cp_max: 10
 
-    macaroon_secret_key: "__MACAROON_SECRET_KEY__"
-    registration_shared_secret: "__REGISTRATION_SHARED_SECRET__"
-    form_secret: "__FORM_SECRET__"
+    macaroon_secret_key: "${MACAROON_SECRET_KEY}"
+    registration_shared_secret: "${REGISTRATION_SHARED_SECRET}"
+    form_secret: "${FORM_SECRET}"
 
     report_stats: false
     enable_registration: false
