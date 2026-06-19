@@ -10,8 +10,6 @@ data:
 
     listeners:
       - port: 8008
-        tls: false
-        type: http
         x_forwarded: true
         bind_addresses: ['0.0.0.0']
         resources:
