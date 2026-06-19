@@ -60,9 +60,6 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
-        - mountPath: /log-config/log.yaml
-          name: synapse-log-config
-          subPath: log.yaml
         - mountPath: /keys/signing.key
           name: signing-key-sealed-secret
           subPath: signing.key
@@ -110,9 +107,6 @@ spec:
       - configMap:
           name: synapse-homeserver-tpl
         name: synapse-homeserver-tpl
-      - configMap:
-          name: synapse-log-config
-        name: synapse-log-config
       - emptyDir: {}
         name: config
       - name: signing-key-sealed-secret

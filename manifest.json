@@ -281,7 +281,6 @@
     "sonarr/Deployment-sonarr.yaml": "environments/arr/main.jsonnet",
     "sonarr/Service-sonarr.yaml": "environments/arr/main.jsonnet",
     "synapse/ConfigMap-synapse-homeserver-tpl.yaml": "environments/communications/main.jsonnet",
-    "synapse/ConfigMap-synapse-log-config.yaml": "environments/communications/main.jsonnet",
     "synapse/Deployment-synapse.yaml": "environments/communications/main.jsonnet",
     "synapse/IngressRoute-synapse-ingressroute.yaml": "environments/communications/main.jsonnet",
     "synapse/SealedSecret-signing-key-sealed-secret.yaml": "environments/communications/main.jsonnet",
