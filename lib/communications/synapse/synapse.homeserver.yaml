@@ -34,3 +34,19 @@ enable_metrics: true
 
 password_config:
   enabled: false
+
+oidc_providers:
+  - idp_id: authelia
+    idp_name: "Authelia"
+    discover: true
+    issuer: "https://auth.danielramos.me"
+    client_id: "${OIDC_CLIENT_ID}"
+    client_secret: "${OIDC_CLIENT_SECRET}"
+    scopes: ["openid", "profile", "email"]
+    allow_existing_users: true
+    user_profile_method: "userinfo_endpoint"
+    user_mapping_provider:
+      config:
+        localpart_template: "{{ user.preferred_username }}"
+        display_name_template: "{{ user.name }}"
+        email_template: "{{ user.email }}"
