@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mautrix-whatsapp
+  name: mautrix-whatsapp
+  namespace: communications
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: mautrix-whatsapp
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: mautrix-whatsapp
+    spec:
+      containers:
+      - command:
+        - /usr/bin/mautrix-whatsapp
+        - -c
+        - /data/config.yaml
+        - -r
+        - /data/registration.yaml
+        - -n
+        image: dock.mau.dev/mautrix/whatsapp:v0.2606.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 29318
+          timeoutSeconds: 5
+        name: mautrix-whatsapp
+        ports:
+        - containerPort: 29318
+          name: appservice
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 29318
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /data
+          name: data
+      enableServiceLinks: false
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - envsubst < /tpl/config.yaml > /data/config.yaml && envsubst < /tpl/registration.yaml
+          > /data/registration.yaml
+        env:
+        - name: PICKLE_KEY
+          valueFrom:
+            secretKeyRef:
+              key: PICKLE_KEY
+              name: mautrix-whatsapp-sealed-secret
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASSWORD
+              name: mautrix-whatsapp-db-sealed-secret
+        - name: AS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: AS_TOKEN
+              name: whatsapp-appservice-sealed-secret
+        - name: HS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: HS_TOKEN
+              name: whatsapp-appservice-sealed-secret
+        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
+        imagePullPolicy: IfNotPresent
+        name: config-init
+        volumeMounts:
+        - mountPath: /tpl/config.yaml
+          name: mautrix-whatsapp-config-tpl
+          subPath: config.yaml
+        - mountPath: /tpl/registration.yaml
+          name: mautrix-whatsapp-registration-tpl
+          subPath: registration.yaml
+        - mountPath: /data
+          name: data
+      volumes:
+      - configMap:
+          name: mautrix-whatsapp-config-tpl
+        name: mautrix-whatsapp-config-tpl
+      - configMap:
+          name: mautrix-whatsapp-registration-tpl
+        name: mautrix-whatsapp-registration-tpl
+      - emptyDir: {}
+        name: data

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mautrix-whatsapp
+    name: mautrix-whatsapp
+  name: mautrix-whatsapp
+  namespace: communications
+spec:
+  ports:
+  - name: mautrix-whatsapp-appservice
+    port: 29318
+    targetPort: 29318
+  selector:
+    name: mautrix-whatsapp
