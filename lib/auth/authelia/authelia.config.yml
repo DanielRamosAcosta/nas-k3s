@@ -98,7 +98,7 @@ identity_providers:
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_SECRET_DIGEST` }}'
         public: false
         authorization_policy: two_factor
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: false
         pkce_challenge_method: ''
         redirect_uris:
@@ -123,7 +123,7 @@ identity_providers:
         public: false
         authorization_policy: two_factor
         claims_policy: sftpgo
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: false
         pkce_challenge_method: ''
         redirect_uris:
@@ -147,7 +147,7 @@ identity_providers:
         public: false
         authorization_policy: two_factor
         claims_policy: grafana
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
@@ -170,7 +170,7 @@ identity_providers:
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_JELLYFIN_CLIENT_SECRET_DIGEST` }}'
         public: false
         authorization_policy: two_factor
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
@@ -192,7 +192,7 @@ identity_providers:
         public: true
         authorization_policy: two_factor
         claims_policy: booklore
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
@@ -216,7 +216,7 @@ identity_providers:
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_SECRET_DIGEST` }}'
         public: false
         authorization_policy: two_factor
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: false
         pkce_challenge_method: ''
         redirect_uris:
@@ -240,7 +240,7 @@ identity_providers:
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_FACTURASCRIPTS_CLIENT_SECRET_DIGEST` }}'
         public: false
         authorization_policy: two_factor
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
@@ -262,7 +262,7 @@ identity_providers:
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_SYNAPSE_CLIENT_SECRET_DIGEST` }}'
         public: false
         authorization_policy: two_factor
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: false
         pkce_challenge_method: ''
         redirect_uris:
@@ -283,7 +283,7 @@ identity_providers:
         client_name: ArgoCD CLI
         public: true
         authorization_policy: two_factor
-        consent_mode: 'auto'
+        consent_mode: 'implicit'
         require_pkce: true
         pkce_challenge_method: 'S256'
         redirect_uris:
