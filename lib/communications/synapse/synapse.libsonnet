@@ -30,7 +30,7 @@ local initEnv(this) =
 
     deployment: deployment.new('synapse', replicas=1, containers=[
                   container.new('synapse', u.image(versions.synapse.image, versions.synapse.version)) +
-                  container.withCommand(['python', '-m', 'synapse.app.homeserver', '--config-path', '/config/homeserver.yaml']) +
+                  container.withEnv([{ name: 'SYNAPSE_CONFIG_PATH', value: '/config/homeserver.yaml' }]) +
                   container.withPorts([
                     containerPort.new('http', 8008),
                     containerPort.new('metrics', 9090),
