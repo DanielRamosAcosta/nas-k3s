@@ -84,6 +84,16 @@ spec:
             secretKeyRef:
               key: MACAROON_SECRET_KEY
               name: synapse-sealed-secret
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: OIDC_CLIENT_ID
+              name: synapse-sealed-secret
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: OIDC_CLIENT_SECRET
+              name: synapse-sealed-secret
         - name: REGISTRATION_SHARED_SECRET
           valueFrom:
             secretKeyRef:
