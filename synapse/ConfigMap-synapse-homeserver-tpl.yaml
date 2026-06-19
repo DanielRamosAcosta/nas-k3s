@@ -40,6 +40,7 @@ data:
     registration_shared_secret: "__REGISTRATION_SHARED_SECRET__"
     form_secret: "__FORM_SECRET__"
 
+    report_stats: false
     enable_registration: false
     suppress_key_server_warning: true
     url_preview_enabled: false
