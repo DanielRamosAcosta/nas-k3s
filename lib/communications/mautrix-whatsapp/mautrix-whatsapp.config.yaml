@@ -1,0 +1,43 @@
+homeserver:
+  address: http://synapse.communications.svc.cluster.local:8008
+  domain: matrix.danielramos.me
+
+appservice:
+  # How Synapse reaches the bridge (must equal registration.url).
+  address: http://mautrix-whatsapp.communications.svc.cluster.local:29318
+  # Bind on all interfaces so the ClusterIP Service can reach it (default is 127.0.0.1).
+  hostname: 0.0.0.0
+  port: 29318
+  id: whatsapp
+  bot:
+    username: whatsappbot
+    displayname: WhatsApp bridge bot
+  username_template: whatsapp_{{.}}
+  ephemeral_events: true
+  as_token: "${AS_TOKEN}"
+  hs_token: "${HS_TOKEN}"
+
+database:
+  type: postgres
+  uri: postgres://mautrixwhatsapp:${DB_PASSWORD}@postgres.databases.svc.cluster.local/mautrixwhatsapp?sslmode=disable
+
+bridge:
+  permissions:
+    "@dani:matrix.danielramos.me": admin
+
+backfill:
+  enabled: true
+  max_initial_messages: 10000
+  max_catchup_messages: 10000
+
+encryption:
+  allow: true
+  default: true
+  pickle_key: "${PICKLE_KEY}"
+
+network:
+  history_sync:
+    request_full_sync: true
+    max_initial_conversations: -1
+    full_sync_config:
+      days_limit: 3650
