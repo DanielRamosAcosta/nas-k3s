@@ -33,6 +33,10 @@ backfill:
 encryption:
   allow: true
   default: true
+  # Receive to-device / device-list updates via appservice transactions
+  # (MSC2409 + MSC3202) instead of /sync, which modern Synapse refuses for
+  # appservice users. Requires the matching experimental_features on Synapse.
+  appservice: true
   pickle_key: "${PICKLE_KEY}"
 
 network:
