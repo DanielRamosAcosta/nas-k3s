@@ -25,6 +25,14 @@ storage:
 access_control:
   default_policy: two_factor
 
+webauthn:
+  # Adds a "Sign in with a passkey" button below the username/password form.
+  enable_passkey_login: true
+  # Lets a passkey with user verification (PIN/biometrics) satisfy the
+  # two_factor policy on its own, enabling real passwordless login.
+  # Experimental: may change or be removed in a future Authelia release.
+  experimental_enable_passkey_uv_two_factors: true
+
 session:
   secret: '{{ env `AUTHELIA_SESSION_SECRET` }}'
   cookies:
