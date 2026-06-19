@@ -10,6 +10,44 @@ K3s homelab infrastructure-as-code using **Jsonnet + Tanka** for declarative Kub
 
 - **jq** — Available for inspecting/transforming JSON (e.g. `tk eval ... | jq '.field'`)
 
+## Security
+
+**NEVER pass secrets through Claude's context. NEVER.** This includes private keys, passwords, API keys, tokens, OIDC client secrets, or any other sensitive value — do not print them, echo them, paste them into a prompt, or include them in tool arguments where they'd be captured in the conversation.
+
+When you need to generate keys/secrets:
+
+1. **Always redirect the output to a file** instead of printing it to stdout (where it would land in the context).
+   ```bash
+   # WRONG — secret ends up in Claude's context:
+   openssl rand -base64 32
+
+   # CORRECT — secret goes to a file, never shown:
+   openssl rand -base64 32 > /tmp/secret.txt
+   ```
+2. **Pipe the file into the consuming command** (e.g. the encryption script) without ever reading its contents:
+   ```bash
+   cat /tmp/secret.txt | ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>
+   ```
+3. **Delete the file immediately after use — this is critical.**
+   ```bash
+   rm -f /tmp/secret.txt
+   ```
+
+Only the encrypted (SealedSecret) output is safe to commit and to display. The plaintext secret must never be read with the Read tool, printed, or otherwise surfaced into the conversation.
+
+## Adding a new service: minimize config
+
+**Always check the defaults before writing config.** The tendency is to copy a full generated config and include everything — this creates noise and makes real non-default values harder to spot.
+
+Before writing `homeserver.yaml`, `config.yaml`, or any service config file:
+
+1. Read the official docs or the default config the image generates (`--generate-config`, `-e`, dry-run, etc.) to know what the defaults actually are.
+2. Only include values that differ from the default, are required to be set explicitly (e.g. `report_stats` in Synapse), or have a specific reason to be spelled out.
+3. For paths (data dir, signing key, media store, etc.) — check if mounting at the default path is feasible before adding a config override.
+4. For listener/network config — check which fields have sane defaults (`tls: false`, `type: http`) versus which actually need to be set (`bind_addresses`, `x_forwarded`).
+
+A config file with 10 lines where every line matters is better than 40 lines where 30 are defaults.
+
 ## Observability: logs
 
 **Always query logs via Loki through the `grafanaSelfHosted` MCP server. Do NOT use `kubectl logs` for log inspection.**
