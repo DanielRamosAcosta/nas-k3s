@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: synapse
+  name: synapse-ingressroute
+  namespace: communications
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`matrix.danielramos.me`)
+    services:
+    - name: synapse
+      port: 8008
+  tls:
+    store:
+      name: default

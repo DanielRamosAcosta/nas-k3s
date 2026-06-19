@@ -1,0 +1,56 @@
+apiVersion: v1
+data:
+  homeserver.yaml: |
+    server_name: "matrix.danielramos.me"
+    public_baseurl: "https://matrix.danielramos.me"
+
+    pid_file: /data/homeserver.pid
+    data_directory: /data
+    signing_key_path: /keys/signing.key
+    media_store_path: /media
+
+    log_config: /log-config/log.yaml
+
+    listeners:
+      - port: 8008
+        tls: false
+        type: http
+        x_forwarded: true
+        bind_addresses: ['0.0.0.0']
+        resources:
+          - names: [client]
+            compress: false
+      - port: 9090
+        type: metrics
+        bind_addresses: ['0.0.0.0']
+
+    database:
+      name: psycopg2
+      txn_limit: 10000
+      args:
+        user: synapse
+        host: postgres.databases.svc.cluster.local
+        port: 5432
+        database: synapse
+        password: "__SYNAPSE_DB_PASSWORD__"
+        cp_min: 5
+        cp_max: 10
+
+    macaroon_secret_key: "__MACAROON_SECRET_KEY__"
+    registration_shared_secret: "__REGISTRATION_SHARED_SECRET__"
+    form_secret: "__FORM_SECRET__"
+
+    enable_registration: false
+    suppress_key_server_warning: true
+    url_preview_enabled: false
+    enable_metrics: true
+    app_service_config_files: []
+
+    password_config:
+      enabled: false
+kind: ConfigMap
+metadata:
+  labels:
+    app: synapse
+  name: synapse-homeserver-tpl
+  namespace: communications

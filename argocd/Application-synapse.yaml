@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+  labels:
+    app: argocd
+  name: synapse
+  namespace: argocd
+spec:
+  destination:
+    namespace: communications
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: synapse
+    repoURL: https://github.com/DanielRamosAcosta/nas-k3s.git
+    targetRevision: manifests
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - ServerSideApply=true
+    - CreateNamespace=true

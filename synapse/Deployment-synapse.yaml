@@ -1,0 +1,134 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: synapse
+  name: synapse
+  namespace: communications
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: synapse
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: synapse
+    spec:
+      containers:
+      - command:
+        - python
+        - -m
+        - synapse.app.homeserver
+        - --config-path
+        - /config/homeserver.yaml
+        image: ghcr.io/element-hq/synapse:v1.155.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /_matrix/client/versions
+            port: 8008
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: synapse
+        ports:
+        - containerPort: 8008
+          name: http
+        - containerPort: 9090
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /_matrix/client/versions
+            port: 8008
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /_matrix/client/versions
+            port: 8008
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /log-config/log.yaml
+          name: synapse-log-config
+          subPath: log.yaml
+        - mountPath: /keys/signing.key
+          name: signing-key-sealed-secret
+          subPath: signing.key
+        - mountPath: /media
+          name: media
+        - mountPath: /data
+          name: data
+      enableServiceLinks: false
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - |
+          sed \
+            -e "s/__MACAROON_SECRET_KEY__/${MACAROON_SECRET_KEY}/g" \
+            -e "s/__REGISTRATION_SHARED_SECRET__/${REGISTRATION_SHARED_SECRET}/g" \
+            -e "s/__FORM_SECRET__/${FORM_SECRET}/g" \
+            -e "s/__SYNAPSE_DB_PASSWORD__/${SYNAPSE_DB_PASSWORD}/g" \
+            /tpl/homeserver.yaml > /config/homeserver.yaml
+        env:
+        - name: FORM_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: FORM_SECRET
+              name: synapse-sealed-secret
+        - name: MACAROON_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              key: MACAROON_SECRET_KEY
+              name: synapse-sealed-secret
+        - name: REGISTRATION_SHARED_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: REGISTRATION_SHARED_SECRET
+              name: synapse-sealed-secret
+        - name: SYNAPSE_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SYNAPSE_DB_PASSWORD
+              name: synapse-db-sealed-secret
+        image: busybox:1.37.0
+        imagePullPolicy: IfNotPresent
+        name: config-init
+        volumeMounts:
+        - mountPath: /tpl/homeserver.yaml
+          name: synapse-homeserver-tpl
+          subPath: homeserver.yaml
+        - mountPath: /config
+          name: config
+      volumes:
+      - configMap:
+          name: synapse-homeserver-tpl
+        name: synapse-homeserver-tpl
+      - configMap:
+          name: synapse-log-config
+        name: synapse-log-config
+      - emptyDir: {}
+        name: config
+      - name: signing-key-sealed-secret
+        secret:
+          secretName: signing-key-sealed-secret
+      - hostPath:
+          path: /cold-data/synapse/media
+        name: media
+      - emptyDir: {}
+        name: data
