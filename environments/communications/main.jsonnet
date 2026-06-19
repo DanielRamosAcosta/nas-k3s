@@ -1,3 +1,6 @@
+local synapse = import 'communications/synapse/synapse.libsonnet';
 local u = import 'utils.libsonnet';
 
-u.Environment({})
+u.Environment({
+  synapse: synapse.new(),
+})

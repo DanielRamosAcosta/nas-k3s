@@ -75,6 +75,10 @@
     "image": "docker.io/jlesage/jdownloader-2",
     "version": "v26.03.1"
   },
+  "synapse": {
+    "image": "ghcr.io/element-hq/synapse",
+    "version": "v1.155.0"
+  },
   "sonarr": {
     "image": "ghcr.io/hotio/sonarr",
     "version": "release-4.0.17.2952"

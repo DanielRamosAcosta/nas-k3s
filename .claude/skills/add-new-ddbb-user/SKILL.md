@@ -1,6 +1,6 @@
 ---
 name: add-new-ddbb-user
-description: Add a new Postgres logical database + user to the shared cluster Postgres
+description: Add a new Postgres logical database + user to the shared cluster Postgres. Use when the user wants to onboard a new app that needs its own database, or asks to create a DB/user for a service.
 ---
 
 # /add-new-ddbb-user
@@ -11,15 +11,17 @@ El usuario te debe haber dicho el nombre de la app (se usa como nombre de usuari
 
 ## Paso 1 — Generar contraseña y cifrar en un solo pipeline
 
-La contraseña se genera, cifra y descarta sin pasar por el contexto de Claude. Ejecuta este comando y captura únicamente el valor cifrado resultante (`AgC...`):
+**Nunca imprimas ni captures la contraseña en claro — ni en stdout, ni en el contexto de Claude.**
+
+Genera, cifra y borra en un único pipeline:
 
 ```bash
 openssl rand -hex 32 > /tmp/dbpass.txt && \
   cat /tmp/dbpass.txt | ./scripts/encrypt-secret.sh --cluster-wide && \
-  rm /tmp/dbpass.txt
+  rm -f /tmp/dbpass.txt
 ```
 
-Guarda el valor cifrado resultante (`AgC...`). La contraseña en texto plano nunca sale del shell.
+Solo el valor cifrado (`AgC...`) aparece en stdout. Ese es el valor a guardar.
 
 ## Paso 3 — Añadir al secrets file
 
