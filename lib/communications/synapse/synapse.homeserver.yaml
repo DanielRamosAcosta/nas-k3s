@@ -44,6 +44,17 @@ experimental_features:
   msc3202_transaction_extensions: true
   msc2409_to_device_messages_enabled: true
 
+# Relaxed rate limits — recommended for homeservers running a bridge. Lets the
+# admin join hundreds of bridged portal rooms (and enables double puppeting) without
+# hitting Synapse's per-user join/invite/message throttles.
+rc_joins:
+  local: { per_second: 1000, burst_count: 1000 }
+  remote: { per_second: 1000, burst_count: 1000 }
+rc_invites:
+  per_room: { per_second: 1000, burst_count: 1000 }
+  per_user: { per_second: 1000, burst_count: 1000 }
+rc_message: { per_second: 1000, burst_count: 1000 }
+
 password_config:
   enabled: false
 
