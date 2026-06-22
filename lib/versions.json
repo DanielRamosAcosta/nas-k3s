@@ -37,7 +37,7 @@
   },
   "victoriametrics": {
     "image": "victoriametrics/victoria-metrics",
-    "version": "v1.142.0-enterprise"
+    "version": "v1.146.0-enterprise"
   },
   "nodeExporter": {
     "image": "quay.io/prometheus/node-exporter",
