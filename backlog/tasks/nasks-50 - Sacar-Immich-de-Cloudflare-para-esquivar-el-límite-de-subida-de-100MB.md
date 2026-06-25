@@ -4,13 +4,13 @@ title: Sacar Immich de Cloudflare para esquivar el límite de subida de 100MB
 status: Done
 assignee: []
 created_date: '2026-04-12 01:46'
-updated_date: '2026-04-29 06:17'
+updated_date: '2026-06-21 09:55'
 labels:
   - networking
   - immich
 dependencies: []
 priority: medium
-ordinal: 3000
+ordinal: 4000
 ---
 
 ## Description

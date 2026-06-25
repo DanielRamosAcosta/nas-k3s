@@ -6,6 +6,7 @@ title: >-
 status: To Do
 assignee: []
 created_date: '2026-06-19 17:58'
+updated_date: '2026-06-21 09:55'
 labels:
   - grafana
   - monitoring
@@ -19,7 +20,7 @@ references:
   - 'https://grafana.com/grafana/dashboards/12896-radarr-v3/'
   - 'https://github.com/Boerderij/Varken'
 priority: low
-ordinal: 65000
+ordinal: 20000
 ---
 
 ## Description

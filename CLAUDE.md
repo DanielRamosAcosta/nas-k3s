@@ -206,6 +206,14 @@ ArgoCD manages all deployments via GitOps. It lives in `environments/argocd/` wi
 - **Webhook** notifies ArgoCD on push for instant detection (no polling)
 - **Manual sync** — ArgoCD detects drift but does NOT auto-apply
 
+#### Config changes auto-restart pods (Reloader) — do NOT `kubectl rollout restart` manually
+
+**Stakater Reloader is installed cluster-wide and handles this for you. Never manually restart a pod just to pick up a ConfigMap/Secret change.**
+
+`u.labelApp()` (via `u.Environment`, in `lib/utils/core.libsonnet`) automatically stamps every Deployment/StatefulSet/DaemonSet with the annotation `reloader.stakater.com/auto: "true"`. Reloader watches the ConfigMaps/Secrets each workload references and **rolls the pod automatically (within a few seconds) whenever their content changes** — including envsubst-rendered config templates like `synapse-homeserver-tpl`.
+
+Consequence for the deploy flow: a ConfigMap/Secret-only change (no Deployment spec change) still rolls the pod on its own. After `/deploy`, just wait for ArgoCD to sync the new ConfigMap; Reloader restarts the workload. Confirm via Reloader's logs (`{namespace="kube-system", pod=~"reloader.*"}` in Loki — look for "Changes detected in '<configmap>' ... updated '<workload>'") instead of restarting by hand.
+
 #### Applications
 One Application per service (not per namespace). Generated dynamically in `argocd/main.jsonnet` by importing all other environments and extracting `app` labels from resources. When adding a new service, just add it to the environment's `main.jsonnet` with `u.labelApp()` and ArgoCD picks it up automatically.
 

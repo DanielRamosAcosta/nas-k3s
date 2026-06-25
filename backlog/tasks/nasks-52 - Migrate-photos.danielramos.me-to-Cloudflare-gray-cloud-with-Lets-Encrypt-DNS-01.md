@@ -6,7 +6,7 @@ title: >-
 status: Done
 assignee: []
 created_date: '2026-04-22 17:59'
-updated_date: '2026-04-22 18:38'
+updated_date: '2026-06-21 09:55'
 labels:
   - infra
   - traefik
@@ -15,7 +15,7 @@ labels:
   - refined
 dependencies: []
 priority: high
-ordinal: 1000
+ordinal: 2000
 ---
 
 ## Description

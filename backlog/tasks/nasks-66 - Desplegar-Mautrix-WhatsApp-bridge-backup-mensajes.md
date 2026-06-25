@@ -1,10 +1,10 @@
 ---
 id: NASKS-66
 title: Desplegar Mautrix-WhatsApp bridge (backup mensajes)
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-06-19 17:02'
-updated_date: '2026-06-19 20:58'
+updated_date: '2026-06-21 09:55'
 labels:
   - app
   - system
@@ -14,7 +14,7 @@ dependencies:
 references:
   - 'https://github.com/mautrix/whatsapp'
   - 'https://docs.mau.fi/bridges/go/whatsapp/index.html'
-ordinal: 1000
+ordinal: 0.0002384185791015625
 ---
 
 ## Description
