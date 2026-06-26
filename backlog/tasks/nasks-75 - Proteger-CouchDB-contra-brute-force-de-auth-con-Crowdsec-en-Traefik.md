@@ -1,11 +1,11 @@
 ---
 id: NASKS-75
 title: Proteger CouchDB contra brute-force de auth con Crowdsec en Traefik
-status: In Progress
+status: Done
 assignee:
   - Daniel
 created_date: '2026-06-26 19:46'
-updated_date: '2026-06-26 20:30'
+updated_date: '2026-06-26 20:35'
 labels: []
 dependencies: []
 references:
@@ -54,11 +54,11 @@ Nota: el lockout nativo de CouchDB puede quedarse activo como defensa en profund
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Un Middleware de Traefik aplica el bouncer de Crowdsec al IngressRoute de couchdb.danielramos.me, reutilizando el patrón de immich con forwardedHeadersTrustedIPs: cloudflare.allCidrs para operar sobre la IP real (no el edge de Cloudflare)
-- [ ] #2 La detección de brute-force de auth contra CouchDB opera sobre los logs de Traefik (IP real), apoyándose en crowdsecurity/http-generic-bf ya instalado y cubriendo 401 de cualquier verbo contra el host de CouchDB → genera una decisión de ban
-- [ ] #3 El sync legítimo de Obsidian LiveSync no se ve afectado: las ráfagas de 200/201 no disparan ban ni bloqueo (el scenario solo cuenta 401)
-- [ ] #4 Una IP que supera el umbral de 401 recibe 403 del bouncer, verificado end-to-end
-- [ ] #5 El ban se aplica sobre la IP real del cliente, confirmado en la práctica
+- [x] #1 Un Middleware de Traefik aplica el bouncer de Crowdsec al IngressRoute de couchdb.danielramos.me, reutilizando el patrón de immich con forwardedHeadersTrustedIPs: cloudflare.allCidrs para operar sobre la IP real (no el edge de Cloudflare)
+- [x] #2 La detección de brute-force de auth contra CouchDB opera sobre los logs de Traefik (IP real), apoyándose en crowdsecurity/http-generic-bf ya instalado y cubriendo 401 de cualquier verbo contra el host de CouchDB → genera una decisión de ban
+- [x] #3 El sync legítimo de Obsidian LiveSync no se ve afectado: las ráfagas de 200/201 no disparan ban ni bloqueo (el scenario solo cuenta 401)
+- [x] #4 Una IP que supera el umbral de 401 recibe 403 del bouncer, verificado end-to-end
+- [x] #5 El ban se aplica sobre la IP real del cliente, confirmado en la práctica
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -107,3 +107,29 @@ Sin cambios de código salvo limpieza de la decisión de prueba. Cubre AC #2/#3/
 6. Limpiar la decisión de prueba: `kubectl exec -n system deploy/crowdsec-lapi -- cscli decisions delete --ip <ip-de-prueba>`.
 7. Checkpoint: AC #2/#3/#4/#5 verificados (AC #1 ya cubierto en Fase 1).
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Implementado en un solo despliegue (commit `72899db`) tras validar el render local de ambas fases; las apps `couchdb` y `crowdsec` tienen auto-sync en ArgoCD.
+
+**Fase 1 — `lib/databases/couchdb/couchdb.libsonnet`:**
+- Añadido `import '../../utils/cloudflare.libsonnet'` y un Middleware `couchdb-crowdsec-bouncer` (namespace `databases`, propio, no compartido cross-namespace) copiando el patrón de immich: `crowdsecMode: stream`, `updateIntervalSeconds: 60`, `crowdsecLapiHost: crowdsec-service.system.svc.cluster.local:8080`, `crowdsecLapiKeyFile`, `forwardedHeadersTrustedIPs: cloudflare.allCidrs`.
+- IngressRoute pasa a `u.ingressRoute.from(self.service, 'couchdb.danielramos.me', [{ name: this.crowdsecBouncer.metadata.name }])`. **Detalle clave:** hay que referenciar `this.crowdsecBouncer` (el `local this = self` del `new()`), no `self.crowdsecBouncer` — dentro del literal `{ name: ... }` el `self` apunta a ese objeto interno, no al de la app (mismo motivo por el que immich usa `this`).
+
+**Fase 2 — `lib/system/crowdsec/crowdsec.libsonnet`:**
+- `crowdsecurity/http-generic-bf` NO sirve tal cual: filtra `verb == 'POST'`, pero el brute-force contra CouchDB se confirmó como `GET /` → `401`. Se crea un scenario propio `couchdb-http-auth-bf.yaml` bajo `values.config.scenarios` (el chart genera el ConfigMap `crowdsec-scenarios` y lo monta en el dir de scenarios del agente).
+- Scenario `leaky`, `name: nas-k3s/couchdb-http-auth-bf`, filtro `evt.Meta.log_type == 'http_access-log' && evt.Meta.http_status == '401' && evt.Meta.target_fqdn == 'couchdb.danielramos.me'`, `groupby: evt.Meta.source_ip`, `capacity: 10`, `leakspeed: 5s`, `blackhole: 5m`, `labels.remediation: true` (dispara el ban scope=Ip del `profiles.yaml` por defecto de la imagen).
+- Campos del parser confirmados contra un log real de Traefik vía Loki: `RequestHost → evt.Meta.target_fqdn`, `ClientHost (IP real) → evt.Meta.source_ip`. `ClientAddr` es el edge de Cloudflare (`162.158.x`/`172.68.x`) y NO se usa.
+
+**Verificación end-to-end (Fase 3):**
+- Ráfaga de 15 `GET /` sin credenciales → 15× `401`.
+- Crowdsec generó la decisión `ban` `Ip:81.39.190.189` (Telefónica ES, IP pública real) con reason `nas-k3s/couchdb-http-auth-bf`, 11 eventos.
+- El bouncer (modo stream) pasó a devolver `403` en ~10s. Tras `cscli decisions delete --ip`, el acceso volvió a `401` nativo en ~20s.
+- AC#3 garantizado por diseño y confirmado: el ban se formó solo de eventos `401`; las ráfagas de sync (`200/201`) no alimentan el bucket.
+
+**Notas operativas:**
+- La máquina de pruebas comparte IP pública con el cliente de Obsidian (`81.39.190.189`), así que la decisión de prueba se limpió de inmediato para no cortar el sync real.
+- El lockout nativo de CouchDB sigue activo como defensa en profundidad (inservible tras Cloudflare por el `lists:last`, pero no estorba).
+- El agente de Crowdsec avisa de que hay v1.7.8 disponible (corre v1.7.7); fuera de scope.
+<!-- SECTION:NOTES:END -->
