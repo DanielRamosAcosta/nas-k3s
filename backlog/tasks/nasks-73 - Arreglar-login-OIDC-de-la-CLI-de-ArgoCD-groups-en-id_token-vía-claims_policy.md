@@ -1,10 +1,10 @@
 ---
 id: NASKS-73
 title: Arreglar login OIDC de la CLI de ArgoCD (groups en id_token vía claims_policy)
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-06-26 15:18'
-updated_date: '2026-06-26 15:28'
+updated_date: '2026-06-26 17:35'
 labels: []
 dependencies: []
 references:
@@ -50,10 +50,10 @@ Cambios previstos:
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Los clientes OIDC de ArgoCD (UI y CLI) en Authelia emiten el claim `groups` en el `id_token` mediante una `claims_policy` dedicada (patrón equivalente al de Grafana)
-- [ ] #2 La `oidc.config` de ArgoCD deja de usar `enableUserInfoGroups`/`userInfoPath` y obtiene los grupos del `id_token`
-- [ ] #3 `argocd login --sso` desde la CLI funciona sin necesidad de login previo en la UI (desaparece el error `no accessToken for <session>`)
-- [ ] #4 El RBAC por grupos de ArgoCD sigue funcionando correctamente tras el cambio (la autorización por grupos no se rompe)
+- [x] #1 Los clientes OIDC de ArgoCD (UI y CLI) en Authelia emiten el claim `groups` en el `id_token` mediante una `claims_policy` dedicada (patrón equivalente al de Grafana)
+- [x] #2 La `oidc.config` de ArgoCD deja de usar `enableUserInfoGroups`/`userInfoPath` y obtiene los grupos del `id_token`
+- [x] #3 `argocd login --sso` desde la CLI funciona sin necesidad de login previo en la UI (desaparece el error `no accessToken for <session>`)
+- [x] #4 El RBAC por grupos de ArgoCD sigue funcionando correctamente tras el cambio (la autorización por grupos no se rompe)
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -136,3 +136,25 @@ Verificación Fase 2 (el fix):
 
 Si tras la Fase 2 el RBAC se rompe (p. ej. `get-user-info` no muestra grupos o `app list` da permission denied), revertir el commit de la Fase 2 (restaurar `enableUserInfoGroups`/`userInfoPath`), `argocd app sync argocd --grpc-web`, y volver al comportamiento actual (login UI + CLI) mientras se investiga. La Fase 1 (claims_policy en Authelia) es aditiva y no necesita revertirse.
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Implementado en dos fases con deploy GitOps independiente (PRs separados), tal como planeaba el plan, para evitar romper el RBAC.
+
+**Cambios de código:**
+- `lib/auth/authelia/authelia.config.yml`: nueva `claims_policy: argocd` con `id_token: ['email', 'groups']` (solo los claims que ArgoCD pide por scope; no pide `profile`, de ahí que no incluya `name`/`preferred_username` como sí hace Grafana). Asignada a ambos clientes OIDC (`ArgoCD` UI y `ArgoCD CLI`).
+- `lib/system/argocd/argocd.libsonnet`: eliminados `enableUserInfoGroups: true` y `userInfoPath: '/api/oidc/userinfo'` del `oidc.config`. ArgoCD lee ahora los grupos del `id_token`.
+
+**Deploy (dos ciclos):**
+- Fase 1 — PR #113 (squash-merged). Authelia reiniciado por Reloader, 1/1 Running, 0 errores de validación de config en logs (Loki).
+- Fase 2 — PR #114 (squash-merged). `argocd-server` v3.3.3 rolled, Application Synced, SSO activo, sin errores OIDC/userinfo en logs.
+- Ambas Applications usan sync `automated` (selfHeal): no hizo falta `argocd app sync` manual; el webhook + auto-sync aplicaron los cambios.
+
+**Verificación funcional (CLI, sesión limpia tras `argocd logout`):**
+- `argocd login --sso` completó directo, SIN login previo en la UI (desapareció `no accessToken for <session>`). → AC #3
+- `argocd account get-user-info` → `Groups: admins` (los grupos viajan en el `id_token`). → AC #1, #2
+- `argocd app list` → 41 Applications, sin permission denied (RBAC `g, admins, role:admin` intacto). → AC #4
+
+Nota: el cliente CLI es público (PKCE), así que el intercambio código→tokens ocurre en la máquina del usuario y `argocd-server` nunca cacheaba el `access_token` necesario para userinfo — de ahí el fallo original. Leyendo del `id_token` se elimina esa dependencia.
+<!-- SECTION:NOTES:END -->
