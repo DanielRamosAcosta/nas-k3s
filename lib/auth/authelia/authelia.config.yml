@@ -86,6 +86,9 @@ identity_providers:
       booklore:
         id_token: ['email', 'email_verified', 'preferred_username', 'name']
 
+      argocd:
+        id_token: ['email', 'groups']
+
     scopes:
       sftpgo:
         claims:
@@ -216,6 +219,7 @@ identity_providers:
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_SECRET_DIGEST` }}'
         public: false
         authorization_policy: two_factor
+        claims_policy: argocd
         consent_mode: 'implicit'
         require_pkce: false
         pkce_challenge_method: ''
@@ -283,6 +287,7 @@ identity_providers:
         client_name: ArgoCD CLI
         public: true
         authorization_policy: two_factor
+        claims_policy: argocd
         consent_mode: 'implicit'
         require_pkce: true
         pkce_challenge_method: 'S256'
