@@ -27,8 +27,9 @@ data:
     ['username', 'sftpgo_role']\n        custom_claims:\n          username:\n            attribute:
     username\n          sftpgo_role:\n            attribute: sftpgo_role\n\n      booklore:\n
     \       id_token: ['email', 'email_verified', 'preferred_username', 'name']\n\n
-    \   scopes:\n      sftpgo:\n        claims:\n          - username\n          -
-    sftpgo_role\n    \n    clients:\n      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_ID`
+    \     argocd:\n        id_token: ['email', 'groups']\n\n    scopes:\n      sftpgo:\n
+    \       claims:\n          - username\n          - sftpgo_role\n    \n    clients:\n
+    \     - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_ID`
     }}'\n        client_name: Immich\n        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_SECRET_DIGEST`
     }}'\n        public: false\n        authorization_policy: two_factor\n        consent_mode:
     'implicit'\n        require_pkce: false\n        pkce_challenge_method: ''\n        redirect_uris:\n
@@ -74,15 +75,15 @@ data:
     none\n        userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
     none\n\n      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_ID`
     }}'\n        client_name: ArgoCD\n        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLIENT_SECRET_DIGEST`
-    }}'\n        public: false\n        authorization_policy: two_factor\n        consent_mode:
-    'implicit'\n        require_pkce: false\n        pkce_challenge_method: ''\n        redirect_uris:\n
-    \         - 'https://argocd.danielramos.me/auth/callback'\n        scopes:\n          -
-    openid\n          - email\n          - groups\n          - offline_access\n        response_types:\n
-    \         - code\n        grant_types:\n          - authorization_code\n          -
-    refresh_token\n        access_token_signed_response_alg: none\n        userinfo_signed_response_alg:
-    none\n        token_endpoint_auth_method: client_secret_basic\n\n      - client_id:
-    '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_FACTURASCRIPTS_CLIENT_ID` }}'\n        client_name:
-    FacturaScripts\n        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_FACTURASCRIPTS_CLIENT_SECRET_DIGEST`
+    }}'\n        public: false\n        authorization_policy: two_factor\n        claims_policy:
+    argocd\n        consent_mode: 'implicit'\n        require_pkce: false\n        pkce_challenge_method:
+    ''\n        redirect_uris:\n          - 'https://argocd.danielramos.me/auth/callback'\n
+    \       scopes:\n          - openid\n          - email\n          - groups\n          -
+    offline_access\n        response_types:\n          - code\n        grant_types:\n
+    \         - authorization_code\n          - refresh_token\n        access_token_signed_response_alg:
+    none\n        userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
+    client_secret_basic\n\n      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_FACTURASCRIPTS_CLIENT_ID`
+    }}'\n        client_name: FacturaScripts\n        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_FACTURASCRIPTS_CLIENT_SECRET_DIGEST`
     }}'\n        public: false\n        authorization_policy: two_factor\n        consent_mode:
     'implicit'\n        require_pkce: true\n        pkce_challenge_method: 'S256'\n
     \       redirect_uris:\n          - 'https://facturas.danielramos.me/oidc/callback'\n
@@ -100,12 +101,12 @@ data:
     none\n        userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
     client_secret_basic\n\n      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLI_CLIENT_ID`
     }}'\n        client_name: ArgoCD CLI\n        public: true\n        authorization_policy:
-    two_factor\n        consent_mode: 'implicit'\n        require_pkce: true\n        pkce_challenge_method:
-    'S256'\n        redirect_uris:\n          - 'http://localhost:8085/auth/callback'\n
-    \       scopes:\n          - openid\n          - offline_access\n          - email\n
-    \         - groups\n        response_types:\n          - code\n        grant_types:\n
-    \         - authorization_code\n        access_token_signed_response_alg: none\n
-    \       userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
+    two_factor\n        claims_policy: argocd\n        consent_mode: 'implicit'\n
+    \       require_pkce: true\n        pkce_challenge_method: 'S256'\n        redirect_uris:\n
+    \         - 'http://localhost:8085/auth/callback'\n        scopes:\n          -
+    openid\n          - offline_access\n          - email\n          - groups\n        response_types:\n
+    \         - code\n        grant_types:\n          - authorization_code\n        access_token_signed_response_alg:
+    none\n        userinfo_signed_response_alg: none\n        token_endpoint_auth_method:
     none\n"
 kind: ConfigMap
 metadata:
