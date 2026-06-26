@@ -32,8 +32,6 @@ local helm = tanka.helm.new(std.thisFile);
               clientSecret: '$argocd-oidc-secret:client-secret',
               cliClientID: '$argocd-oidc-secret:cli-client-id',
               requestedScopes: ['openid', 'email', 'groups', 'offline_access'],
-              enableUserInfoGroups: true,
-              userInfoPath: '/api/oidc/userinfo',
             }),
           },
           rbac: {
