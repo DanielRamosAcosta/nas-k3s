@@ -53,6 +53,42 @@ local helm = tanka.helm.new(std.thisFile);
         // `cscli console enroll` at container start. We let Crowdsec
         // manage that file itself — sharing flags default to sane
         // values (share_manual_decisions + share_tainted on).
+
+        // Custom scenarios mounted into the agent's scenarios dir (chart
+        // builds a `crowdsec-scenarios` ConfigMap from this map).
+        scenarios: {
+          // CouchDB basic-auth brute-force. couchdb.danielramos.me is
+          // exposed for Obsidian LiveSync with only native basic auth in
+          // front, and CouchDB's own auth lockout is useless behind
+          // Cloudflare (it sees the CDN edge IP, not the client). The hub
+          // scenario crowdsecurity/http-generic-bf only counts 401/403 on
+          // POST, but CouchDB sends basic auth on ANY verb (a brute-force
+          // over `GET /` yields 401 without being a POST), so it misses
+          // these. This scenario counts 401 of any verb against the
+          // CouchDB host, grouped by the real client IP that the Traefik
+          // parser resolves (target_fqdn / source_ip on the http_access-log
+          // event acquired from Traefik logs via Loki). Legitimate sync is
+          // 200/201, so its ~20 req/s bursts never feed this bucket; only
+          // failed auth does. capacity 10 / leakspeed 5s tolerates a few
+          // honest password fumbles while still catching a hammering IP.
+          // remediation:true → the image's default profiles.yaml bans
+          // scope=Ip (groupby source_ip), which the Traefik bouncer then
+          // enforces with a 403.
+          'couchdb-http-auth-bf.yaml': |||
+            type: leaky
+            name: nas-k3s/couchdb-http-auth-bf
+            description: "CouchDB basic-auth brute-force: repeated 401 (any verb) from the real client IP"
+            filter: "evt.Meta.log_type == 'http_access-log' && evt.Meta.http_status == '401' && evt.Meta.target_fqdn == 'couchdb.danielramos.me'"
+            groupby: "evt.Meta.source_ip"
+            capacity: 10
+            leakspeed: "5s"
+            blackhole: 5m
+            labels:
+              service: couchdb
+              type: bruteforce
+              remediation: true
+          |||,
+        },
       },
 
       // --- LAPI ------------------------------------------------------------

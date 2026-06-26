@@ -1,4 +1,5 @@
 local u = import '../../utils.libsonnet';
+local cloudflare = import '../../utils/cloudflare.libsonnet';
 local versions = import '../../versions.json';
 local secrets = import 'databases/couchdb/couchdb.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
@@ -69,9 +70,37 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
     userObsidian: self.createUser('obsidian', 'obsidian-vault', secrets.userObsidian, self.createUserMigration, self.sealedSecret),
 
+    // Crowdsec bouncer: lookup in-band contra el LAPI in-cluster. Bloquea IPs con
+    // una decisión activa de Crowdsec (p. ej. brute-force de auth detectado en los
+    // logs de Traefik). `forwardedHeadersTrustedIPs: cloudflare.allCidrs` hace que el
+    // plugin resuelva la IP real del cliente a partir de X-Forwarded-For (la cadena
+    // termina en el edge de Cloudflare), no la del propio edge. La API key se lee de
+    // un fichero montado en el pod de Traefik, nunca del spec del Middleware.
+    // Mismo patrón que immich (lib/media/immich/immich.libsonnet).
+    crowdsecBouncer: {
+      apiVersion: 'traefik.io/v1alpha1',
+      kind: 'Middleware',
+      metadata: { name: 'couchdb-crowdsec-bouncer' },
+      spec: {
+        plugin: {
+          bouncer: {
+            enabled: true,
+            logLevel: 'INFO',
+            crowdsecMode: 'stream',
+            updateIntervalSeconds: 60,
+            crowdsecLapiScheme: 'http',
+            crowdsecLapiHost: 'crowdsec-service.system.svc.cluster.local:8080',
+            crowdsecLapiKeyFile: '/etc/crowdsec-bouncer/BOUNCER_KEY',
+            forwardedHeadersTrustedIPs: cloudflare.allCidrs,
+          },
+        },
+      },
+    },
+
     // Ingress orange-proxied por Cloudflare: tls.store default (cloudflare-origin-cert),
-    // sin Authelia ni middlewares. Auth la lleva el basic auth nativo de CouchDB.
-    ingress_route: u.ingressRoute.from(self.service, 'couchdb.danielramos.me'),
+    // sin Authelia (rompería Obsidian LiveSync, que manda basic auth). Auth la lleva el
+    // basic auth nativo de CouchDB; el bouncer de Crowdsec banea las IPs con brute-force.
+    ingress_route: u.ingressRoute.from(self.service, 'couchdb.danielramos.me', [{ name: this.crowdsecBouncer.metadata.name }]),
 
     createUser(name, dbName, password, configMap, secret):: {
       migrationJob: k.batch.v1.job.new('couchdb-create-user-' + name) +
