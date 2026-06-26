@@ -18,41 +18,41 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     local this = self,
 
     statefulSet: statefulSet.new('couchdb', replicas=1, containers=[
-      container.new('couchdb', u.image(versions.couchdb.image, versions.couchdb.version)) +
-      container.withPorts(
-        [containerPort.new('couchdb', 5984)]
-      ) +
-      container.withEnv(
-        // COUCHDB_USER/COUCHDB_PASSWORD bootstrapean el admin; COUCHDB_SECRET firma
-        // las cookies de sesión para que persistan entre reinicios (el local.ini
-        // runtime no se persiste en el hostPath).
-        u.envVars.fromSealedSecret(self.sealedSecret)
-      ) +
-      container.withVolumeMounts([
-        volumeMount.new(dataVolumeName, '/opt/couchdb/data'),
-        // Monta el .ini como archivo (subPath) en local.d/ — coexiste con el
-        // docker.ini que genera la imagen, sin shadowear el directorio.
-        u.volumeMount.fromFile(self.config, '/opt/couchdb/etc/local.d'),
-      ]) +
-      // require_valid_user=true → un GET a /_up da 401, así que probe TCP, no HTTP.
-      u.probes.stateful.tcp(5984),
-    ]) +
-    // Correr como uid 5984 (couchdb): el entrypoint de la imagen, si arranca como
-    // root, hace chown -R sobre /opt/couchdb e intenta chownear nuestro config.ini
-    // (montaje de ConfigMap read-only) → falla con set -e y aborta sin loguear.
-    statefulSet.spec.template.spec.securityContext.withRunAsUser(5984) +
-    statefulSet.spec.template.spec.securityContext.withRunAsGroup(5984) +
-    statefulSet.spec.template.spec.securityContext.withFsGroup(5984) +
-    statefulSet.spec.template.spec.withInitContainers([
-      // La imagen oficial corre como uid 5984; el hostPath se crea como root.
-      // Este init corre como root (override del securityContext de pod) para chownear.
-      container.new('fix-perms', u.image(versions.busybox.image, versions.busybox.version)) +
-      container.withCommand(['/bin/sh', '-c', 'chown -R 5984:5984 /opt/couchdb/data']) +
-      container.withVolumeMounts([
-        volumeMount.new(dataVolumeName, '/opt/couchdb/data'),
-      ]) +
-      { securityContext: { runAsUser: 0 } },
-    ]) + statefulSet.spec.template.spec.withVolumes([
+                   container.new('couchdb', u.image(versions.couchdb.image, versions.couchdb.version)) +
+                   container.withPorts(
+                     [containerPort.new('couchdb', 5984)]
+                   ) +
+                   container.withEnv(
+                     // COUCHDB_USER/COUCHDB_PASSWORD bootstrapean el admin; COUCHDB_SECRET firma
+                     // las cookies de sesión para que persistan entre reinicios (el local.ini
+                     // runtime no se persiste en el hostPath).
+                     u.envVars.fromSealedSecret(self.sealedSecret)
+                   ) +
+                   container.withVolumeMounts([
+                     volumeMount.new(dataVolumeName, '/opt/couchdb/data'),
+                     // Monta el .ini como archivo (subPath) en local.d/ — coexiste con el
+                     // docker.ini que genera la imagen, sin shadowear el directorio.
+                     u.volumeMount.fromFile(self.config, '/opt/couchdb/etc/local.d'),
+                   ]) +
+                   // require_valid_user=true → un GET a /_up da 401, así que probe TCP, no HTTP.
+                   u.probes.stateful.tcp(5984),
+                 ]) +
+                 // Correr como uid 5984 (couchdb): el entrypoint de la imagen, si arranca como
+                 // root, hace chown -R sobre /opt/couchdb e intenta chownear nuestro config.ini
+                 // (montaje de ConfigMap read-only) → falla con set -e y aborta sin loguear.
+                 statefulSet.spec.template.spec.securityContext.withRunAsUser(5984) +
+                 statefulSet.spec.template.spec.securityContext.withRunAsGroup(5984) +
+                 statefulSet.spec.template.spec.securityContext.withFsGroup(5984) +
+                 statefulSet.spec.template.spec.withInitContainers([
+                   // La imagen oficial corre como uid 5984; el hostPath se crea como root.
+                   // Este init corre como root (override del securityContext de pod) para chownear.
+                   container.new('fix-perms', u.image(versions.busybox.image, versions.busybox.version)) +
+                   container.withCommand(['/bin/sh', '-c', 'chown -R 5984:5984 /opt/couchdb/data']) +
+                   container.withVolumeMounts([
+                     volumeMount.new(dataVolumeName, '/opt/couchdb/data'),
+                   ]) +
+                   { securityContext: { runAsUser: 0 } },
+                 ]) + statefulSet.spec.template.spec.withVolumes([
       volume.fromHostPath(dataVolumeName, '/data/couchdb'),
       u.volume.fromConfigMap(self.config),
     ]),
