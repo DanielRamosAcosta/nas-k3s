@@ -162,5 +162,13 @@
   "nginx": {
     "image": "docker.io/nginx",
     "version": "1.29.8-alpine"
+  },
+  "couchdb": {
+    "image": "docker.io/apache/couchdb",
+    "version": "3.5.2"
+  },
+  "curl": {
+    "image": "docker.io/curlimages/curl",
+    "version": "8.21.0"
   }
 }
