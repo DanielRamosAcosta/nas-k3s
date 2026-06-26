@@ -8,7 +8,6 @@ data:
     "cliClientID": "$argocd-oidc-secret:cli-client-id"
     "clientID": "$argocd-oidc-secret:client-id"
     "clientSecret": "$argocd-oidc-secret:client-secret"
-    "enableUserInfoGroups": true
     "issuer": "https://auth.danielramos.me"
     "name": "Authelia"
     "requestedScopes":
@@ -16,7 +15,6 @@ data:
     - "email"
     - "groups"
     - "offline_access"
-    "userInfoPath": "/api/oidc/userinfo"
   resource.customizations.ignoreResourceUpdates.ConfigMap: |
     jqPathExpressions:
       # Ignore the cluster-autoscaler status

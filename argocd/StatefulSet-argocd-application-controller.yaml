@@ -23,7 +23,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cm: d3438cd30852143b480493260eef777d918bf7e10f0a50091fe9b98f41d5168c
+        checksum/cm: 3e1d646480557103e2b239e07beadcdb52258ecd8759183f2c91caeb6a0f98df
         checksum/cmd-params: 0cc850a17f0681fe1edb7c0e204d0f4b4611cfe33c4fff90d1a68d66c90bd2d2
         reloader.stakater.com/auto: "true"
       labels:
