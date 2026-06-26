@@ -17,11 +17,11 @@
   },
   "authelia": {
     "image": "ghcr.io/authelia/authelia",
-    "version": "4.39.19"
+    "version": "4.39.20"
   },
   "valkey": {
     "image": "valkey/valkey",
-    "version": "9.0.4-alpine"
+    "version": "9.1.0-alpine"
   },
   "grafana": {
     "image": "docker.io/grafana/grafana-oss",
@@ -29,15 +29,15 @@
   },
   "loki": {
     "image": "docker.io/grafana/loki",
-    "version": "3.7.1"
+    "version": "3.7.3"
   },
   "promtail": {
     "image": "docker.io/grafana/promtail",
-    "version": "3.6.10"
+    "version": "3.6.11"
   },
   "victoriametrics": {
     "image": "victoriametrics/victoria-metrics",
-    "version": "v1.142.0-enterprise"
+    "version": "v1.146.0-enterprise"
   },
   "nodeExporter": {
     "image": "quay.io/prometheus/node-exporter",
@@ -49,7 +49,7 @@
   },
   "nutExporter": {
     "image": "ghcr.io/druggeri/nut_exporter",
-    "version": "3.2.5"
+    "version": "3.3.0"
   },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
@@ -65,7 +65,7 @@
   },
   "jellyfin": {
     "image": "docker.io/jellyfin/jellyfin",
-    "version": "10.11.8"
+    "version": "10.11.11"
   },
   "genericDevicePlugin": {
     "image": "ghcr.io/squat/generic-device-plugin",
@@ -85,7 +85,7 @@
   },
   "sonarr": {
     "image": "ghcr.io/hotio/sonarr",
-    "version": "release-4.0.17.2952"
+    "version": "release-4.0.19.2979"
   },
   "radarr": {
     "image": "ghcr.io/hotio/radarr",
@@ -145,7 +145,7 @@
   },
   "busybox": {
     "image": "busybox",
-    "version": "1.37.0"
+    "version": "1.38.0"
   },
   "rsync": {
     "image": "instrumentisto/rsync-ssh",
@@ -161,7 +161,7 @@
   },
   "nginx": {
     "image": "docker.io/nginx",
-    "version": "1.29.8-alpine"
+    "version": "1.31.2-alpine"
   },
   "couchdb": {
     "image": "docker.io/apache/couchdb",
