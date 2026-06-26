@@ -72,6 +72,10 @@ spec:
         volumeMounts:
         - mountPath: /opt/couchdb/data
           name: data
+      securityContext:
+        fsGroup: 5984
+        runAsGroup: 5984
+        runAsUser: 5984
       volumes:
       - hostPath:
           path: /data/couchdb
