@@ -1,0 +1,22 @@
+apiVersion: v1
+data:
+  couchdb-http-auth-bf.yaml: |
+    type: leaky
+    name: nas-k3s/couchdb-http-auth-bf
+    description: "CouchDB basic-auth brute-force: repeated 401 (any verb) from the real client IP"
+    filter: "evt.Meta.log_type == 'http_access-log' && evt.Meta.http_status == '401' && evt.Meta.target_fqdn == 'couchdb.danielramos.me'"
+    groupby: "evt.Meta.source_ip"
+    capacity: 10
+    leakspeed: "5s"
+    blackhole: 5m
+    labels:
+      service: couchdb
+      type: bruteforce
+      remediation: true
+kind: ConfigMap
+metadata:
+  labels:
+    app: crowdsec
+    app.kubernetes.io/managed-by: Helmraiser
+  name: crowdsec-scenarios
+  namespace: system

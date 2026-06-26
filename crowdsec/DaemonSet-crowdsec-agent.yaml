@@ -18,7 +18,7 @@ spec:
     metadata:
       annotations:
         checksum/acquis-configmap: 10cc7b46398a71cf0b25eac2c8c89d283970beffd4676ecf2cd28b9d1c7d404b
-        checksum/agent-configmap: 524e841fd2661b639b1cc3aee213e22b04572ed44b8d8c81289d7e16b76bab8c
+        checksum/agent-configmap: 747194116ced3339df7ee4cfe27f4c999ca500125dfe0716ad1429dab473eeed
         reloader.stakater.com/auto: "true"
       labels:
         k8s-app: crowdsec
@@ -102,6 +102,9 @@ spec:
         volumeMounts:
         - mountPath: /tmp_config
           name: crowdsec-config
+        - mountPath: /etc/crowdsec/scenarios/couchdb-http-auth-bf.yaml
+          name: crowdsec-scenarios-couchdb-http-auth-bf
+          subPath: couchdb-http-auth-bf.yaml
         - mountPath: /etc/crowdsec/acquis.yaml
           name: acquis-config-volume
           subPath: acquis.yaml
@@ -160,6 +163,12 @@ spec:
       - hostPath:
           path: /var/log
         name: varlog
+      - configMap:
+          items:
+          - key: couchdb-http-auth-bf.yaml
+            path: couchdb-http-auth-bf.yaml
+          name: crowdsec-scenarios
+        name: crowdsec-scenarios-couchdb-http-auth-bf
       - hostPath:
           path: /var/lib/docker/containers
         name: varlibdockercontainers

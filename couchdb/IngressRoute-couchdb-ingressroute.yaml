@@ -11,6 +11,8 @@ spec:
   routes:
   - kind: Rule
     match: Host(`couchdb.danielramos.me`)
+    middlewares:
+    - name: couchdb-crowdsec-bouncer
     services:
     - name: couchdb
       port: 5984
