@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: couchdb
+  name: couchdb
+  namespace: databases
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: couchdb
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: couchdb
+    spec:
+      containers:
+      - env:
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_PASSWORD
+              name: couchdb-sealed-secret
+        - name: COUCHDB_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_SECRET
+              name: couchdb-sealed-secret
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_USER
+              name: couchdb-sealed-secret
+        image: docker.io/apache/couchdb:3.5.2
+        imagePullPolicy: IfNotPresent
+        name: couchdb
+        ports:
+        - containerPort: 5984
+          name: couchdb
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 5984
+          timeoutSeconds: 5
+        startupProbe:
+          failureThreshold: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 5984
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /opt/couchdb/data
+          name: data
+        - mountPath: /opt/couchdb/etc/local.d/couchdb.config.ini
+          name: couchdb-config-ini
+          subPath: couchdb.config.ini
+      initContainers:
+      - command:
+        - /bin/sh
+        - -c
+        - chown -R 5984:5984 /opt/couchdb/data
+        image: busybox:1.37.0
+        imagePullPolicy: IfNotPresent
+        name: fix-perms
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - mountPath: /opt/couchdb/data
+          name: data
+      volumes:
+      - hostPath:
+          path: /data/couchdb
+        name: data
+      - configMap:
+          name: couchdb-config-ini
+        name: couchdb-config-ini
+  updateStrategy:
+    type: RollingUpdate

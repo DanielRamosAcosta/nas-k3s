@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: couchdb
+  name: couchdb-ingressroute
+  namespace: databases
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`couchdb.danielramos.me`)
+    services:
+    - name: couchdb
+      port: 5984
+  tls:
+    store:
+      name: default

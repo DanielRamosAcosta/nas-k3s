@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: couchdb
+  name: couchdb-create-user-obsidian
+  namespace: databases
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - /bin/sh
+        - /mnt/scripts/couchdb.create-user.sh
+        env:
+        - name: USER_NAME
+          value: obsidian
+        - name: DB_NAME
+          value: obsidian-vault
+        - name: USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_PASSWORD
+              name: couchdb-create-user-obsidian-sealed-secret
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_PASSWORD
+              name: couchdb-sealed-secret
+        - name: COUCHDB_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_SECRET
+              name: couchdb-sealed-secret
+        - name: COUCHDB_USER
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_USER
+              name: couchdb-sealed-secret
+        image: docker.io/curlimages/curl:8.21.0
+        imagePullPolicy: IfNotPresent
+        name: create-user
+        volumeMounts:
+        - mountPath: /mnt/scripts/couchdb.create-user.sh
+          name: couchdb-create-user-sh
+          subPath: couchdb.create-user.sh
+      restartPolicy: OnFailure
+      volumes:
+      - configMap:
+          name: couchdb-create-user-sh
+        name: couchdb-create-user-sh

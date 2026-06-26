@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: couchdb
+    name: couchdb
+  name: couchdb
+  namespace: databases
+spec:
+  ports:
+  - name: couchdb-couchdb
+    port: 5984
+    targetPort: 5984
+  selector:
+    name: couchdb

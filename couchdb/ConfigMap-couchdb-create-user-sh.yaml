@@ -1,0 +1,43 @@
+apiVersion: v1
+data:
+  couchdb.create-user.sh: "#!/bin/sh\nset -eu\n\necho \"\U0001F3D7️  Aprovisionando
+    database y usuario en CouchDB...\"\n\n# Validar variables requeridas\n: \"${COUCHDB_USER:?Variable
+    COUCHDB_USER es requerida}\"\n: \"${COUCHDB_PASSWORD:?Variable COUCHDB_PASSWORD
+    es requerida}\"\n: \"${USER_NAME:?Variable USER_NAME es requerida}\"\n: \"${USER_PASSWORD:?Variable
+    USER_PASSWORD es requerida}\"\n: \"${DB_NAME:?Variable DB_NAME es requerida}\"\n\nCOUCHDB_HOST=\"${COUCHDB_HOST:-http://couchdb.databases.svc.cluster.local:5984}\"\nAUTH=\"$COUCHDB_USER:$COUCHDB_PASSWORD\"\n\n#
+    Hace una petición autenticada y devuelve solo el código HTTP por stdout.\n# $1=método
+    $2=path $3=body (opcional)\nreq() {\n  method=\"$1\"\n  path=\"$2\"\n  body=\"${3:-}\"\n
+    \ if [ -n \"$body\" ]; then\n    curl -s -o /dev/null -w '%{http_code}' --user
+    \"$AUTH\" \\\n      -X \"$method\" \"$COUCHDB_HOST$path\" \\\n      -H 'Content-Type:
+    application/json' -d \"$body\"\n  else\n    curl -s -o /dev/null -w '%{http_code}'
+    --user \"$AUTH\" \\\n      -X \"$method\" \"$COUCHDB_HOST$path\"\n  fi\n}\n\n#
+    Falla solo ante errores reales (5xx o error de red). Tolera los códigos\n# \"ya
+    existe\" que se pasen como argumentos extra.\ncheck() {\n  code=\"$1\"\n  context=\"$2\"\n
+    \ shift 2\n  for ok in 200 201 \"$@\"; do\n    if [ \"$code\" = \"$ok\" ]; then\n
+    \     return 0\n    fi\n  done\n  echo \"❌ $context falló (HTTP $code)\"\n  exit
+    1\n}\n\n# Esperar a que CouchDB esté listo (autenticado: require_valid_user=true
+    da 401 sin auth)\necho \"⏳ Esperando a CouchDB en $COUCHDB_HOST...\"\nRETRIES=30\nuntil
+    [ \"$RETRIES\" -eq 0 ]; do\n  code=$(req GET /_up || echo 000)\n  if [ \"$code\"
+    = \"200\" ]; then\n    echo \"✅ CouchDB está disponible\"\n    break\n  fi\n  echo
+    \"⏳ Esperando... ($RETRIES intentos restantes, último HTTP $code)\"\n  RETRIES=$((RETRIES
+    - 1))\n  sleep 2\ndone\nif [ \"$RETRIES\" -eq 0 ]; then\n  echo \"❌ CouchDB no
+    respondió 200 en /_up tras varios intentos\"\n  exit 1\nfi\n\n# Crear la database
+    (412 = ya existe)\necho \"\U0001F4E6 Creando database '$DB_NAME'...\"\ncode=$(req
+    PUT \"/$DB_NAME\")\ncheck \"$code\" \"Crear database '$DB_NAME'\" 412\n\n# Crear
+    el usuario no-admin en _users (409 = ya existe)\necho \"\U0001F510 Creando usuario
+    '$USER_NAME' en _users...\"\nuser_body=$(printf '{\"name\":\"%s\",\"password\":\"%s\",\"roles\":[],\"type\":\"user\"}'
+    \"$USER_NAME\" \"$USER_PASSWORD\")\ncode=$(req PUT \"/_users/org.couchdb.user:$USER_NAME\"
+    \"$user_body\")\ncheck \"$code\" \"Crear usuario '$USER_NAME'\" 409\n\n# Restringir
+    el acceso a la DB solo a ese usuario (idempotente, sobrescribe).\n# Member: lee/escribe
+    docs normales. Admin local de SU base: necesario para que\n# LiveSync cree design
+    docs / índices (\"Check database configuration\").\necho \"\U0001F512 Configurando
+    _security de '$DB_NAME' para '$USER_NAME'...\"\nsec_body=$(printf '{\"admins\":{\"names\":[\"%s\"],\"roles\":[]},\"members\":{\"names\":[\"%s\"],\"roles\":[]}}'
+    \"$USER_NAME\" \"$USER_NAME\")\ncode=$(req PUT \"/$DB_NAME/_security\" \"$sec_body\")\ncheck
+    \"$code\" \"Configurar _security de '$DB_NAME'\"\n\necho \"✅ Database '$DB_NAME'
+    y usuario '$USER_NAME' aprovisionados correctamente.\"\n"
+kind: ConfigMap
+metadata:
+  labels:
+    app: couchdb
+  name: couchdb-create-user-sh
+  namespace: databases
