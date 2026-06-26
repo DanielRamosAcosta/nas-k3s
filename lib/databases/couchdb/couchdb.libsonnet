@@ -36,8 +36,16 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       ]) +
       // require_valid_user=true → un GET a /_up da 401, así que probe TCP, no HTTP.
       u.probes.stateful.tcp(5984),
-    ]) + statefulSet.spec.template.spec.withInitContainers([
+    ]) +
+    // Correr como uid 5984 (couchdb): el entrypoint de la imagen, si arranca como
+    // root, hace chown -R sobre /opt/couchdb e intenta chownear nuestro config.ini
+    // (montaje de ConfigMap read-only) → falla con set -e y aborta sin loguear.
+    statefulSet.spec.template.spec.securityContext.withRunAsUser(5984) +
+    statefulSet.spec.template.spec.securityContext.withRunAsGroup(5984) +
+    statefulSet.spec.template.spec.securityContext.withFsGroup(5984) +
+    statefulSet.spec.template.spec.withInitContainers([
       // La imagen oficial corre como uid 5984; el hostPath se crea como root.
+      // Este init corre como root (override del securityContext de pod) para chownear.
       container.new('fix-perms', u.image(versions.busybox.image, versions.busybox.version)) +
       container.withCommand(['/bin/sh', '-c', 'chown -R 5984:5984 /opt/couchdb/data']) +
       container.withVolumeMounts([
