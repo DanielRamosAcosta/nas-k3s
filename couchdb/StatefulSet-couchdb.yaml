@@ -64,7 +64,7 @@ spec:
         - /bin/sh
         - -c
         - chown -R 5984:5984 /opt/couchdb/data
-        image: busybox:1.37.0
+        image: busybox:1.38.0
         imagePullPolicy: IfNotPresent
         name: fix-perms
         securityContext:

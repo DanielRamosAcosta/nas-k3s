@@ -26,7 +26,7 @@ spec:
             secretKeyRef:
               key: NUT_EXPORTER_PASSWORD
               name: nut-exporter-sealed-secret
-        image: ghcr.io/druggeri/nut_exporter:3.2.5
+        image: ghcr.io/druggeri/nut_exporter:3.3.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3

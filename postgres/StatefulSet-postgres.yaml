@@ -54,7 +54,7 @@ spec:
         - -c
         - cat /config/postgresql.auto.conf > /var/lib/postgresql/data/postgresql.auto.conf
           && cat /pg_hba/pg_hba.conf > /var/lib/postgresql/data/pg_hba.conf
-        image: busybox:1.37.0
+        image: busybox:1.38.0
         imagePullPolicy: IfNotPresent
         name: setup-postgres-config
         securityContext:

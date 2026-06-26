@@ -18,7 +18,7 @@ spec:
           - command:
             - sh
             - /mnt/scripts/postgres.cleanup.sh
-            image: busybox:1.37.0
+            image: busybox:1.38.0
             imagePullPolicy: IfNotPresent
             name: cleanup
             volumeMounts:
