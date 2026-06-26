@@ -1,158 +1,175 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Este archivo proporciona orientación a Claude Code (claude.ai/code) al trabajar con el código de este repositorio.
 
-## Project Overview
+## Visión general del proyecto
 
-K3s homelab infrastructure-as-code using **Jsonnet + Tanka** for declarative Kubernetes deployments on a personal NAS. Manages a self-hosted stack: media apps, databases, monitoring, authentication, and system services.
+Infraestructura-como-código de un homelab K3s usando **Jsonnet + Tanka** para despliegues declarativos de Kubernetes en un NAS personal. Gestiona un stack self-hosted: aplicaciones de medios, bases de datos, monitorización, autenticación y servicios de sistema.
 
-## Available Tools
+## Herramientas disponibles
 
-- **jq** — Available for inspecting/transforming JSON (e.g. `tk eval ... | jq '.field'`)
+- **jq** — Disponible para inspeccionar/transformar JSON (p. ej. `tk eval ... | jq '.field'`)
+- **skopeo** — Disponible para buscar la versión adecuada de una imagen Docker.
 
-## Security
+## Seguridad
 
-**NEVER pass secrets through Claude's context. NEVER.** This includes private keys, passwords, API keys, tokens, OIDC client secrets, or any other sensitive value — do not print them, echo them, paste them into a prompt, or include them in tool arguments where they'd be captured in the conversation.
+**NUNCA pases secretos a través del contexto de Claude. NUNCA.** Esto incluye claves privadas, contraseñas, claves de API, tokens, secretos de cliente OIDC, o cualquier otro valor sensible — no los imprimas, no hagas echo, no los pegues en un prompt, ni los incluyas en argumentos de herramientas donde quedarían capturados en la conversación.
 
-When you need to generate keys/secrets:
+Cuando necesites generar claves/secretos:
 
-1. **Always redirect the output to a file** instead of printing it to stdout (where it would land in the context).
+1. **Redirige siempre la salida a un archivo** en lugar de imprimirla en stdout (donde acabaría en el contexto).
    ```bash
-   # WRONG — secret ends up in Claude's context:
+   # MAL — el secreto acaba en el contexto de Claude:
    openssl rand -base64 32
 
-   # CORRECT — secret goes to a file, never shown:
+   # BIEN — el secreto va a un archivo, nunca se muestra:
    openssl rand -base64 32 > /tmp/secret.txt
    ```
-2. **Pipe the file into the consuming command** (e.g. the encryption script) without ever reading its contents:
+2. **Canaliza el archivo hacia el comando que lo consume** (p. ej. el script de cifrado) sin leer nunca su contenido:
    ```bash
    cat /tmp/secret.txt | ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>
    ```
-3. **Delete the file immediately after use — this is critical.**
+3. **Elimina el archivo inmediatamente después de usarlo — esto es crítico.**
    ```bash
    rm -f /tmp/secret.txt
    ```
 
-Only the encrypted (SealedSecret) output is safe to commit and to display. The plaintext secret must never be read with the Read tool, printed, or otherwise surfaced into the conversation.
+Solo la salida cifrada (SealedSecret) es segura para commitear y para mostrar. El secreto en texto plano nunca debe leerse con la herramienta Read, imprimirse ni exponerse de ninguna otra forma en la conversación.
 
-## Adding a new service: minimize config
+## Añadir un nuevo servicio: minimizar la configuración
 
-**Always check the defaults before writing config.** The tendency is to copy a full generated config and include everything — this creates noise and makes real non-default values harder to spot.
+**Comprueba siempre los valores por defecto antes de escribir configuración.** La tendencia es copiar una configuración generada completa e incluirlo todo — esto genera ruido y dificulta detectar los valores reales que no son por defecto.
 
-Before writing `homeserver.yaml`, `config.yaml`, or any service config file:
+Antes de escribir `homeserver.yaml`, `config.yaml`, o cualquier archivo de configuración de un servicio:
 
-1. Read the official docs or the default config the image generates (`--generate-config`, `-e`, dry-run, etc.) to know what the defaults actually are.
-2. Only include values that differ from the default, are required to be set explicitly (e.g. `report_stats` in Synapse), or have a specific reason to be spelled out.
-3. For paths (data dir, signing key, media store, etc.) — check if mounting at the default path is feasible before adding a config override.
-4. For listener/network config — check which fields have sane defaults (`tls: false`, `type: http`) versus which actually need to be set (`bind_addresses`, `x_forwarded`).
+1. Lee la documentación oficial o la configuración por defecto que genera la imagen (`--generate-config`, `-e`, dry-run, etc.) para saber cuáles son realmente los valores por defecto.
+2. Incluye solo valores que difieran del valor por defecto, que sea obligatorio establecer explícitamente (p. ej. `report_stats` en Synapse), o que tengan una razón concreta para especificarse.
+3. Para rutas (directorio de datos, signing key, media store, etc.) — comprueba si es viable montar en la ruta por defecto antes de añadir una sobreescritura en la configuración.
+4. Para la configuración de listener/red — comprueba qué campos tienen valores por defecto sensatos (`tls: false`, `type: http`) frente a cuáles realmente hay que establecer (`bind_addresses`, `x_forwarded`).
 
-A config file with 10 lines where every line matters is better than 40 lines where 30 are defaults.
+Un archivo de configuración con 10 líneas donde cada línea importa es mejor que 40 líneas donde 30 son valores por defecto.
 
-## Observability: logs
+### Usuario de ejecución del contenedor (`runAsUser`)
 
-**Always query logs via Loki through the `grafanaSelfHosted` MCP server. Do NOT use `kubectl logs` for log inspection.**
+**Cuando la doc/imagen de un servicio indica el uid con el que está pensada para correr, fija `runAsUser` (y `runAsGroup`/`fsGroup`) a ese uid en el pod por defecto** — especialmente si montas un ConfigMap/Secret **read-only** dentro de un directorio propio de la imagen (config, etc.).
 
-Loki aggregates logs from every pod in the cluster and lets you filter by time range, level, and pattern without needing the pod to still exist. `kubectl logs` only sees the current container instance and loses history on restarts.
+Muchas imágenes arrancan su entrypoint **como root** y hacen un `chown -R` sobre sus directorios. Si ahí dentro hay un montaje read-only, el `chown` falla; con `set -e` el entrypoint **aborta antes de loguear nada** → el contenedor sale con código 1 y **cero logs** (síntoma engañoso, parece un fallo de arranque del propio servicio). Correr como el uid de la app salta ese bloque de `chown`.
 
-Typical flow:
-1. `mcp__grafanaSelfHosted__list_datasources` with `type: loki` → get the datasource `uid` (currently `P8E80F9AEF21F6940`).
-2. `mcp__grafanaSelfHosted__query_loki_logs` with a LogQL selector. Useful labels: `namespace`, `pod`, `container`, `service_name`, `level`.
-   - Example: `{namespace="media", pod=~"immich.*"} |~ "(?i)error|warn|fail"`
-3. If unsure about labels, use `list_loki_label_values` (e.g. `labelName: namespace`) before querying.
-4. For noisy streams, prefer `query_loki_patterns` or `find_error_pattern_logs` to cluster errors.
+Caso real: `apache/couchdb` (corre como uid 5984) — montar nuestro `local.ini` read-only provocaba CrashLoopBackOff sin logs hasta fijar `runAsUser: 5984`. Si además el hostPath de datos lo crea root, usa un init container `runAsUser: 0` solo para el `chown` de ese volumen.
 
-Namespace cheatsheet: `argocd`, `arr`, `business`, `communications`, `databases`, `kube-system`, `media`, `monitoring`, `system`. (Apps are grouped by category, not per-app namespace — e.g. immich lives in `media`, not `immich`.)
+## Observabilidad: logs
 
-`kubectl logs` is only acceptable as a last resort when Loki/Promtail is itself broken.
+**Consulta siempre los logs vía Loki a través del servidor MCP `grafanaSelfHosted`. NO uses `kubectl logs` para inspeccionar logs.**
 
-## Key Commands
+Loki agrega los logs de cada pod del clúster y permite filtrar por rango de tiempo, nivel y patrón sin necesidad de que el pod siga existiendo. `kubectl logs` solo ve la instancia de contenedor actual y pierde el historial en los reinicios.
+
+Flujo típico:
+1. `mcp__grafanaSelfHosted__list_datasources` con `type: loki` → obtén el `uid` del datasource (actualmente `P8E80F9AEF21F6940`).
+2. `mcp__grafanaSelfHosted__query_loki_logs` con un selector LogQL. Etiquetas útiles: `namespace`, `pod`, `container`, `service_name`, `level`.
+   - Ejemplo: `{namespace="media", pod=~"immich.*"} |~ "(?i)error|warn|fail"`
+3. Si no estás seguro de las etiquetas, usa `list_loki_label_values` (p. ej. `labelName: namespace`) antes de consultar.
+4. Para flujos ruidosos, prefiere `query_loki_patterns` o `find_error_pattern_logs` para agrupar errores.
+
+Chuleta de namespaces: `argocd`, `arr`, `business`, `communications`, `databases`, `kube-system`, `media`, `monitoring`, `system`. (Las apps se agrupan por categoría, no por namespace propio de cada app — p. ej. immich vive en `media`, no en `immich`.)
+
+`kubectl logs` solo es aceptable como último recurso cuando el propio Loki/Promtail está roto.
+
+## Comandos clave
 
 ```bash
 # Sealed Secrets
-echo -n 'value' | ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>  # Strict scope
-echo -n 'value' | ./scripts/encrypt-secret.sh --cluster-wide                     # Cluster-wide scope
+echo -n 'value' | ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>  # Ámbito estricto
+echo -n 'value' | ./scripts/encrypt-secret.sh --cluster-wide                     # Ámbito cluster-wide
 
-# Jsonnet dependencies
-jb install              # Install jsonnet-bundler dependencies into vendor/
+# Dependencias de Jsonnet
+jb install              # Instala las dependencias de jsonnet-bundler en vendor/
 
-# Tanka workflow
-tk eval environments/<category>                        # Compile Jsonnet to JSON
-tk export dist/ environments/ --recursive --format '{{index .metadata.labels "app"}}/{{.kind}}-{{.metadata.name}}'  # Export all manifests
+# Flujo de Tanka
+tk eval environments/<category>                        # Compila Jsonnet a JSON
+tk export dist/ environments/ --recursive --format '{{index .metadata.labels "app"}}/{{.kind}}-{{.metadata.name}}'  # Exporta todos los manifiestos
 
-# Deployment (GitOps via ArgoCD — NEVER use tk apply directly)
-# 1. Commit + push to main
-# 2. CI exports manifests to 'manifests' branch
-# 3. ArgoCD detects changes → sync manually from UI or CLI
-argocd app sync <app-name> --grpc-web                  # Sync a single app
+# Despliegue (GitOps vía ArgoCD — NUNCA uses tk apply directamente)
+# 1. Commit + push a main
+# 2. CI exporta los manifiestos a la rama 'manifests'
+# 3. ArgoCD detecta los cambios → sincroniza manualmente desde la UI o la CLI
+argocd app sync <app-name> --grpc-web                  # Sincroniza una sola app
 ```
 
-## Architecture
+### Conexión con el clúster (port-forward SSH)
+
+Si falla la conexión con el clúster (p. ej. `kubectl`/`tk` no llegan al API server en `localhost:6443`), revisa primero si el puerto está redirigido. Si no lo está, abre el túnel SSH:
+
+```bash
+ssh -fN -L 6443:localhost:6443 nas
+```
+
+## Arquitectura
 
 ### Toolchain
-- **Tanka (tk)** - Kubernetes deployment tool built on Jsonnet
-- **Jsonnet** - Data templating language (all K8s manifests are generated from .libsonnet files)
-- **jsonnet-bundler (jb)** - Dependency manager for Jsonnet libraries
-- **k8s-libsonnet 1.29** - Typed Kubernetes API bindings via `lib/k.libsonnet`
+- **Tanka (tk)** - Herramienta de despliegue de Kubernetes construida sobre Jsonnet
+- **Jsonnet** - Lenguaje de plantillas de datos (todos los manifiestos de K8s se generan a partir de archivos .libsonnet)
+- **jsonnet-bundler (jb)** - Gestor de dependencias para librerías de Jsonnet
+- **k8s-libsonnet 1.29** - Bindings tipados de la API de Kubernetes vía `lib/k.libsonnet`
 
-### Directory Layout
-- **`lib/`** - Jsonnet libraries defining each application. Each app is a `.libsonnet` module with a `new(version)` factory that returns all its K8s resources (StatefulSet/Deployment, Service, ConfigMap, Secret, IngressRoute).
-  - `utils.libsonnet` - Shared helpers for hostPath volumes, secrets, config maps, ingress routes, RBAC, volume mounts, and Traefik middleware
-  - `<appname>.secrets.json` - Kubeseal-encrypted secret values (gitignored), one per app alongside its `.libsonnet`
-  - Subdirectories: `arr/`, `auth/`, `databases/`, `media/`, `monitoring/`, `system/`
-- **`environments/`** - Tanka environment definitions. Each has `main.jsonnet` (imports libs, wires versions) + `spec.json` (namespace, API server).
-  - `versions.json` - Centralized container image versions for all apps
-- **`dist/`** - Generated YAML manifests (gitignored, output of `tk export`)
-- **`charts/`** - Vendored Helm charts (Traefik, K8s Dashboard) managed via `chartfile.yaml`
-- **`vendor/`** - Jsonnet dependencies (gitignored, installed via `jb install`)
+### Estructura de directorios
+- **`lib/`** - Librerías de Jsonnet que definen cada aplicación. Cada app es un módulo `.libsonnet` con una factory `new(version)` que devuelve todos sus recursos de K8s (StatefulSet/Deployment, Service, ConfigMap, Secret, IngressRoute).
+  - `utils.libsonnet` - Helpers compartidos para volúmenes hostPath, secretos, config maps, ingress routes, RBAC, volume mounts y middleware de Traefik
+  - `<appname>.secrets.json` - Valores de secretos cifrados con Kubeseal (en gitignore), uno por app junto a su `.libsonnet`
+  - Subdirectorios: `arr/`, `auth/`, `databases/`, `media/`, `monitoring/`, `system/`
+- **`environments/`** - Definiciones de entornos de Tanka. Cada uno tiene `main.jsonnet` (importa librerías, conecta versiones) + `spec.json` (namespace, API server).
+  - `versions.json` - Versiones centralizadas de las imágenes de contenedor de todas las apps
+- **`dist/`** - Manifiestos YAML generados (en gitignore, salida de `tk export`)
+- **`charts/`** - Helm charts vendorizados (Traefik, K8s Dashboard) gestionados vía `chartfile.yaml`
+- **`vendor/`** - Dependencias de Jsonnet (en gitignore, instaladas vía `jb install`)
 
-### App Module Pattern
+### Patrón de módulo de app
 
-Every app in `lib/` follows this pattern:
+Toda app en `lib/` sigue este patrón:
 
 ```jsonnet
 local secrets = import 'category/appname.secrets.json';
 {
   new():: {
     local this = self,
-    statefulset: /* or deployment */,
-    service: /* ClusterIP service */,
-    config_map: /* app config via importstr */,
+    statefulset: /* o deployment */,
+    service: /* Service ClusterIP */,
+    config_map: /* config de la app vía importstr */,
     sealed_secret: u.sealedSecret.forEnv(self.statefulset, secrets.appname),
     ingress_route: u.ingressRoute.from(this.service, 'app.domain.com'),
-    // volumes are hostPath, defined inline in the statefulset/deployment spec:
+    // los volúmenes son hostPath, definidos inline en el spec del statefulset/deployment:
     // volume.fromHostPath('data', '/data/appname'),
   }
 }
 ```
 
-Environments compose these modules in `main.jsonnet`, passing versions from `versions.json`.
+Los entornos componen estos módulos en `main.jsonnet`, pasando las versiones desde `versions.json`.
 
-### Networking & Auth
-- **Traefik** ingress controller with IngressRoute CRDs and Let's Encrypt TLS
-- **Authelia** provides OIDC/forward-auth; middleware is applied via `utils.traefik.middleware`
-- Services communicate internally via Kubernetes DNS (`svc.cluster.local`)
+### Red y autenticación
+- **Traefik** como ingress controller con CRDs IngressRoute y TLS de Let's Encrypt
+- **Authelia** proporciona OIDC/forward-auth; el middleware se aplica vía `utils.traefik.middleware`
+- Los servicios se comunican internamente vía DNS de Kubernetes (`svc.cluster.local`)
 
-### Storage
-- All volumes use **hostPath** directly (no PV/PVC) — simpler for a single-node NAS homelab
-- Data paths: `/data/*` (SSD, app state) and `/cold-data/*` (HDD, media/backups)
-- Helper: `u.volume.fromHostPath(name, path)` or `volume.fromHostPath(name, path)` from k8s-libsonnet
+### Almacenamiento
+- Todos los volúmenes usan **hostPath** directamente (sin PV/PVC) — más simple para un homelab NAS de un solo nodo
+- Rutas de datos: `/data/*` (SSD, estado de apps) y `/cold-data/*` (HDD, medios/backups)
+- Helper: `u.volume.fromHostPath(name, path)` o `volume.fromHostPath(name, path)` de k8s-libsonnet
 
-### Secrets (Sealed Secrets)
+### Secretos (Sealed Secrets)
 
-All services use **Bitnami Sealed Secrets**. The controller runs in `kube-system` and decrypts `SealedSecret` resources into regular `Secret` resources in the cluster.
+Todos los servicios usan **Bitnami Sealed Secrets**. El controlador corre en `kube-system` y descifra los recursos `SealedSecret` en recursos `Secret` normales dentro del clúster.
 
-#### Encryption scopes
+#### Ámbitos de cifrado
 
-| Scope | When to use | Encrypt command |
+| Ámbito | Cuándo usarlo | Comando de cifrado |
 |-------|-------------|-----------------|
-| **strict** | Service-specific secrets (API keys, OIDC client secrets) | `echo -n 'value' \| ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>` |
-| **cluster-wide** | Shared secrets (DB passwords, SMTP) reused across namespaces | `echo -n 'value' \| ./scripts/encrypt-secret.sh --cluster-wide` |
+| **strict** | Secretos específicos de un servicio (claves de API, secretos de cliente OIDC) | `echo -n 'value' \| ./scripts/encrypt-secret.sh <namespace> <sealed-secret-name>` |
+| **cluster-wide** | Secretos compartidos (contraseñas de BD, SMTP) reutilizados entre namespaces | `echo -n 'value' \| ./scripts/encrypt-secret.sh --cluster-wide` |
 
-**Important**: You cannot mix strict and cluster-wide encrypted values in the same SealedSecret resource. Use separate resources (e.g. `sealed_secret` + `sealed_secret_shared`).
+**Importante**: No puedes mezclar valores cifrados en ámbito strict y cluster-wide en el mismo recurso SealedSecret. Usa recursos separados (p. ej. `sealed_secret` + `sealed_secret_shared`).
 
-#### Secret file structure
+#### Estructura del archivo de secretos
 
-Encrypted data lives in `<appname>.secrets.json` files alongside each `.libsonnet`:
+Los datos cifrados viven en archivos `<appname>.secrets.json` junto a cada `.libsonnet`:
 ```json
 {
   "serviceName": {
@@ -164,88 +181,92 @@ Encrypted data lives in `<appname>.secrets.json` files alongside each `.libsonne
 }
 ```
 
-#### Utils API
+#### API de Utils
 
-**Strict scope** (service-specific):
-- `u.sealedSecret.forEnv(component, encryptedData)` — SealedSecret with name derived from component
-- `u.sealedSecret.forEnvNamed(name, encryptedData)` — SealedSecret with explicit name
-- `u.sealedSecret.forFile(fileName, encryptedValue)` — SealedSecret for file mount
+**Ámbito strict** (específico de un servicio):
+- `u.sealedSecret.forEnv(component, encryptedData)` — SealedSecret con nombre derivado del componente
+- `u.sealedSecret.forEnvNamed(name, encryptedData)` — SealedSecret con nombre explícito
+- `u.sealedSecret.forFile(fileName, encryptedValue)` — SealedSecret para montar como archivo
 
-**Cluster-wide scope** (shared across namespaces):
+**Ámbito cluster-wide** (compartido entre namespaces):
 - `u.sealedSecret.wide.forEnv(component, encryptedData)`
 - `u.sealedSecret.wide.forEnvNamed(name, encryptedData)`
 - `u.sealedSecret.wide.forFile(fileName, encryptedValue)`
 
-**Referencing secrets**:
-- `u.envVars.fromSealedSecret(sealedSecret)` — generates env var references
-- `u.volumeMount.fromSealedSecretFile(sealedSecret, path)` — mount a file from SealedSecret
-- `u.volume.fromSealedSecret(sealedSecret)` — volume referencing the decrypted Secret
+**Referenciar secretos**:
+- `u.envVars.fromSealedSecret(sealedSecret)` — genera referencias de variables de entorno
+- `u.volumeMount.fromSealedSecretFile(sealedSecret, path)` — monta un archivo desde un SealedSecret
+- `u.volume.fromSealedSecret(sealedSecret)` — volumen que referencia el Secret descifrado
 
-#### Pattern: Config with embedded secrets (jq merge)
+#### Patrón: Config con secretos embebidos (merge con jq)
 
-For apps that need a config file mixing public config + secrets (e.g. invidious, immich):
+Para apps que necesitan un archivo de configuración que mezcla config pública + secretos (p. ej. invidious, immich):
 
-1. **ConfigMap** with public config (visible in git)
-2. **SealedSecret** with only the secret fields as a JSON file
-3. **Init container** with `jq` that deep-merges both: `jq -s '.[0] * .[1]' public.json secret.json > merged.json`
-4. **Main container** reads the merged result
+1. **ConfigMap** con la config pública (visible en git)
+2. **SealedSecret** con solo los campos secretos como archivo JSON
+3. **Init container** con `jq` que hace un deep-merge de ambos: `jq -s '.[0] * .[1]' public.json secret.json > merged.json`
+4. **Contenedor principal** lee el resultado fusionado
 
 ```jsonnet
 invidiousConfigPublic: u.configMap.forFile('invidious-config.json', std.manifestJsonEx(config, '  ')),
 invidiousConfigSecret: u.sealedSecret.wide.forFile('invidious-config-secret.json', secrets.configSecretFile),
-// init container merges both, main container reads via env var or file mount
+// el init container fusiona ambos, el contenedor principal lee vía variable de entorno o montaje de archivo
 ```
 
 ### ArgoCD
 
-ArgoCD manages all deployments via GitOps. It lives in `environments/argocd/` with namespace `argocd`.
+ArgoCD gestiona todos los despliegues vía GitOps. Vive en `environments/argocd/` con namespace `argocd`.
 
-#### Architecture
-- **CI** exports manifests to `manifests` branch on push to main
-- **ArgoCD** reads YAMLs from `manifests` branch (no plugins/sidecars)
-- **Webhook** notifies ArgoCD on push for instant detection (no polling)
-- **Manual sync** — ArgoCD detects drift but does NOT auto-apply
+#### Arquitectura
+- **CI** exporta los manifiestos a la rama `manifests` en cada push a main
+- **ArgoCD** lee los YAMLs desde la rama `manifests` (sin plugins/sidecars)
+- **Webhook** notifica a ArgoCD en cada push para detección instantánea (sin polling)
+- **Sincronización manual** — ArgoCD detecta el drift pero NO lo aplica automáticamente
 
-#### Config changes auto-restart pods (Reloader) — do NOT `kubectl rollout restart` manually
+#### Los cambios de config reinician los pods automáticamente (Reloader) — NO hagas `kubectl rollout restart` a mano
 
-**Stakater Reloader is installed cluster-wide and handles this for you. Never manually restart a pod just to pick up a ConfigMap/Secret change.**
+**Stakater Reloader está instalado a nivel de clúster y se encarga de esto por ti. Nunca reinicies un pod manualmente solo para recoger un cambio de ConfigMap/Secret.**
 
-`u.labelApp()` (via `u.Environment`, in `lib/utils/core.libsonnet`) automatically stamps every Deployment/StatefulSet/DaemonSet with the annotation `reloader.stakater.com/auto: "true"`. Reloader watches the ConfigMaps/Secrets each workload references and **rolls the pod automatically (within a few seconds) whenever their content changes** — including envsubst-rendered config templates like `synapse-homeserver-tpl`.
+`u.labelApp()` (vía `u.Environment`, en `lib/utils/core.libsonnet`) estampa automáticamente cada Deployment/StatefulSet/DaemonSet con la anotación `reloader.stakater.com/auto: "true"`. Reloader vigila los ConfigMaps/Secrets que cada workload referencia y **reinicia el pod automáticamente (en unos segundos) cada vez que su contenido cambia** — incluyendo plantillas de config renderizadas con envsubst como `synapse-homeserver-tpl`.
 
-Consequence for the deploy flow: a ConfigMap/Secret-only change (no Deployment spec change) still rolls the pod on its own. After `/deploy`, just wait for ArgoCD to sync the new ConfigMap; Reloader restarts the workload. Confirm via Reloader's logs (`{namespace="kube-system", pod=~"reloader.*"}` in Loki — look for "Changes detected in '<configmap>' ... updated '<workload>'") instead of restarting by hand.
+Consecuencia para el flujo de despliegue: un cambio que solo afecta a un ConfigMap/Secret (sin cambio en el spec del Deployment) reinicia el pod por sí solo. Tras `/deploy`, basta con esperar a que ArgoCD sincronice el nuevo ConfigMap; Reloader reinicia el workload. Confirma vía los logs de Reloader (`{namespace="kube-system", pod=~"reloader.*"}` en Loki — busca "Changes detected in '<configmap>' ... updated '<workload>'") en lugar de reiniciar a mano.
 
 #### Applications
-One Application per service (not per namespace). Generated dynamically in `argocd/main.jsonnet` by importing all other environments and extracting `app` labels from resources. When adding a new service, just add it to the environment's `main.jsonnet` with `u.labelApp()` and ArgoCD picks it up automatically.
+Una Application por servicio (no por namespace). Se generan dinámicamente en `argocd/main.jsonnet` importando todos los demás entornos y extrayendo las etiquetas `app` de los recursos. Al añadir un nuevo servicio, basta con añadirlo al `main.jsonnet` del entorno con `u.labelApp()` y ArgoCD lo recoge automáticamente.
 
 #### OIDC
-ArgoCD uses Authelia for SSO. Client IDs and secret are stored in SealedSecret `argocd-oidc-secret` and referenced from `argocd-cm` via `$argocd-oidc-secret:key-name` syntax. The `argocd-secret` (with `server.secretkey` and `webhook.github.secret`) is also a SealedSecret — the Helm chart's `createSecret` is disabled.
+ArgoCD usa Authelia para SSO. Los client IDs y el secret se almacenan en el SealedSecret `argocd-oidc-secret` y se referencian desde `argocd-cm` con la sintaxis `$argocd-oidc-secret:key-name`. El `argocd-secret` (con `server.secretkey` y `webhook.github.secret`) también es un SealedSecret — el `createSecret` del Helm chart está deshabilitado.
 
-#### CRITICAL: Deleting ArgoCD Applications
+#### CRÍTICO: Eliminar Applications de ArgoCD
 
-**NEVER use `argocd app delete <name>` without `--cascade=false`**. By default, deleting an Application also deletes ALL cluster resources it manages (prune). This will take down services.
+**NUNCA uses `argocd app delete <name>` sin `--cascade=false`**. Por defecto, eliminar una Application también elimina TODOS los recursos del clúster que gestiona (prune). Esto tirará servicios.
 
 ```bash
-# WRONG — deletes all resources managed by the app from the cluster:
+# MAL — elimina del clúster todos los recursos gestionados por la app:
 argocd app delete myapp -y
 
-# CORRECT — only removes the Application resource, keeps cluster resources:
+# BIEN — solo elimina el recurso Application, mantiene los recursos del clúster:
 argocd app delete myapp --cascade=false
 ```
 
 #### Server-Side Apply
-The `argocd` Application uses `syncOptions: [ServerSideApply=true]` because the `applicationsets` CRD exceeds the 262KB annotation limit for client-side apply.
+La Application `argocd` usa `syncOptions: [ServerSideApply=true]` porque el CRD `applicationsets` supera el límite de 262KB de anotación para el apply del lado cliente.
 
-## Project Management
+## Preguntas y decisiones
 
-All work is tracked in **Backlog.md** via the backlog MCP server. Use the backlog MCP tools to read, create, edit, and complete tasks.
+Cuando pidas una decisión al usuario y tengas análisis suficiente para inclinar la balanza, **marca la opción que recomiendas con "(Recomendado)" y da el porqué en una frase** — no presentes las opciones de forma totalmente neutral obligando al usuario a reconstruir el trade-off. Reserva la neutralidad para cuando de verdad no haya una recomendación defendible.
 
-### Rules
+## Gestión del proyecto
 
-1. **No work without a ticket.** Always have one or more tasks in `in_progress` that represent the current work. If none exist, find or create the appropriate task before starting.
-2. **Refinement flow.** When asked to refine a task: read it, ask questions to reduce uncertainty, and iterate until the user says OK. Only then add the `refined` tag. Do NOT start implementation during refinement.
-3. **Completion flow.** When a task is done, confirm with the user. Only after explicit approval: mark as `done` and commit.
-4. **Never self-approve.** Do not move tasks to `done` or commit without the user's explicit OK.
+Todo el trabajo se gestiona en **Backlog.md** (archivos de tarea bajo `backlog/tasks/`).
 
-### Backlog MCP: completing tasks
+### Reglas
 
-When finishing a task, only use `task_edit` with `status: "Done"`. Do NOT call `task_complete` — tasks should not be archived.
+1. **NUNCA trabajar sin ticket.** Ten siempre una o más tareas en `in_progress` que representen el trabajo actual. Si no existe ninguna, encuentra o pregunta al usuario para crear la tarea apropiada antes de empezar.
+2. **Creación vs Edición**: Para crear, usamos la skill `create-task`. Para editar, editamos el markdown a mano usando el formato adecuado.
+3. **Flujo de finalización.** Cuando una tarea esté terminada, confírmalo con el usuario. Solo tras su aprobación explícita: establece `status: Done` y commitea.
+4. **Nunca te auto-apruebes.** No muevas tareas a `Done` ni commitees sin el OK explícito del usuario.
+
+### Finalizar tareas (a mano)
+
+Al terminar una tarea, edita su archivo markdown y establece `status: Done` en el frontmatter. NO archives el archivo ni lo muevas fuera de `backlog/tasks/` — las tareas permanecen en su sitio. No uses ninguna herramienta MCP de escritura para esto.
