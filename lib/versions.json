@@ -13,7 +13,7 @@
   },
   "sftpgo": {
     "image": "docker.io/drakkan/sftpgo",
-    "version": "v2.7.3-alpine"
+    "version": "v2.7.4-alpine"
   },
   "authelia": {
     "image": "ghcr.io/authelia/authelia",
