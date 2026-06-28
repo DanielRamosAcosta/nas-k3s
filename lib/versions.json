@@ -157,7 +157,7 @@
   },
   "wger": {
     "image": "docker.io/wger/server",
-    "version": "2.5"
+    "version": "2.6"
   },
   "nginx": {
     "image": "docker.io/nginx",
