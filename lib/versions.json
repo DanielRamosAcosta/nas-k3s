@@ -105,7 +105,7 @@
   },
   "invidious": {
     "image": "quay.io/invidious/invidious",
-    "version": "2.20260207.0"
+    "version": "2.20260626.0"
   },
   "invidiousCompanion": {
     "image": "quay.io/invidious/invidious-companion",
