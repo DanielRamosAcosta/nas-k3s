@@ -286,7 +286,7 @@ spec:
             secretKeyRef:
               key: DJANGO_DB_PASSWORD
               name: wger-shared-sealed-secret
-        image: docker.io/wger/server:2.5
+        image: docker.io/wger/server:2.6
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
