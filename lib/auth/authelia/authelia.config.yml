@@ -84,7 +84,7 @@ identity_providers:
             attribute: sftpgo_role
 
       booklore:
-        id_token: ['email', 'email_verified', 'preferred_username', 'name']
+        id_token: ['email', 'email_verified', 'preferred_username', 'name', 'groups']
 
       argocd:
         id_token: ['email', 'groups']
@@ -205,6 +205,7 @@ identity_providers:
           - offline_access
           - profile
           - email
+          - groups
         response_types:
           - code
         grant_types:
