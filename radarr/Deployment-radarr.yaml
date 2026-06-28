@@ -46,7 +46,7 @@ spec:
             configMapKeyRef:
               key: UMASK
               name: radarr-config-env
-        image: ghcr.io/hotio/radarr:release-6.1.1.10360
+        image: ghcr.io/hotio/radarr:release-6.2.1.10461
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
