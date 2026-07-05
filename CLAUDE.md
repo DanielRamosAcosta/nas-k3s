@@ -91,8 +91,8 @@ tk export dist/ environments/ --recursive --format '{{index .metadata.labels "ap
 # Despliegue (GitOps vía ArgoCD — NUNCA uses tk apply directamente)
 # 1. Commit + push a main
 # 2. CI exporta los manifiestos a la rama 'manifests'
-# 3. ArgoCD detecta los cambios → sincroniza manualmente desde la UI o la CLI
-argocd app sync <app-name> --grpc-web                  # Sincroniza una sola app
+# 3. ArgoCD detecta los cambios (vía webhook) y SINCRONIZA AUTOMÁTICAMENTE — no hace falta acción manual
+argocd app sync <app-name> --grpc-web                  # Solo para forzar una sync inmediata (normalmente innecesario)
 ```
 
 ### Conexión con el clúster (port-forward SSH)
@@ -221,7 +221,7 @@ ArgoCD gestiona todos los despliegues vía GitOps. Vive en `environments/argocd/
 - **CI** exporta los manifiestos a la rama `manifests` en cada push a main
 - **ArgoCD** lee los YAMLs desde la rama `manifests` (sin plugins/sidecars)
 - **Webhook** notifica a ArgoCD en cada push para detección instantánea (sin polling)
-- **Sincronización manual** — ArgoCD detecta el drift pero NO lo aplica automáticamente
+- **Sincronización automática** — todas las Applications tienen `syncPolicy.automated` con `prune: true` y `selfHeal: true`. ArgoCD aplica los cambios de la rama `manifests` por sí solo (en segundos tras el push, vía webhook) y revierte cualquier drift en el clúster. No hace falta `argocd app sync` a mano tras un push a main.
 
 #### Los cambios de config reinician los pods automáticamente (Reloader) — NO hagas `kubectl rollout restart` a mano
 
@@ -229,7 +229,7 @@ ArgoCD gestiona todos los despliegues vía GitOps. Vive en `environments/argocd/
 
 `u.labelApp()` (vía `u.Environment`, en `lib/utils/core.libsonnet`) estampa automáticamente cada Deployment/StatefulSet/DaemonSet con la anotación `reloader.stakater.com/auto: "true"`. Reloader vigila los ConfigMaps/Secrets que cada workload referencia y **reinicia el pod automáticamente (en unos segundos) cada vez que su contenido cambia** — incluyendo plantillas de config renderizadas con envsubst como `synapse-homeserver-tpl`.
 
-Consecuencia para el flujo de despliegue: un cambio que solo afecta a un ConfigMap/Secret (sin cambio en el spec del Deployment) reinicia el pod por sí solo. Tras `/deploy`, basta con esperar a que ArgoCD sincronice el nuevo ConfigMap; Reloader reinicia el workload. Confirma vía los logs de Reloader (`{namespace="kube-system", pod=~"reloader.*"}` en Loki — busca "Changes detected in '<configmap>' ... updated '<workload>'") en lugar de reiniciar a mano.
+Consecuencia para el flujo de despliegue: un cambio que solo afecta a un ConfigMap/Secret (sin cambio en el spec del Deployment) reinicia el pod por sí solo. Tras `/deploy`, ArgoCD sincroniza el nuevo ConfigMap automáticamente y Reloader reinicia el workload — todo sin intervención manual. Confirma vía los logs de Reloader (`{namespace="kube-system", pod=~"reloader.*"}` en Loki — busca "Changes detected in '<configmap>' ... updated '<workload>'") en lugar de reiniciar a mano.
 
 #### Applications
 Una Application por servicio (no por namespace). Se generan dinámicamente en `argocd/main.jsonnet` importando todos los demás entornos y extrayendo las etiquetas `app` de los recursos. Al añadir un nuevo servicio, basta con añadirlo al `main.jsonnet` del entorno con `u.labelApp()` y ArgoCD lo recoge automáticamente.
