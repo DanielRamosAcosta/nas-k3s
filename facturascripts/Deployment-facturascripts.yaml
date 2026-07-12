@@ -47,7 +47,7 @@ spec:
             configMapKeyRef:
               key: TZ
               name: facturascripts-config-env
-        image: docker.io/facturascripts/facturascripts:2025.81
+        image: docker.io/facturascripts/facturascripts:2026.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
