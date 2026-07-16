@@ -19,6 +19,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local backupConfigContent = importstr './postgres.config.conf',
   local backupScript = importstr './postgres.backup.sh',
   local cleanupScript = importstr './postgres.cleanup.sh',
+  local dumpScript = importstr './postgres.dump.sh',
   local pgHbaContent = importstr './postgres.hba.conf',
 
   new():: {
@@ -71,6 +72,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     // Backup scripts ConfigMaps
     backupScriptConfigMap: u.configMap.forFile('postgres.backup.sh', backupScript),
     cleanupScriptConfigMap: u.configMap.forFile('postgres.cleanup.sh', cleanupScript),
+    dumpScriptConfigMap: u.configMap.forFile('postgres.dump.sh', dumpScript),
 
     // PostgreSQL configuration
     backupConfig: u.configMap.forFile('postgresql.auto.conf', backupConfigContent),
@@ -105,6 +107,31 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                       volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
                       u.volume.fromConfigMap(self.backupScriptConfigMap),
                     ]),
+
+    // Logical Dump CronJob - runs daily at 1 AM (pg_dump per-DB, SQL + gzip)
+    logicalDumpCron: cronJob.new(
+                       name='postgres-logical-dump',
+                       schedule='0 1 * * *',
+                       containers=[
+                         container.new('dump', u.image(versions.postgres.image, versions.postgres.version)) +
+                         container.withCommand(['/bin/bash', '/mnt/scripts/postgres.dump.sh']) +
+                         container.withEnv(
+                           u.envVars.fromSealedSecret(self.backupSecrets)
+                         ) +
+                         container.withVolumeMounts([
+                           volumeMount.new('backup-storage', '/backups'),
+                           u.volumeMount.fromFile(self.dumpScriptConfigMap, '/mnt/scripts'),
+                         ]),
+                       ]
+                     ) +
+                     cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
+                     cronJob.spec.withConcurrencyPolicy('Forbid') +
+                     cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
+                     cronJob.spec.withFailedJobsHistoryLimit(3) +
+                     cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
+                       volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
+                       u.volume.fromConfigMap(self.dumpScriptConfigMap),
+                     ]),
 
     // Cleanup CronJob - runs daily at 3 AM (after backup)
     cleanupCron: cronJob.new(
