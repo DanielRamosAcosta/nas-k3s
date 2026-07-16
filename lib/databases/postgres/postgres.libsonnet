@@ -20,6 +20,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local backupScript = importstr './postgres.backup.sh',
   local cleanupScript = importstr './postgres.cleanup.sh',
   local dumpScript = importstr './postgres.dump.sh',
+  local pruneScript = importstr './postgres.dump-prune.sh',
   local pgHbaContent = importstr './postgres.hba.conf',
 
   new():: {
@@ -73,6 +74,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     backupScriptConfigMap: u.configMap.forFile('postgres.backup.sh', backupScript),
     cleanupScriptConfigMap: u.configMap.forFile('postgres.cleanup.sh', cleanupScript),
     dumpScriptConfigMap: u.configMap.forFile('postgres.dump.sh', dumpScript),
+    pruneScriptConfigMap: u.configMap.forFile('postgres.dump-prune.sh', pruneScript),
 
     // PostgreSQL configuration
     backupConfig: u.configMap.forFile('postgresql.auto.conf', backupConfigContent),
@@ -132,6 +134,28 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                        volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
                        u.volume.fromConfigMap(self.dumpScriptConfigMap),
                      ]),
+
+    // Logical Prune CronJob - runs daily at 4 AM (GFS retention over logical dumps)
+    logicalPruneCron: cronJob.new(
+                        name='postgres-logical-prune',
+                        schedule='0 4 * * *',
+                        containers=[
+                          container.new('prune', u.image(versions.postgres.image, versions.postgres.version)) +
+                          container.withCommand(['/bin/bash', '/mnt/scripts/postgres.dump-prune.sh']) +
+                          container.withVolumeMounts([
+                            volumeMount.new('backup-storage', '/backups'),
+                            u.volumeMount.fromFile(self.pruneScriptConfigMap, '/mnt/scripts'),
+                          ]),
+                        ]
+                      ) +
+                      cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('OnFailure') +
+                      cronJob.spec.withConcurrencyPolicy('Forbid') +
+                      cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
+                      cronJob.spec.withFailedJobsHistoryLimit(3) +
+                      cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
+                        volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
+                        u.volume.fromConfigMap(self.pruneScriptConfigMap),
+                      ]),
 
     // Cleanup CronJob - runs daily at 3 AM (after backup)
     cleanupCron: cronJob.new(
