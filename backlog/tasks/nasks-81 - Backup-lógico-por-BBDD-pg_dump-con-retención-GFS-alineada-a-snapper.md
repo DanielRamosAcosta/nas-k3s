@@ -81,10 +81,10 @@ Referencias de archivos (estado actual):
 - [x] #2 Existe un CronJob postgres-logical-prune con retencion GFS 7 diarios / 4 semanales / 6 mensuales / 0 anuales, aplicada por BBDD, con los tiers en una variable configurable del script
 - [x] #3 El basebackup+WAL existente (postgres-base-backup, postgres-backup-cleanup, WAL archiving) no se modifica y sigue operativo
 - [x] #4 Ningun secreto pasa por el contexto; se reutiliza el sealed secret de backup existente (postgres-backup-sealed-secret)
-- [ ] #5 Restore invocable con kubectl puro (sin scripts locales): CronJob suspendido postgres-restore + script postgres.restore.sh (ConfigMap), disparado con `kubectl create job restore-<db>-<latest|YYYYMMDD> --from=cronjob/postgres-restore` (params tomados del nombre del Job). Hace pre-restore dump de seguridad, restaura (gunzip | sed(search_path) | psql --single-transaction --set ON_ERROR_STOP=on) y REINDEX face_index/clip_index solo si immich; guardrail que aborta si la app sigue conectada salvo FORCE
+- [x] #5 Restore invocable con kubectl puro (sin scripts locales): CronJob suspendido postgres-restore + script postgres.restore.sh (ConfigMap), disparado con `kubectl create job restore-<db>-<latest|YYYYMMDD> --from=cronjob/postgres-restore` (params tomados del nombre del Job). Hace pre-restore dump de seguridad, restaura (gunzip | sed(search_path) | psql --single-transaction --set ON_ERROR_STOP=on) y REINDEX face_index/clip_index solo si immich; guardrail que aborta si la app sigue conectada salvo FORCE
 - [x] #6 Al anadir una BBDD nueva al cluster entra en el backup automaticamente sin editar el script de dump
-- [ ] #7 El runbook cubre el caveat de colacion: la alternativa slate-limpio NO usa un CREATE DATABASE a secas (rompe Synapse, que exige LC_COLLATE C) sino que relanza el Job postgres-create-user-<app>; y se valida un restore de un servicio no-immich ademas del de immich
-- [ ] #8 En backlog/docs existen dos docs: crear backup ad-hoc (kubectl create job --from=cronjob/postgres-logical-dump) y restaurar desde backup (runbook dinamico por etiqueta app=<db>); y dos skills thin-pointer (postgres/create-backup y postgres/restore-backup) que remiten a cada doc
+- [x] #7 El runbook cubre el caveat de colacion: la alternativa slate-limpio NO usa un CREATE DATABASE a secas (rompe Synapse, que exige LC_COLLATE C) sino que relanza el Job postgres-create-user-<app>; y se valida un restore de un servicio no-immich ademas del de immich
+- [x] #8 En backlog/docs existen dos docs: crear backup ad-hoc (kubectl create job --from=cronjob/postgres-logical-dump) y restaurar desde backup (runbook dinamico por etiqueta app=<db>); y dos skills thin-pointer (postgres/create-backup y postgres/restore-backup) que remiten a cada doc
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -180,3 +180,19 @@ Toda la documentación de uso y las skills. Docs en `backlog/docs` (vía MCP `mc
 - Marcar los AC conforme se cumplen. Confirmar con el usuario antes de `Done`.
 - Alcance EXCLUIDO (no tocar): `postgres.backup.sh`, `postgres.cleanup.sh`, `postgres.config.conf` (WAL), config de snapper, backup off-site.
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Implementado en 4 fases, cada una desplegada vía `/deploy` (PR + squash merge + ArgoCD) y verificada contra el clúster real.
+
+**Fase 1 — dump** (`postgres.dump.sh` + CronJob `postgres-logical-dump`, PR #138). Escribe a `.tmp`+`mv` para atomicidad. Checkpoint: disparo manual descubrió **11 BBDD dinámicamente** (incluida `piped`, no listada en la tarea → valida el descubrimiento), todas dumpeadas sin error (immich 885M), `gunzip -t` del dump de immich OK.
+
+**Fase 2 — prune GFS** (`postgres.dump-prune.sh` + CronJob `postgres-logical-prune`, PR #139). Algoritmo por conteo estilo restic/borg, fecha derivada del nombre. Se cazó un bug de bash: un array asociativo **vacío** cuenta como "unset" bajo `set -u` (rompe con `${#arr[@]}`) → reescrito con conjuntos-string + contadores enteros. Verificado local (shim de `date` vía python) e in-cluster con GNU date real sobre `_gfstest` sintético (~8 meses): 13 supervivientes, desempate mismo-día correcto, semanas ISO correctas. No-op contra los dumps reales confirmado (11× KEEP, 0 DELETE).
+
+**Fase 3 — restore** (`postgres.restore.sh` + CronJob **suspendido** `postgres-restore`, PR #140). Parámetros desde el nombre del pod (downward API `POD_NAME`) o env. Verificado con un Job autocontenido: (1) immich→temp con REINDEX face_index/clip_index OK; (2) authelia (no-immich)→temp SIN FORCE procede (guardrail caso ii), vía genérica sin REINDEX; (3) guardrail caso i: conexión activa → aborta. Colación de las temp = `C`. Nota: immich v3 usa tablas en singular en `public` (`asset`, no `assets`).
+
+**Fase 4 — docs + skills**. Docs `doc-6` (crear backup ad-hoc) y `doc-7` (restaurar, runbook completo con alternativa slate-limpio y caveat colación C) en `backlog/docs`. Skills thin-pointer `postgres-create-backup` y `postgres-restore-backup` (nombres con guion — el discovery de este repo es plano, no anidado con `/`).
+
+Alcance EXCLUIDO respetado: `postgres.backup.sh`, `postgres.cleanup.sh`, `postgres.config.conf` (WAL) y snapper sin tocar; basebackup+cleanup crons intactos (122d).
+<!-- SECTION:NOTES:END -->
