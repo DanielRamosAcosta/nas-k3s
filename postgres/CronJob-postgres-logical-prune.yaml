@@ -1,0 +1,40 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: postgres
+  name: postgres-logical-prune
+  namespace: databases
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: postgres-logical-prune
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - /mnt/scripts/postgres.dump-prune.sh
+            image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0
+            imagePullPolicy: IfNotPresent
+            name: prune
+            volumeMounts:
+            - mountPath: /backups
+              name: backup-storage
+            - mountPath: /mnt/scripts/postgres.dump-prune.sh
+              name: postgres-dump-prune-sh
+              subPath: postgres.dump-prune.sh
+          restartPolicy: OnFailure
+          volumes:
+          - hostPath:
+              path: /cold-data/postgres-backups
+            name: backup-storage
+          - configMap:
+              name: postgres-dump-prune-sh
+            name: postgres-dump-prune-sh
+  schedule: 0 4 * * *
+  successfulJobsHistoryLimit: 3

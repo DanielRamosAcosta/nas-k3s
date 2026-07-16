@@ -1,0 +1,107 @@
+apiVersion: v1
+data:
+  postgres.dump-prune.sh: |
+    #!/bin/bash
+    set -euo pipefail
+    shopt -s nullglob
+
+    # Pruner GFS por conteo, por BBDD (estilo restic/borg forget). Conserva el dump
+    # más reciente de cada ciclo hasta el límite de su tier; un dump se conserva si
+    # entra en al menos un tier. La fecha se deriva SIEMPRE del nombre del fichero
+    # (-YYYYMMDD-HHMMSS), nunca del mtime.
+
+    # Tiers configurables. Alineados con la retención de snapper (~6 meses).
+    KEEP_DAILY=7
+    KEEP_WEEKLY=4
+    KEEP_MONTHLY=6
+    KEEP_YEARLY=0
+
+    # Overrideable por env var para apuntar a una carpeta de prueba sin tocar los
+    # dumps reales (ver checkpoint de la fase).
+    LOGICAL_DIR="${LOGICAL_DIR:-/backups/logical}"
+
+    echo "==> Prune GFS: daily=$KEEP_DAILY weekly=$KEEP_WEEKLY monthly=$KEEP_MONTHLY yearly=$KEEP_YEARLY"
+    echo "==> LOGICAL_DIR=$LOGICAL_DIR"
+
+    prune_db() {
+      local dbdir="$1"
+      local db
+      db=$(basename "$dbdir")
+
+      # Invariante de carpetas: ignorar las que empiezan por '_' (reservadas:
+      # _pre-restore, _gfstest). Listar SOLO el primer nivel $db/*.sql.gz (glob de
+      # shell, sin recursión) → nunca toca los dumps de seguridad pre-restore.
+      local files=("$dbdir"*.sql.gz)
+      if [[ ${#files[@]} -eq 0 ]]; then
+        echo "==> [$db] sin dumps, nada que podar"
+        return
+      fi
+
+      # Ordenar por nombre descendente (timestamp zero-padded → orden lexicográfico
+      # = cronológico) para recorrer de más nuevo a más viejo.
+      local sorted
+      sorted=$(printf '%s\n' "${files[@]}" | sort -r)
+
+      echo "==> [$db] evaluando ${#files[@]} dump(s)"
+
+      # Conjuntos de buckets ya cubiertos (string con separadores de espacio) +
+      # contadores. Se evitan arrays asociativos: uno vacío cuenta como "unset" bajo
+      # `set -u` y rompería con ${#arr[@]}.
+      local daily_keys="" weekly_keys="" monthly_keys="" yearly_keys=""
+      local daily_n=0 weekly_n=0 monthly_n=0 yearly_n=0
+
+      while IFS= read -r f; do
+        local base ymd Y M D
+        base=$(basename "$f")
+        # Extraer el patrón -YYYYMMDD-HHMMSS del nombre.
+        if [[ ! "$base" =~ -([0-9]{8})-([0-9]{6})\.sql\.gz$ ]]; then
+          echo "    SKIP  $base (nombre sin fecha reconocible)"
+          continue
+        fi
+        ymd="${BASH_REMATCH[1]}"
+        Y="${ymd:0:4}"; M="${ymd:4:2}"; D="${ymd:6:2}"
+
+        local dkey wkey mkey ykey reason=""
+        dkey="$ymd"
+        wkey=$(date -d "$Y-$M-$D" +%G-%V)
+        mkey="$Y$M"
+        ykey="$Y"
+
+        if [[ $KEEP_DAILY -gt 0 && $daily_n -lt $KEEP_DAILY && " $daily_keys " != *" $dkey "* ]]; then
+          daily_keys+=" $dkey"; daily_n=$((daily_n + 1)); reason+="daily "
+        fi
+        if [[ $KEEP_WEEKLY -gt 0 && $weekly_n -lt $KEEP_WEEKLY && " $weekly_keys " != *" $wkey "* ]]; then
+          weekly_keys+=" $wkey"; weekly_n=$((weekly_n + 1)); reason+="weekly "
+        fi
+        if [[ $KEEP_MONTHLY -gt 0 && $monthly_n -lt $KEEP_MONTHLY && " $monthly_keys " != *" $mkey "* ]]; then
+          monthly_keys+=" $mkey"; monthly_n=$((monthly_n + 1)); reason+="monthly "
+        fi
+        if [[ $KEEP_YEARLY -gt 0 && $yearly_n -lt $KEEP_YEARLY && " $yearly_keys " != *" $ykey "* ]]; then
+          yearly_keys+=" $ykey"; yearly_n=$((yearly_n + 1)); reason+="yearly "
+        fi
+
+        if [[ -n "$reason" ]]; then
+          echo "    KEEP   $base [${reason% }]"
+        else
+          echo "    DELETE $base"
+          rm -f "$f"
+        fi
+      done <<< "$sorted"
+    }
+
+    for dbdir in "$LOGICAL_DIR"/*/; do
+      db=$(basename "$dbdir")
+      if [[ "$db" == _* ]]; then
+        echo "==> saltando carpeta reservada: $db"
+        continue
+      fi
+      prune_db "$dbdir"
+    done
+
+    echo "==> Prune GFS completado"
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres
+  name: postgres-dump-prune-sh
+  namespace: databases
