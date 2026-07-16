@@ -1,9 +1,10 @@
 ---
 id: NASKS-79
 title: Migrar BookLore a Grimmory (fork comunitario)
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2026-07-10 20:43'
+updated_date: '2026-07-16 18:13'
 labels:
   - media
   - migration
@@ -13,7 +14,7 @@ references:
   - 'https://github.com/orgs/grimmory-tools/discussions/120'
   - 'https://github.com/grimmory-tools/grimmory/blob/develop/README.md'
 priority: medium
-ordinal: 75000
+ordinal: 1000
 ---
 
 ## Description
