@@ -1,0 +1,37 @@
+#!/bin/bash
+set -euo pipefail
+
+# Backup lógico por BBDD (pg_dump SQL plano + gzip). Complementa al pg_basebackup
+# físico: permite restaurar UNA sola BBDD sin tocar el resto del clúster.
+# PGPASSWORD llega por el entorno (sealed secret postgres-backup-sealed-secret).
+
+PGHOST="${PGHOST:-postgres.databases.svc.cluster.local}"
+PGPORT="${PGPORT:-5432}"
+LOGICAL_DIR="${LOGICAL_DIR:-/backups/logical}"
+
+# Descubrimiento dinámico: cualquier BBDD nueva del clúster entra sola, sin editar
+# el script. Se excluyen templates y la BBDD administrativa 'postgres'.
+DBS=$(psql -h "$PGHOST" -p "$PGPORT" -U postgres -Atc \
+  "SELECT datname FROM pg_database WHERE NOT datistemplate AND datname NOT IN ('postgres')")
+
+echo "==> BBDD a respaldar:"
+echo "$DBS" | sed 's/^/    - /'
+
+for db in $DBS; do
+  dir="$LOGICAL_DIR/$db"
+  ts=$(date +%Y%m%d-%H%M%S)
+  final="$dir/$db-$ts.sql.gz"
+  tmp="$final.tmp"
+
+  mkdir -p "$dir"
+  echo "==> [$db] dump -> $final"
+
+  # Escribir a .tmp y mover al final para atomicidad: con pipefail, un fallo de
+  # pg_dump aborta el script (set -e) y nunca deja un .sql.gz "válido" a medias.
+  pg_dump -h "$PGHOST" -p "$PGPORT" -U postgres --clean --if-exists --dbname "$db" | gzip > "$tmp"
+  mv "$tmp" "$final"
+
+  echo "==> [$db] listo ($(du -h "$final" | cut -f1))"
+done
+
+echo "==> Dump lógico completado para todas las BBDD"
