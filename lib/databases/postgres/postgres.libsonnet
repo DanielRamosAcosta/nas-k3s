@@ -21,6 +21,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local cleanupScript = importstr './postgres.cleanup.sh',
   local dumpScript = importstr './postgres.dump.sh',
   local pruneScript = importstr './postgres.dump-prune.sh',
+  local restoreScript = importstr './postgres.restore.sh',
   local pgHbaContent = importstr './postgres.hba.conf',
 
   new():: {
@@ -75,6 +76,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     cleanupScriptConfigMap: u.configMap.forFile('postgres.cleanup.sh', cleanupScript),
     dumpScriptConfigMap: u.configMap.forFile('postgres.dump.sh', dumpScript),
     pruneScriptConfigMap: u.configMap.forFile('postgres.dump-prune.sh', pruneScript),
+    restoreScriptConfigMap: u.configMap.forFile('postgres.restore.sh', restoreScript),
 
     // PostgreSQL configuration
     backupConfig: u.configMap.forFile('postgresql.auto.conf', backupConfigContent),
@@ -156,6 +158,34 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                         volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
                         u.volume.fromConfigMap(self.pruneScriptConfigMap),
                       ]),
+
+    // Restore CronJob - SUSPENDED (molde reutilizable, nunca se ejecuta solo).
+    // Se dispara a mano: kubectl -n databases create job restore-<db>-<latest|YYYYMMDD> --from=cronjob/postgres-restore
+    restoreCron: cronJob.new(
+                   name='postgres-restore',
+                   schedule='0 0 31 2 *',  // 31-feb: fecha imposible (belt-and-suspenders sobre suspend)
+                   containers=[
+                     container.new('restore', u.image(versions.postgres.image, versions.postgres.version)) +
+                     container.withCommand(['/bin/bash', '/mnt/scripts/postgres.restore.sh']) +
+                     container.withEnv(
+                       u.envVars.fromSealedSecret(self.backupSecrets) +
+                       [{ name: 'POD_NAME', valueFrom: { fieldRef: { fieldPath: 'metadata.name' } } }]
+                     ) +
+                     container.withVolumeMounts([
+                       volumeMount.new('backup-storage', '/backups'),
+                       u.volumeMount.fromFile(self.restoreScriptConfigMap, '/mnt/scripts'),
+                     ]),
+                   ]
+                 ) +
+                 cronJob.spec.withSuspend(true) +
+                 cronJob.spec.jobTemplate.spec.template.spec.withRestartPolicy('Never') +
+                 cronJob.spec.withConcurrencyPolicy('Forbid') +
+                 cronJob.spec.withSuccessfulJobsHistoryLimit(3) +
+                 cronJob.spec.withFailedJobsHistoryLimit(3) +
+                 cronJob.spec.jobTemplate.spec.template.spec.withVolumes([
+                   volume.fromHostPath('backup-storage', '/cold-data/postgres-backups'),
+                   u.volume.fromConfigMap(self.restoreScriptConfigMap),
+                 ]),
 
     // Cleanup CronJob - runs daily at 3 AM (after backup)
     cleanupCron: cronJob.new(

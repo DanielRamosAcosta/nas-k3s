@@ -1,0 +1,85 @@
+#!/bin/bash
+set -euo pipefail
+
+# Restore de un dump lógico SOBRE una BBDD existente. Se dispara con:
+#   kubectl -n databases create job restore-<db>-<latest|YYYYMMDD> --from=cronjob/postgres-restore
+# Los parámetros se derivan del NOMBRE del pod (downward API POD_NAME), o se
+# fuerzan por env var (prioridad sobre el nombre, para pruebas).
+#
+# Restaura SOBRE la BBDD existente a propósito: un pg_dump por-BBDD NO incluye
+# roles/globals ni las propiedades a nivel de BBDD (colación C, template, ACLs
+# de create-user.sh), así que se asume que la BBDD y su role ya existen con la
+# colación/permisos correctos. PGPASSWORD llega por el sealed secret de backup.
+
+PGHOST="${PGHOST:-postgres.databases.svc.cluster.local}"
+PGPORT="${PGPORT:-5432}"
+LOGICAL_DIR="${LOGICAL_DIR:-/backups/logical}"
+
+# --- Resolución de parámetros (env > nombre del pod) ---
+# El pod es restore-<db>-<selector>[-<hash>]. Los nombres de BBDD son un solo
+# token sin guiones y el selector (latest|YYYYMMDD) tampoco lleva guiones, así
+# que el hash final del pod cae en el campo descartado.
+if [[ -z "${TARGET_DB:-}" || -z "${DUMP_SEL:-}" ]]; then
+  : "${POD_NAME:?POD_NAME requerido (downward API) cuando no se pasa TARGET_DB/DUMP_SEL por env}"
+  IFS=- read -r _prefix parsed_db parsed_sel _rest <<< "$POD_NAME"
+  TARGET_DB="${TARGET_DB:-$parsed_db}"
+  DUMP_SEL="${DUMP_SEL:-$parsed_sel}"
+fi
+SOURCE_DB="${SOURCE_DB:-$TARGET_DB}"
+DUMP_SEL="${DUMP_SEL:-latest}"
+
+: "${TARGET_DB:?No se pudo determinar TARGET_DB (ni por env ni del nombre del pod)}"
+
+echo "==> Restore: TARGET_DB=$TARGET_DB SOURCE_DB=$SOURCE_DB DUMP_SEL=$DUMP_SEL"
+
+PSQL=(psql -h "$PGHOST" -p "$PGPORT" -U postgres)
+
+# --- Guardrail: abortar si hay conexiones externas al TARGET_DB (antes del
+# pre-restore dump). No se cuenta a sí mismo (pid <> pg_backend_pid) y solo
+# mira client backends (las apps dejan application_name vacío). FORCE=yes salta.
+CONNS=$("${PSQL[@]}" -Atc \
+  "SELECT count(*) FROM pg_stat_activity WHERE datname='$TARGET_DB' AND pid <> pg_backend_pid() AND backend_type = 'client backend'")
+echo "==> Conexiones externas a $TARGET_DB: $CONNS"
+if [[ "$CONNS" -gt 0 && "${FORCE:-no}" != "yes" ]]; then
+  echo "!!! ABORTA: $TARGET_DB tiene $CONNS conexiones activas. Para la app (scale --replicas=0) o usa FORCE=yes." >&2
+  exit 1
+fi
+
+# --- Localizar el dump de origen ---
+if [[ "$DUMP_SEL" == "latest" ]]; then
+  DUMP_FILE=$(ls -1 "$LOGICAL_DIR/$SOURCE_DB"/*.sql.gz 2>/dev/null | sort | tail -1 || true)
+else
+  DUMP_FILE=$(ls -1 "$LOGICAL_DIR/$SOURCE_DB"/*-"$DUMP_SEL"-*.sql.gz 2>/dev/null | sort | tail -1 || true)
+fi
+: "${DUMP_FILE:?No hay dump para $SOURCE_DB con selector '$DUMP_SEL' en $LOGICAL_DIR/$SOURCE_DB}"
+echo "==> Dump de origen: $DUMP_FILE ($(du -h "$DUMP_FILE" | cut -f1))"
+
+# --- (a) Dump de seguridad pre-restore (undo). _pre-restore/ está excluida del
+# pruner GFS → no se poda sola (limpieza manual documentada). ---
+PRE_DIR="$LOGICAL_DIR/$TARGET_DB/_pre-restore"
+mkdir -p "$PRE_DIR"
+PRE_FILE="$PRE_DIR/$TARGET_DB-$(date +%Y%m%d-%H%M%S).sql.gz"
+echo "==> Pre-restore dump de $TARGET_DB -> $PRE_FILE"
+pg_dump -h "$PGHOST" -p "$PGPORT" -U postgres --clean --if-exists --dbname "$TARGET_DB" | gzip > "$PRE_FILE.tmp"
+mv "$PRE_FILE.tmp" "$PRE_FILE"
+echo "==> Pre-restore dump listo ($(du -h "$PRE_FILE" | cut -f1))"
+
+# --- (b) Restore atómico. El sed reescribe el search_path vacío que pg_dump
+# emite al principio del dump por 'public, pg_catalog': sin él, las funciones de
+# las extensiones (vchord/vector) no se resuelven durante el restore. Es el fix
+# oficial de immich y aplica a todas las BBDD (todas llevan esas extensiones).
+# --single-transaction + ON_ERROR_STOP=on → todo o nada (rollback si falla). ---
+SEARCH_PATH_SED="s/SELECT pg_catalog.set_config('search_path', '', false);/SELECT pg_catalog.set_config('search_path', 'public, pg_catalog', true);/g"
+echo "==> Restaurando $DUMP_FILE sobre $TARGET_DB (single-transaction)..."
+gunzip -c "$DUMP_FILE" | sed "$SEARCH_PATH_SED" | "${PSQL[@]}" -d "$TARGET_DB" --single-transaction --set ON_ERROR_STOP=on
+echo "==> Restore aplicado sin errores"
+
+# --- (c) REINDEX de los índices vchord solo para immich (el restore no los deja
+# necesariamente utilizables sin reconstruir). ---
+if [[ "$SOURCE_DB" == "immich" ]]; then
+  echo "==> immich: REINDEX face_index / clip_index"
+  "${PSQL[@]}" -d "$TARGET_DB" --set ON_ERROR_STOP=on -c "REINDEX INDEX face_index;" -c "REINDEX INDEX clip_index;"
+  echo "==> REINDEX completado"
+fi
+
+echo "==> Restore de $TARGET_DB completado"
