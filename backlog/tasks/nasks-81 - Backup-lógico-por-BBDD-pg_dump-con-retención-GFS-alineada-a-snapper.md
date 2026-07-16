@@ -78,8 +78,8 @@ Referencias de archivos (estado actual):
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
 - [x] #1 Existe un CronJob postgres-logical-dump que hace pg_dump --clean --if-exists comprimido con gzip de todas las BBDD del cluster descubiertas dinamicamente (excluyendo templates y postgres) a /cold-data/postgres-backups/logical/<db>/<db>-YYYYMMDD-HHMMSS.sql.gz
-- [ ] #2 Existe un CronJob postgres-logical-prune con retencion GFS 7 diarios / 4 semanales / 6 mensuales / 0 anuales, aplicada por BBDD, con los tiers en una variable configurable del script
-- [ ] #3 El basebackup+WAL existente (postgres-base-backup, postgres-backup-cleanup, WAL archiving) no se modifica y sigue operativo
+- [x] #2 Existe un CronJob postgres-logical-prune con retencion GFS 7 diarios / 4 semanales / 6 mensuales / 0 anuales, aplicada por BBDD, con los tiers en una variable configurable del script
+- [x] #3 El basebackup+WAL existente (postgres-base-backup, postgres-backup-cleanup, WAL archiving) no se modifica y sigue operativo
 - [x] #4 Ningun secreto pasa por el contexto; se reutiliza el sealed secret de backup existente (postgres-backup-sealed-secret)
 - [ ] #5 Restore invocable con kubectl puro (sin scripts locales): CronJob suspendido postgres-restore + script postgres.restore.sh (ConfigMap), disparado con `kubectl create job restore-<db>-<latest|YYYYMMDD> --from=cronjob/postgres-restore` (params tomados del nombre del Job). Hace pre-restore dump de seguridad, restaura (gunzip | sed(search_path) | psql --single-transaction --set ON_ERROR_STOP=on) y REINDEX face_index/clip_index solo si immich; guardrail que aborta si la app sigue conectada salvo FORCE
 - [x] #6 Al anadir una BBDD nueva al cluster entra en el backup automaticamente sin editar el script de dump
