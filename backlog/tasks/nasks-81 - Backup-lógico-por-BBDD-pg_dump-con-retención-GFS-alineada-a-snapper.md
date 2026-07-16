@@ -1,11 +1,11 @@
 ---
 id: NASKS-81
 title: Backup lógico por BBDD (pg_dump) con retención GFS alineada a snapper
-status: In Progress
+status: Done
 assignee:
   - Daniel
 created_date: '2026-07-16 19:05'
-updated_date: '2026-07-16 20:30'
+updated_date: '2026-07-16 21:15'
 labels: []
 dependencies: []
 references:
