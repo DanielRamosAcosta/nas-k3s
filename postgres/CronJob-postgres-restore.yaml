@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: postgres
+  name: postgres-restore
+  namespace: databases
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: postgres-restore
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - /mnt/scripts/postgres.restore.sh
+            env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: PGPASSWORD
+                  name: postgres-backup-sealed-secret
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            image: ghcr.io/immich-app/postgres:17-vectorchord0.4.3-pgvector0.8.0-pgvectors0.3.0
+            imagePullPolicy: IfNotPresent
+            name: restore
+            volumeMounts:
+            - mountPath: /backups
+              name: backup-storage
+            - mountPath: /mnt/scripts/postgres.restore.sh
+              name: postgres-restore-sh
+              subPath: postgres.restore.sh
+          restartPolicy: Never
+          volumes:
+          - hostPath:
+              path: /cold-data/postgres-backups
+            name: backup-storage
+          - configMap:
+              name: postgres-restore-sh
+            name: postgres-restore-sh
+  schedule: 0 0 31 2 *
+  successfulJobsHistoryLimit: 3
+  suspend: true
