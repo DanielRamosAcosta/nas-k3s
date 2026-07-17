@@ -59,9 +59,9 @@
     "image": "docker.io/favonia/cloudflare-ddns",
     "version": "1.16.2"
   },
-  "booklore": {
-    "image": "booklore/booklore",
-    "version": "v2.2.1"
+  "grimmory": {
+    "image": "grimmory/grimmory",
+    "version": "v2.2.4"
   },
   "jellyfin": {
     "image": "docker.io/jellyfin/jellyfin",

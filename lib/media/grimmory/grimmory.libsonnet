@@ -1,8 +1,8 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
-local secrets = import 'media/booklore/booklore.secrets.json';
-local logbackConfig = importstr './booklore.logback-spring.xml';
+local secrets = import 'media/grimmory/grimmory.secrets.json';
+local logbackConfig = importstr './grimmory.logback-spring.xml';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -12,8 +12,8 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    deployment: deployment.new('booklore', replicas=1, containers=[
-      container.new('booklore', u.image(versions.booklore.image, versions.booklore.version)) +
+    deployment: deployment.new('grimmory', replicas=1, containers=[
+      container.new('grimmory', u.image(versions.grimmory.image, versions.grimmory.version)) +
       container.withPorts([containerPort.new('server', 6060)]) +
       container.withEnv(
         u.envVars.fromConfigMap(self.configEnv) +
@@ -28,9 +28,9 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       u.probes.withStartup.http('/api/v1/healthcheck', 6060) +
       { startupProbe+: { failureThreshold: 60 } },
     ]) + deployment.spec.template.spec.withVolumes([
-      volume.fromHostPath('data', '/cold-data/booklore/data'),
-      volume.fromHostPath('books', '/cold-data/booklore/books'),
-      volume.fromHostPath('bookdrop', '/cold-data/booklore/bookdrop'),
+      volume.fromHostPath('data', '/cold-data/grimmory/data'),
+      volume.fromHostPath('books', '/cold-data/grimmory/books'),
+      volume.fromHostPath('bookdrop', '/cold-data/grimmory/bookdrop'),
       u.injectFile(self.logbackConfiguration),
     ]),
 
@@ -40,15 +40,12 @@ local logbackConfig = importstr './booklore.logback-spring.xml';
       USER_ID: '0',
       GROUP_ID: '0',
       TZ: 'Atlantic/Canary',
-      BOOKLORE_PORT: '6060',
-      DATABASE_URL: 'jdbc:mariadb://mariadb.databases.svc.cluster.local:3306/booklore',
-      DATABASE_USERNAME: 'booklore',
+      DATABASE_URL: 'jdbc:mariadb://mariadb.databases.svc.cluster.local:3306/grimmory',
+      DATABASE_USERNAME: 'grimmory',
       LOGGING_CONFIG: '/config/logback-spring.xml',
-      SPRINGDOC_API_DOCS_ENABLED: 'false',
-      SPRINGDOC_SWAGGER_UI_ENABLED: 'false',
     }),
 
-    sealedSecret: u.sealedSecret.wide.forEnvNamed('booklore-shared-sealed-secret', secrets.shared),
+    sealedSecret: u.sealedSecret.wide.forEnvNamed('grimmory-shared-sealed-secret', secrets.shared),
 
     logbackConfiguration: u.configMap.forFile('logback-spring.xml', logbackConfig),
 
