@@ -16,8 +16,8 @@ data:
             <appender-ref ref="CONSOLE_JSON" />
         </root>
 
-        <!-- Booklore application logger -->
-        <logger name="com.adityachandel.booklore" level="${LOG_LEVEL:-INFO}" additivity="false">
+        <!-- Grimmory application logger -->
+        <logger name="org.booklore" level="${LOG_LEVEL:-INFO}" additivity="false">
             <appender-ref ref="CONSOLE_JSON" />
         </logger>
 
@@ -37,6 +37,6 @@ data:
 kind: ConfigMap
 metadata:
   labels:
-    app: booklore
+    app: grimmory
   name: logback-spring-xml
   namespace: media

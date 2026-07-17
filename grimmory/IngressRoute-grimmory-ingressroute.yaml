@@ -2,8 +2,8 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   labels:
-    app: booklore
-  name: booklore-ingressroute
+    app: grimmory
+  name: grimmory-ingressroute
   namespace: media
 spec:
   entryPoints:
@@ -12,7 +12,7 @@ spec:
   - kind: Rule
     match: Host(`books.danielramos.me`)
     services:
-    - name: booklore
+    - name: grimmory
       port: 6060
   tls:
     store:

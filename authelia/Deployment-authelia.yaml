@@ -46,11 +46,6 @@ spec:
             secretKeyRef:
               key: IDENTITY_PROVIDERS_OIDC_CLIENTS_ARGOCD_CLI_CLIENT_ID
               name: authelia-sealed-secret
-        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_BOOKLORE_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_BOOKLORE_CLIENT_ID
-              name: authelia-sealed-secret
         - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_FACTURASCRIPTS_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -70,6 +65,11 @@ spec:
           valueFrom:
             secretKeyRef:
               key: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRAFANA_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRIMMORY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_GRIMMORY_CLIENT_ID
               name: authelia-sealed-secret
         - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_IMMICH_CLIENT_ID
           valueFrom:

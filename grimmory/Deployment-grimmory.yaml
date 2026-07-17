@@ -2,8 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: booklore
-  name: booklore
+    app: grimmory
+  name: grimmory
   namespace: media
 spec:
   minReadySeconds: 10
@@ -11,67 +11,52 @@ spec:
   revisionHistoryLimit: 10
   selector:
     matchLabels:
-      name: booklore
+      name: grimmory
   template:
     metadata:
       annotations:
         reloader.stakater.com/auto: "true"
       labels:
-        name: booklore
+        name: grimmory
     spec:
       containers:
       - env:
-        - name: BOOKLORE_PORT
-          valueFrom:
-            configMapKeyRef:
-              key: BOOKLORE_PORT
-              name: booklore-config-env
         - name: DATABASE_URL
           valueFrom:
             configMapKeyRef:
               key: DATABASE_URL
-              name: booklore-config-env
+              name: grimmory-config-env
         - name: DATABASE_USERNAME
           valueFrom:
             configMapKeyRef:
               key: DATABASE_USERNAME
-              name: booklore-config-env
+              name: grimmory-config-env
         - name: GROUP_ID
           valueFrom:
             configMapKeyRef:
               key: GROUP_ID
-              name: booklore-config-env
+              name: grimmory-config-env
         - name: LOGGING_CONFIG
           valueFrom:
             configMapKeyRef:
               key: LOGGING_CONFIG
-              name: booklore-config-env
-        - name: SPRINGDOC_API_DOCS_ENABLED
-          valueFrom:
-            configMapKeyRef:
-              key: SPRINGDOC_API_DOCS_ENABLED
-              name: booklore-config-env
-        - name: SPRINGDOC_SWAGGER_UI_ENABLED
-          valueFrom:
-            configMapKeyRef:
-              key: SPRINGDOC_SWAGGER_UI_ENABLED
-              name: booklore-config-env
+              name: grimmory-config-env
         - name: TZ
           valueFrom:
             configMapKeyRef:
               key: TZ
-              name: booklore-config-env
+              name: grimmory-config-env
         - name: USER_ID
           valueFrom:
             configMapKeyRef:
               key: USER_ID
-              name: booklore-config-env
+              name: grimmory-config-env
         - name: DATABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               key: DATABASE_PASSWORD
-              name: booklore-shared-sealed-secret
-        image: booklore/booklore:v2.2.1
+              name: grimmory-shared-sealed-secret
+        image: grimmory/grimmory:v2.2.4
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
@@ -82,7 +67,7 @@ spec:
           initialDelaySeconds: 15
           periodSeconds: 30
           timeoutSeconds: 5
-        name: booklore
+        name: grimmory
         ports:
         - containerPort: 6060
           name: server
@@ -115,13 +100,13 @@ spec:
           subPath: logback-spring.xml
       volumes:
       - hostPath:
-          path: /cold-data/booklore/data
+          path: /cold-data/grimmory/data
         name: data
       - hostPath:
-          path: /cold-data/booklore/books
+          path: /cold-data/grimmory/books
         name: books
       - hostPath:
-          path: /cold-data/booklore/bookdrop
+          path: /cold-data/grimmory/bookdrop
         name: bookdrop
       - configMap:
           name: logback-spring-xml

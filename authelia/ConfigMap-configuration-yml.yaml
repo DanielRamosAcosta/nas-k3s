@@ -25,7 +25,7 @@ data:
     | mindent 10 \"|\" | msquote }}\n\n    claims_policies:\n      grafana:\n        id_token:
     ['email', 'name', 'groups', 'preferred_username']\n\n      sftpgo:\n        id_token:
     ['username', 'sftpgo_role']\n        custom_claims:\n          username:\n            attribute:
-    username\n          sftpgo_role:\n            attribute: sftpgo_role\n\n      booklore:\n
+    username\n          sftpgo_role:\n            attribute: sftpgo_role\n\n      grimmory:\n
     \       id_token: ['email', 'email_verified', 'preferred_username', 'name', 'groups']\n\n
     \     argocd:\n        id_token: ['email', 'groups']\n\n    scopes:\n      sftpgo:\n
     \       claims:\n          - username\n          - sftpgo_role\n    \n    clients:\n
@@ -65,9 +65,9 @@ data:
     \       response_types:\n          - code\n        grant_types:\n          - authorization_code\n
     \       access_token_signed_response_alg: none\n        userinfo_signed_response_alg:
     none\n        token_endpoint_auth_method: client_secret_post\n\n      - client_id:
-    '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_BOOKLORE_CLIENT_ID` }}'\n        client_name:
-    Booklore\n        public: true\n        authorization_policy: two_factor\n        claims_policy:
-    booklore\n        consent_mode: 'implicit'\n        require_pkce: true\n        pkce_challenge_method:
+    '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_GRIMMORY_CLIENT_ID` }}'\n        client_name:
+    Grimmory\n        public: true\n        authorization_policy: two_factor\n        claims_policy:
+    grimmory\n        consent_mode: 'implicit'\n        require_pkce: true\n        pkce_challenge_method:
     'S256'\n        redirect_uris:\n          - 'https://books.danielramos.me/oauth2-callback'\n
     \       scopes:\n          - openid\n          - offline_access\n          - profile\n
     \         - email\n          - groups\n        response_types:\n          - code\n

@@ -2,14 +2,14 @@ apiVersion: v1
 kind: Service
 metadata:
   labels:
-    app: booklore
-    name: booklore
-  name: booklore
+    app: grimmory
+    name: grimmory
+  name: grimmory
   namespace: media
 spec:
   ports:
-  - name: booklore-server
+  - name: grimmory-server
     port: 6060
     targetPort: 6060
   selector:
-    name: booklore
+    name: grimmory
