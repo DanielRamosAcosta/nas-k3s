@@ -1,10 +1,10 @@
 ---
 id: NASKS-79
 title: Migrar BookLore a Grimmory (fork comunitario)
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-07-10 20:43'
-updated_date: '2026-07-17 16:39'
+updated_date: '2026-07-17 22:57'
 labels:
   - media
   - migration
@@ -49,14 +49,14 @@ Mecanismo de migración (confirmado en la guía oficial, Discussion #120 y READM
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 lib/versions.json tiene una entrada `grimmory` apuntando a `grimmory/grimmory` con un tag de versión estable pinneado (no latest); la entrada `booklore` se elimina
-- [ ] #2 MariaDB provisiona una BBDD `grimmory` + usuario `grimmory` (vía el helper createUser); la BBDD original `booklore` se conserva intacta como rollback
-- [ ] #3 Los datos se copian: la BBDD `booklore` se duplica en `grimmory` y el directorio hostPath /cold-data/booklore se copia a /cold-data/grimmory (originales conservados para rollback)
-- [ ] #4 El módulo se renombra por completo a grimmory: dir lib/media/grimmory, nombre de deployment/container/service, ConfigMap/Secret, entrada de versions.json y label `app` (nueva Application en ArgoCD); el env DATABASE_* apunta a la BBDD/usuario `grimmory` y se eliminan BOOKLORE_PORT y las vars SPRINGDOC_*
-- [ ] #5 El cliente OIDC en Authelia se renombra a `grimmory` (client_id, client_name, claims_policy) manteniendo el dominio books.danielramos.me, y el login SSO sigue funcionando
-- [ ] #6 Tras el deploy el pod arranca sano (startup probe /api/v1/healthcheck en 6060 OK) y la biblioteca existente (libros, usuarios, progreso) se ve intacta en la UI, confirmando la migración de esquema v2→v3 sobre la BBDD `grimmory`
-- [ ] #7 `grep -ri booklore` sobre el código/config activo del repo (excluyendo dist/, vendor/ y backlog/) no devuelve resultados, con la única excepción del package Java `org.booklore` en el logger de logback (es el package real del binario de Grimmory, obligatorio para capturar sus logs)
-- [ ] #8 Se deja constancia de que DISK_TYPE por defecto es LOCAL (volumen hostPath local; NETWORK no aplica) y de la referencia a la guía oficial de transición (#120)
+- [x] #1 lib/versions.json tiene una entrada `grimmory` apuntando a `grimmory/grimmory` con un tag de versión estable pinneado (no latest); la entrada `booklore` se elimina
+- [x] #2 MariaDB provisiona una BBDD `grimmory` + usuario `grimmory` (vía el helper createUser); la BBDD original `booklore` se conserva intacta como rollback
+- [x] #3 Los datos se copian: la BBDD `booklore` se duplica en `grimmory` y el directorio hostPath /cold-data/booklore se copia a /cold-data/grimmory (originales conservados para rollback)
+- [x] #4 El módulo se renombra por completo a grimmory: dir lib/media/grimmory, nombre de deployment/container/service, ConfigMap/Secret, entrada de versions.json y label `app` (nueva Application en ArgoCD); el env DATABASE_* apunta a la BBDD/usuario `grimmory` y se eliminan BOOKLORE_PORT y las vars SPRINGDOC_*
+- [x] #5 El cliente OIDC en Authelia se renombra a `grimmory` (client_id, client_name, claims_policy) manteniendo el dominio books.danielramos.me, y el login SSO sigue funcionando
+- [x] #6 Tras el deploy el pod arranca sano (startup probe /api/v1/healthcheck en 6060 OK) y la biblioteca existente (libros, usuarios, progreso) se ve intacta en la UI, confirmando la migración de esquema v2→v3 sobre la BBDD `grimmory`
+- [x] #7 `grep -ri booklore` sobre el código/config activo del repo (excluyendo dist/, vendor/ y backlog/) no devuelve resultados, con la única excepción del package Java `org.booklore` en el logger de logback (es el package real del binario de Grimmory, obligatorio para capturar sus logs)
+- [x] #8 Se deja constancia de que DISK_TYPE por defecto es LOCAL (volumen hostPath local; NETWORK no aplica) y de la referencia a la guía oficial de transición (#120)
 <!-- AC:END -->
 
 ## Implementation Plan
@@ -235,3 +235,26 @@ Si una fase falla **antes de la Fase 6**, como los originales de booklore están
 - No hace falta restaurar desde dump: la duplicación **es** el mecanismo de rollback.
 - Tras la Fase 6 ya no hay rollback por duplicación: solo se ejecuta cuando Grimmory lleva tiempo estable.
 <!-- SECTION:PLAN:END -->
+
+## Implementation Notes
+
+<!-- SECTION:NOTES:BEGIN -->
+Fases 1–5 ejecutadas y verificadas. Fase 6: la **BBDD + usuario `booklore` ya se eliminaron** (`DROP DATABASE`/`DROP USER`); el borrado del **directorio `/cold-data/booklore` (~23G) queda a cargo del usuario** — es un subvolumen btrfs (con sus `.snapshots`), no basta `rm -rf`, requiere `btrfs subvolume delete`.
+
+**Deploys (GitOps, PRs mergeados a `main`):**
+- #142 Fase 1 — user/BBDD `grimmory` en MariaDB (Job `mariadb-create-user-grimmory`).
+- #143 Fase 3 — rename del módulo a `grimmory`, swap a `grimmory/grimmory:v2.2.4`, OIDC de Authelia renombrado a `grimmory` (client_id preservado).
+- #144/#145 — scaledown/scaleup de `grimmory` para el reset de datos (ver más abajo).
+- #146 Fase 4 — bump a `grimmory/grimmory:v3.2.4`.
+- #147 Fase 5 — limpieza de repo (retira `userBooklore` de MariaDB, actualiza README).
+
+**Incidencia y corrección — copia de datos anidada (Fase 2):** el `cp -a /cold-data/booklore /cold-data/grimmory` dejó los datos anidados en `/cold-data/grimmory/booklore/` (el destino ya existía), con `/cold-data/grimmory/{books,data}` vacíos → los ficheros de libro daban **404** (`/api/v1/books/<id>/content`) aunque la metadata cargaba. El check de `du` de la Fase 2 no lo detectó (el total coincidía porque el `.snapshots` btrfs copiado sumaba ~22G). Corrección: scale de `grimmory` a 0 vía GitOps (#144), desanidado de `books`/`data` (los 765M+14M reales), borrado del `.snapshots` basura, **re-dump limpio** de la BBDD `grimmory` desde `booklore` (drop+create+reload; grants de `grimmory.*` persisten), y scale a 1 (#145). Tras el fix: contenido sirve, lector renderiza, progreso conservado (17 filas == booklore, 85 libros no borrados == booklore).
+
+**Migración de esquema v2→v3 (Fase 4):** Flyway aplicó 12 migraciones sobre `grimmory` (v132 → **v144**) sin error (2 WARN benignos de MariaDB: PK name ignorado 1280, key too long 1071). App: "Started BookloreApplication in 22.49s".
+
+**OIDC:** login SSO con Grimmory verificado de punta a punta vía Authelia (passkey + consentimiento del cliente `grimmory`), dominio `books.danielramos.me` sin cambios. Nota UX: usuarios con sesión v2 **activa** durante el bump a v3 pueden entrar en un bucle cliente `refresh 400 → logout 401` hasta limpiar cookies o rehacer login; logins nuevos son limpios.
+
+**DISK_TYPE (AC #8):** el volumen es hostPath local (`/cold-data/grimmory/…`), por lo que `DISK_TYPE` por defecto es **LOCAL**; el aviso de comunidad sobre `DISK_TYPE=NETWORK` (deshabilita operaciones de fichero en mounts NFS/SMB) **no aplica**. Guía oficial de transición: discussion #120 (`https://github.com/orgs/grimmory-tools/discussions/120`).
+
+**Rollback:** la BBDD `booklore` ya se borró (punto de no retorno del rollback por BBDD superado). Queda `/cold-data/booklore` (subvolumen btrfs) hasta que el usuario lo elimine manualmente.
+<!-- SECTION:NOTES:END -->
