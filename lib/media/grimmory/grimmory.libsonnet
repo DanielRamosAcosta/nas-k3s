@@ -12,7 +12,7 @@ local logbackConfig = importstr './grimmory.logback-spring.xml';
   local volumeMount = k.core.v1.volumeMount,
 
   new():: {
-    deployment: deployment.new('grimmory', replicas=0, containers=[
+    deployment: deployment.new('grimmory', replicas=1, containers=[
       container.new('grimmory', u.image(versions.grimmory.image, versions.grimmory.version)) +
       container.withPorts([containerPort.new('server', 6060)]) +
       container.withEnv(
