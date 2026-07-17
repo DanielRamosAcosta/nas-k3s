@@ -42,6 +42,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
     userBooklore: self.createUser('booklore', secrets.userBooklore, self.createUserMigration, self.sealedSecret),
 
+    userGrimmory: self.createUser('grimmory', secrets.userGrimmory, self.createUserMigration, self.sealedSecret),
+
     createUserMigration: u.configMap.forFile('mariadb.create-user.sh', createUserMigration),
 
     createUser(name, password, configMap, secret):: {

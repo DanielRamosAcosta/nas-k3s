@@ -1,7 +1,6 @@
 ---
 name: deploy
 description: Create PR, wait for CI, squash merge, watch ArgoCD rollout, and verify pods/logs
-disable-model-invocation: true
 ---
 
 # /deploy
