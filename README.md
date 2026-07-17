@@ -46,7 +46,7 @@ Direct `tk apply` is never used. ArgoCD is the single source of truth for what r
 | **Navidrome** | Music streaming server (Subsonic-compatible) |
 | **Invidious** | Privacy-focused YouTube frontend |
 | **Gitea** | Lightweight self-hosted Git service |
-| **Booklore** | Book library manager |
+| **Grimmory** | Book library manager |
 | **Beets** | Music library organizer and tagger |
 | **SFTPGo** | SFTP/WebDAV file access |
 
