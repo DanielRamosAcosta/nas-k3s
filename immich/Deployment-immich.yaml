@@ -61,7 +61,7 @@ spec:
             secretKeyRef:
               key: DB_PASSWORD
               name: immich-shared-sealed-secret
-        image: ghcr.io/immich-app/immich-server:v3.0.2
+        image: ghcr.io/immich-app/immich-server:v3.0.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
