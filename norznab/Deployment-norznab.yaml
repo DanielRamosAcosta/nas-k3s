@@ -43,30 +43,10 @@ spec:
             configMapKeyRef:
               key: ENABLE_MARCIANO_TORRENT
               name: norznab-config-env
-        - name: HTTPS_PROXY
-          valueFrom:
-            configMapKeyRef:
-              key: HTTPS_PROXY
-              name: norznab-config-env
-        - name: HTTP_PROXY
-          valueFrom:
-            configMapKeyRef:
-              key: HTTP_PROXY
-              name: norznab-config-env
         - name: MARCIANO_TORRENT_BASE_URL
           valueFrom:
             configMapKeyRef:
               key: MARCIANO_TORRENT_BASE_URL
-              name: norznab-config-env
-        - name: NODE_USE_ENV_PROXY
-          valueFrom:
-            configMapKeyRef:
-              key: NODE_USE_ENV_PROXY
-              name: norznab-config-env
-        - name: NO_PROXY
-          valueFrom:
-            configMapKeyRef:
-              key: NO_PROXY
               name: norznab-config-env
         - name: REQUEST_TIMEOUT_MS
           valueFrom:
