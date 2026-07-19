@@ -89,7 +89,7 @@
   },
   "radarr": {
     "image": "ghcr.io/hotio/radarr",
-    "version": "release-6.2.1.10461"
+    "version": "release-6.3.0.10514"
   },
   "lidarr": {
     "image": "ghcr.io/hotio/lidarr",
