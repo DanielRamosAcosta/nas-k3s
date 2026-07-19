@@ -31,10 +31,11 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       DON_TORRENT_BASE_URL: 'https://dontorrent.review',
       MARCIANO_TORRENT_BASE_URL: 'https://marcianotorrent.net',
       REQUEST_TIMEOUT_MS: '120000',
-      HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
-      HTTPS_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
-      NO_PROXY: 'localhost,127.0.0.1,.svc.cluster.local',
-      NODE_USE_ENV_PROXY: '1',
+      // Proxy vía gluetun desactivado temporalmente — el tráfico sale directo por la red del NAS.
+      // HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
+      // HTTPS_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
+      // NO_PROXY: 'localhost,127.0.0.1,.svc.cluster.local',
+      // NODE_USE_ENV_PROXY: '1',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.norznab),
