@@ -27,7 +27,7 @@ spec:
         - -r
         - /data/registration.yaml
         - -n
-        image: dock.mau.dev/mautrix/whatsapp:v0.2606.0
+        image: dock.mau.dev/mautrix/whatsapp:v0.2607.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
