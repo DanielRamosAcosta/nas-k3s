@@ -21,7 +21,7 @@
   },
   "valkey": {
     "image": "valkey/valkey",
-    "version": "9.1.0-alpine"
+    "version": "9.1.1-alpine"
   },
   "grafana": {
     "image": "docker.io/grafana/grafana-oss",
