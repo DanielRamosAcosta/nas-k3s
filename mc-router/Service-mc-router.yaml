@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: mc-router
+    name: mc-router
+  name: mc-router
+  namespace: games
+spec:
+  ports:
+  - name: mc-router-minecraft
+    port: 25565
+    targetPort: 25565
+  selector:
+    name: mc-router
+  type: LoadBalancer

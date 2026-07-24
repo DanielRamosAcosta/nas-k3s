@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mc-router
+  name: mc-router
+  namespace: games
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: mc-router
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: mc-router
+    spec:
+      containers:
+      - args:
+        - --in-kube-cluster
+        - --auto-scale-up
+        - --auto-scale-down
+        - --auto-scale-down-after=1h
+        - --auto-scale-asleep-motd=Servidor dormido — conéctate para despertarlo
+        - --auto-scale-loading-motd=Arrancando el servidor, reconéctate en unos segundos
+        env:
+        - name: KUBE_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: docker.io/itzg/mc-router:1.45.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 25565
+          timeoutSeconds: 5
+        name: mc-router
+        ports:
+        - containerPort: 25565
+          name: minecraft
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 25565
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsNonRoot: true
+          runAsUser: 1000
+          seccompProfile:
+            type: RuntimeDefault
+      serviceAccountName: mc-router
