@@ -5,4 +5,5 @@ local u = import 'utils.libsonnet';
 
 u.Environment({
   minecraft: minecraft.new(),
+  mcRouter: mcRouter.new(),
 })
