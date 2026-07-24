@@ -9,6 +9,7 @@ local envs = [
   u.argocd.env(import '../business/spec.json', import '../business/main.jsonnet'),
   u.argocd.env(import '../communications/spec.json', import '../communications/main.jsonnet'),
   u.argocd.env(import '../databases/spec.json', import '../databases/main.jsonnet'),
+  u.argocd.env(import '../games/spec.json', import '../games/main.jsonnet'),
   u.argocd.env(import '../media/spec.json', import '../media/main.jsonnet'),
   u.argocd.env(import '../monitoring/spec.json', import '../monitoring/main.jsonnet'),
   u.argocd.env(import '../system/spec.json', import '../system/main.jsonnet'),

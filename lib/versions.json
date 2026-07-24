@@ -170,5 +170,19 @@
   "curl": {
     "image": "docker.io/curlimages/curl",
     "version": "8.21.0"
+  },
+  "minecraft": {
+    "image": "docker.io/itzg/minecraft-server",
+    "version": "java25",
+    "paperVersion": "26.2",
+    "paperBuild": "65"
+  },
+  "mcRouter": {
+    "image": "docker.io/itzg/mc-router",
+    "version": "1.45.0"
+  },
+  "mcBackup": {
+    "image": "docker.io/itzg/mc-backup",
+    "version": "2026.7.2"
   }
 }
