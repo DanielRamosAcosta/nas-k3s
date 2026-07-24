@@ -32,6 +32,11 @@ spec:
                 configMapKeyRef:
                   key: BACKUP_NAME
                   name: minecraft-backup-config-env
+            - name: INITIAL_DELAY
+              valueFrom:
+                configMapKeyRef:
+                  key: INITIAL_DELAY
+                  name: minecraft-backup-config-env
             - name: PRUNE_RESTIC_RETENTION
               valueFrom:
                 configMapKeyRef:
@@ -46,6 +51,11 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   key: RCON_PORT
+                  name: minecraft-backup-config-env
+            - name: RESTIC_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  key: RESTIC_HOSTNAME
                   name: minecraft-backup-config-env
             - name: RESTIC_REPOSITORY
               valueFrom:
