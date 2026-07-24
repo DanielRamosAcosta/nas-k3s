@@ -1,0 +1,16 @@
+apiVersion: v1
+data:
+  BACKUP_INTERVAL: "0"
+  BACKUP_METHOD: restic
+  BACKUP_NAME: minecraft
+  PRUNE_RESTIC_RETENTION: --keep-daily 7 --keep-weekly 4 --keep-monthly 6
+  RCON_HOST: minecraft
+  RCON_PORT: "25575"
+  RESTIC_REPOSITORY: /backups
+  SRC_DIR: /data
+kind: ConfigMap
+metadata:
+  labels:
+    app: minecraft-backup
+  name: minecraft-backup-config-env
+  namespace: games

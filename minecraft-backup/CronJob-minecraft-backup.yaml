@@ -1,0 +1,91 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  labels:
+    app: minecraft-backup
+  name: minecraft-backup
+  namespace: games
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            name: minecraft-backup
+        spec:
+          containers:
+          - env:
+            - name: BACKUP_INTERVAL
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKUP_INTERVAL
+                  name: minecraft-backup-config-env
+            - name: BACKUP_METHOD
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKUP_METHOD
+                  name: minecraft-backup-config-env
+            - name: BACKUP_NAME
+              valueFrom:
+                configMapKeyRef:
+                  key: BACKUP_NAME
+                  name: minecraft-backup-config-env
+            - name: PRUNE_RESTIC_RETENTION
+              valueFrom:
+                configMapKeyRef:
+                  key: PRUNE_RESTIC_RETENTION
+                  name: minecraft-backup-config-env
+            - name: RCON_HOST
+              valueFrom:
+                configMapKeyRef:
+                  key: RCON_HOST
+                  name: minecraft-backup-config-env
+            - name: RCON_PORT
+              valueFrom:
+                configMapKeyRef:
+                  key: RCON_PORT
+                  name: minecraft-backup-config-env
+            - name: RESTIC_REPOSITORY
+              valueFrom:
+                configMapKeyRef:
+                  key: RESTIC_REPOSITORY
+                  name: minecraft-backup-config-env
+            - name: SRC_DIR
+              valueFrom:
+                configMapKeyRef:
+                  key: SRC_DIR
+                  name: minecraft-backup-config-env
+            - name: RESTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: RESTIC_PASSWORD
+                  name: minecraft-restic
+            - name: RCON_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: RCON_PASSWORD
+                  name: minecraft-rcon
+            image: docker.io/itzg/mc-backup:2026.7.2
+            imagePullPolicy: IfNotPresent
+            name: backup
+            volumeMounts:
+            - mountPath: /data
+              name: data
+              readOnly: true
+            - mountPath: /backups
+              name: backups
+          restartPolicy: OnFailure
+          securityContext:
+            runAsGroup: 1000
+            runAsUser: 1000
+          volumes:
+          - hostPath:
+              path: /data/minecraft
+            name: data
+          - hostPath:
+              path: /cold-data/minecraft
+            name: backups
+  schedule: 0 5 * * *
+  successfulJobsHistoryLimit: 3
