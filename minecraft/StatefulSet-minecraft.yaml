@@ -19,6 +19,11 @@ spec:
     spec:
       containers:
       - env:
+        - name: DIFFICULTY
+          valueFrom:
+            configMapKeyRef:
+              key: DIFFICULTY
+              name: minecraft-config-env
         - name: EULA
           valueFrom:
             configMapKeyRef:
@@ -33,6 +38,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: MEMORY
+              name: minecraft-config-env
+        - name: MOTD
+          valueFrom:
+            configMapKeyRef:
+              key: MOTD
               name: minecraft-config-env
         - name: ONLINE_MODE
           valueFrom:

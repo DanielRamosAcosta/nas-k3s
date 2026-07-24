@@ -1,8 +1,10 @@
 apiVersion: v1
 data:
+  DIFFICULTY: hard
   EULA: "TRUE"
   EXISTING_OPS_FILE: SYNCHRONIZE
   MEMORY: 4G
+  MOTD: §c§lE§6§ls§e§lc§a§lr§b§lo§9§lt§d§lo§c§ln§6§le§e§lt§a§la
   ONLINE_MODE: "TRUE"
   OPS: Duning
   PAPER_BUILD: "65"
