@@ -1,0 +1,20 @@
+apiVersion: v1
+data:
+  EULA: "TRUE"
+  EXISTING_OPS_FILE: SYNCHRONIZE
+  MEMORY: 4G
+  ONLINE_MODE: "TRUE"
+  OPS: Duning
+  PAPER_BUILD: "65"
+  PAPER_CHANNEL: experimental
+  RCON_PORT: "25575"
+  TYPE: PAPER
+  TZ: Atlantic/Canary
+  USE_AIKAR_FLAGS: "true"
+  VERSION: "26.2"
+kind: ConfigMap
+metadata:
+  labels:
+    app: minecraft
+  name: minecraft-config-env
+  namespace: games

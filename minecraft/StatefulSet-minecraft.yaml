@@ -1,0 +1,152 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  labels:
+    app: minecraft
+  name: minecraft
+  namespace: games
+spec:
+  selector:
+    matchLabels:
+      name: minecraft
+  serviceName: minecraft
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: minecraft
+    spec:
+      containers:
+      - env:
+        - name: EULA
+          valueFrom:
+            configMapKeyRef:
+              key: EULA
+              name: minecraft-config-env
+        - name: EXISTING_OPS_FILE
+          valueFrom:
+            configMapKeyRef:
+              key: EXISTING_OPS_FILE
+              name: minecraft-config-env
+        - name: MEMORY
+          valueFrom:
+            configMapKeyRef:
+              key: MEMORY
+              name: minecraft-config-env
+        - name: ONLINE_MODE
+          valueFrom:
+            configMapKeyRef:
+              key: ONLINE_MODE
+              name: minecraft-config-env
+        - name: OPS
+          valueFrom:
+            configMapKeyRef:
+              key: OPS
+              name: minecraft-config-env
+        - name: PAPER_BUILD
+          valueFrom:
+            configMapKeyRef:
+              key: PAPER_BUILD
+              name: minecraft-config-env
+        - name: PAPER_CHANNEL
+          valueFrom:
+            configMapKeyRef:
+              key: PAPER_CHANNEL
+              name: minecraft-config-env
+        - name: RCON_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: RCON_PORT
+              name: minecraft-config-env
+        - name: TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: TYPE
+              name: minecraft-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: minecraft-config-env
+        - name: USE_AIKAR_FLAGS
+          valueFrom:
+            configMapKeyRef:
+              key: USE_AIKAR_FLAGS
+              name: minecraft-config-env
+        - name: VERSION
+          valueFrom:
+            configMapKeyRef:
+              key: VERSION
+              name: minecraft-config-env
+        - name: RCON_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: RCON_PASSWORD
+              name: minecraft-rcon
+        image: docker.io/itzg/minecraft-server:java25
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          postStart:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - rm -f /data/.paused
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - touch /data/.paused
+        name: minecraft
+        ports:
+        - containerPort: 25565
+          name: minecraft
+        - containerPort: 25575
+          name: rcon
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 25565
+          timeoutSeconds: 5
+        resources:
+          limits:
+            memory: 6Gi
+          requests:
+            cpu: "1"
+            memory: 6Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          seccompProfile:
+            type: RuntimeDefault
+        startupProbe:
+          failureThreshold: 30
+          periodSeconds: 10
+          tcpSocket:
+            port: 25565
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /data
+          name: data
+        - mountPath: /tmp
+          name: tmp
+      securityContext:
+        runAsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      terminationGracePeriodSeconds: 90
+      volumes:
+      - hostPath:
+          path: /data/minecraft
+        name: data
+      - emptyDir: {}
+        name: tmp
+  updateStrategy:
+    type: RollingUpdate
