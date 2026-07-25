@@ -48,7 +48,14 @@ spec:
         - mountPath: /usr/share/nginx/html
           name: web
           readOnly: true
+        - mountPath: /etc/nginx/conf.d/default.conf
+          name: squaremap-nginx-conf
+          readOnly: true
+          subPath: default.conf
       volumes:
       - hostPath:
           path: /data/minecraft/plugins/squaremap/web
         name: web
+      - configMap:
+          name: squaremap-nginx-conf
+        name: squaremap-nginx-conf

@@ -322,6 +322,7 @@
     "sonarr/ConfigMap-sonarr-config-env.yaml": "environments/arr/main.jsonnet",
     "sonarr/Deployment-sonarr.yaml": "environments/arr/main.jsonnet",
     "sonarr/Service-sonarr.yaml": "environments/arr/main.jsonnet",
+    "squaremap/ConfigMap-squaremap-nginx-conf.yaml": "environments/games/main.jsonnet",
     "squaremap/Deployment-squaremap.yaml": "environments/games/main.jsonnet",
     "squaremap/IngressRoute-squaremap-ingressroute.yaml": "environments/games/main.jsonnet",
     "squaremap/Service-squaremap.yaml": "environments/games/main.jsonnet",
