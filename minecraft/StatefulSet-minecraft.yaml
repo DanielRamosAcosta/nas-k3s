@@ -39,6 +39,11 @@ spec:
             configMapKeyRef:
               key: MEMORY
               name: minecraft-config-env
+        - name: MODRINTH_PROJECTS
+          valueFrom:
+            configMapKeyRef:
+              key: MODRINTH_PROJECTS
+              name: minecraft-config-env
         - name: MOTD
           valueFrom:
             configMapKeyRef:

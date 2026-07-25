@@ -4,6 +4,7 @@ data:
   EULA: "TRUE"
   EXISTING_OPS_FILE: SYNCHRONIZE
   MEMORY: 4G
+  MODRINTH_PROJECTS: squaremap
   MOTD: §c§lE§6§ls§e§lc§a§lr§b§lo§9§lt§d§lo§c§ln§6§le§e§lt§a§la
   ONLINE_MODE: "TRUE"
   OPS: Duning
