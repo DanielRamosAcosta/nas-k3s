@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: squaremap
+  name: squaremap-ingressroute
+  namespace: games
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`mcmap.danielramos.me`)
+    services:
+    - name: squaremap
+      port: 80
+  tls:
+    store:
+      name: default
