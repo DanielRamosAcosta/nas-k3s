@@ -76,7 +76,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       EXISTING_OPS_FILE: 'SYNCHRONIZE',
       DIFFICULTY: 'hard',
       MOTD: '§c§lE§6§ls§e§lc§a§lr§b§lo§9§lt§d§lo§c§ln§6§le§e§lt§a§la',
-      MODRINTH_PROJECTS: 'squaremap',
+      MODRINTH_PROJECTS: 'squaremap,chestsorter',
       RCON_PORT: '25575',
       TZ: 'Atlantic/Canary',
     }),
