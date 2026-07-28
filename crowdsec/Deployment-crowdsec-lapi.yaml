@@ -21,7 +21,7 @@ spec:
     metadata:
       annotations:
         checksum/lapi-configmap: 019312792dae271706ab52bb85f26bec484ac2afe0e1a9262dd06468ea123be2
-        checksum/lapi-secret: b92bad8a3ba58b59e8c38004a8005a97021f255aca1a6a2da814e8ad872c40bc
+        checksum/lapi-secret: 719e92e576ede56346ad0d4d1513312f6b17c9dd508ebbf334f491b30e243edb
         reloader.stakater.com/auto: "true"
       labels:
         k8s-app: crowdsec
