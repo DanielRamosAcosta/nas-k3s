@@ -121,7 +121,7 @@
   },
   "gluetun": {
     "image": "ghcr.io/qdm12/gluetun",
-    "version": "v3.41.1"
+    "version": "v3.41.3"
   },
   "norznab": {
     "image": "ghcr.io/danielramosacosta/norznab",
