@@ -23,7 +23,7 @@ spec:
       - env:
         - name: SYNAPSE_CONFIG_PATH
           value: /config/homeserver.yaml
-        image: ghcr.io/element-hq/synapse:v1.156.0
+        image: ghcr.io/element-hq/synapse:v1.158.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
