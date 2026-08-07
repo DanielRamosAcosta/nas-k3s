@@ -1,9 +1,10 @@
 ---
 id: NASKS-82
 title: Desplegar servidor de Minecraft (Paper) con backups GFS
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-07-22 20:32'
+updated_date: '2026-08-07 17:26'
 labels: []
 dependencies: []
 references:
@@ -18,8 +19,7 @@ references:
   - 'https://github.com/itzg/docker-mc-backup'
 priority: low
 type: feature
-ordinal: 78000
-updated_date: '2026-07-24 22:15'
+ordinal: 80000
 ---
 
 ## Description
