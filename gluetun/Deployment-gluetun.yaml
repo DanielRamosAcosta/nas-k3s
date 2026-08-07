@@ -53,7 +53,7 @@ spec:
             configMapKeyRef:
               key: VPN_TYPE
               name: gluetun-config-env
-        image: ghcr.io/qdm12/gluetun:v3.41.1
+        image: ghcr.io/qdm12/gluetun:v3.41.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
