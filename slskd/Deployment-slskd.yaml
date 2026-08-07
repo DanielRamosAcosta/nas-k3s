@@ -91,7 +91,7 @@ spec:
           periodSeconds: 10
           timeoutSeconds: 5
         volumeMounts:
-        - mountPath: /app/data
+        - mountPath: /app
           name: data
         - mountPath: /music
           name: music
@@ -104,7 +104,7 @@ spec:
           subPath: slskd.yml
       volumes:
       - hostPath:
-          path: /data/arr/slskd/data
+          path: /data/arr/slskd
         name: data
       - hostPath:
           path: /cold-data/media/music/library/all
