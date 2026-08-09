@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: scraparr
+  name: scraparr
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: scraparr
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: scraparr
+    spec:
+      containers:
+      - env:
+        - name: LIDARR_URL
+          valueFrom:
+            configMapKeyRef:
+              key: LIDARR_URL
+              name: scraparr-config-env
+        - name: RADARR_URL
+          valueFrom:
+            configMapKeyRef:
+              key: RADARR_URL
+              name: scraparr-config-env
+        - name: SONARR_URL
+          valueFrom:
+            configMapKeyRef:
+              key: SONARR_URL
+              name: scraparr-config-env
+        - name: LIDARR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: LIDARR_API_KEY
+              name: scraparr-sealed-secret
+        - name: RADARR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: RADARR_API_KEY
+              name: scraparr-sealed-secret
+        - name: SONARR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: SONARR_API_KEY
+              name: scraparr-sealed-secret
+        image: ghcr.io/thecfu/scraparr:3.1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 7100
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: scraparr
+        ports:
+        - containerPort: 7100
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 7100
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
