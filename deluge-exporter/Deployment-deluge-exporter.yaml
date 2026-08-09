@@ -31,7 +31,7 @@ spec:
             secretKeyRef:
               key: DELUGE_PASSWORD
               name: deluge-exporter-sealed-secret
-        image: ghcr.io/ngosang/deluge-exporter:1.0.2
+        image: docker.io/ngosang/deluge-exporter:1.0.2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
