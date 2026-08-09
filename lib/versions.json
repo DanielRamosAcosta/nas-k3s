@@ -59,6 +59,14 @@
     "image": "ghcr.io/thecfu/scraparr",
     "version": "3.1.0"
   },
+  "mcMonitor": {
+    "image": "docker.io/itzg/mc-monitor",
+    "version": "0.17.0"
+  },
+  "delugeExporter": {
+    "image": "ghcr.io/ngosang/deluge-exporter",
+    "version": "1.0.2"
+  },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
     "version": "v2.19.1"

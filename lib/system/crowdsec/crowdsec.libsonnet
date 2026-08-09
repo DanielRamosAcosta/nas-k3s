@@ -20,6 +20,11 @@ local couchDbConfig = importstr './couchdb-http-auth-bf.yaml';
       },
       lapi: {
         replicas: 1,
+        // Scrape cs_* metrics (:6060) via VictoriaMetrics kubernetes-pods job.
+        podAnnotations: {
+          'prometheus.io/scrape': 'true',
+          'prometheus.io/port': '6060',
+        },
         persistentVolume: {
           data: { enabled: false },
           config: { enabled: false },
@@ -63,6 +68,11 @@ local couchDbConfig = importstr './couchdb-http-auth-bf.yaml';
       // --- Agent -----------------------------------------------------------
 
       agent: {
+        // Scrape cs_* parser/acquisition metrics (:6060).
+        podAnnotations: {
+          'prometheus.io/scrape': 'true',
+          'prometheus.io/port': '6060',
+        },
         persistentVolume: {
           data: { enabled: false },
           config: { enabled: false },
