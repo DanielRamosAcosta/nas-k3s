@@ -55,6 +55,10 @@
     "image": "eithan1231/immich-exporter",
     "version": "2025-05-12-commit-241dce4"
   },
+  "scraparr": {
+    "image": "ghcr.io/thecfu/scraparr",
+    "version": "3.1.0"
+  },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
     "version": "v2.19.1"
