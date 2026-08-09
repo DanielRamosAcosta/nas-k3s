@@ -32,11 +32,12 @@ local secrets = import 'media/navidrome/navidrome.secrets.json';
                   volume.fromHostPath('data', '/data/navidrome/data'),
                 ]),
 
-    service: k.util.serviceFor(self.deployment) + u.metrics(port='8081'),
+    service: k.util.serviceFor(self.deployment) + u.metrics(port='4533'),
 
     configEnv: u.configMap.forEnv(self.deployment, {
       ND_BASEURL: 'https://music.danielramos.me',
       ND_ENABLETRANSCODINGCONFIG: 'true',
+      ND_PROMETHEUS_ENABLED: 'true',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.navidrome),
