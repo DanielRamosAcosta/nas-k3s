@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
+  labels:
+    app: mc-monitor
+    name: mc-monitor
+  name: mc-monitor
+  namespace: monitoring
+spec:
+  ports:
+  - name: mc-monitor-metrics
+    port: 8080
+    targetPort: 8080
+  selector:
+    name: mc-monitor

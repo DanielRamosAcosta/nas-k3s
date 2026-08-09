@@ -2,6 +2,7 @@ apiVersion: v1
 data:
   ND_BASEURL: https://music.danielramos.me
   ND_ENABLETRANSCODINGCONFIG: "true"
+  ND_PROMETHEUS_ENABLED: "true"
 kind: ConfigMap
 metadata:
   labels:

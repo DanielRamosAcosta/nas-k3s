@@ -21,7 +21,9 @@ spec:
     metadata:
       annotations:
         checksum/lapi-configmap: 019312792dae271706ab52bb85f26bec484ac2afe0e1a9262dd06468ea123be2
-        checksum/lapi-secret: 6d1c4b8be07598b6b4f3a462678db8bd6d240614dcd0c84ba8b60b30c5bd51d2
+        checksum/lapi-secret: 624c0c872cca0d165837c9fad935f5ae7b9b1f4db0d1ff46df0e47378bd1c571
+        prometheus.io/port: "6060"
+        prometheus.io/scrape: "true"
         reloader.stakater.com/auto: "true"
       labels:
         k8s-app: crowdsec

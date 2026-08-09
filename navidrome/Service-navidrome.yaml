@@ -3,7 +3,7 @@ kind: Service
 metadata:
   annotations:
     prometheus.io/path: /metrics
-    prometheus.io/port: "8081"
+    prometheus.io/port: "4533"
     prometheus.io/scrape: "true"
   labels:
     app: navidrome

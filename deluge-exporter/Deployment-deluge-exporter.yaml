@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: deluge-exporter
+  name: deluge-exporter
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: deluge-exporter
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: deluge-exporter
+    spec:
+      containers:
+      - env:
+        - name: DELUGE_URL
+          valueFrom:
+            configMapKeyRef:
+              key: DELUGE_URL
+              name: deluge-exporter-config-env
+        - name: DELUGE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: DELUGE_PASSWORD
+              name: deluge-exporter-sealed-secret
+        image: ghcr.io/ngosang/deluge-exporter:1.0.2
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8011
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: deluge-exporter
+        ports:
+        - containerPort: 8011
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 8011
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5

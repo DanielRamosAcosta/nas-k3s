@@ -19,6 +19,8 @@ spec:
       annotations:
         checksum/acquis-configmap: 10cc7b46398a71cf0b25eac2c8c89d283970beffd4676ecf2cd28b9d1c7d404b
         checksum/agent-configmap: 747194116ced3339df7ee4cfe27f4c999ca500125dfe0716ad1429dab473eeed
+        prometheus.io/port: "6060"
+        prometheus.io/scrape: "true"
         reloader.stakater.com/auto: "true"
       labels:
         k8s-app: crowdsec
