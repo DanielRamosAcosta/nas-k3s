@@ -21,6 +21,11 @@ spec:
     spec:
       containers:
       - env:
+        - name: JELLYFIN_URL
+          valueFrom:
+            configMapKeyRef:
+              key: JELLYFIN_URL
+              name: scraparr-config-env
         - name: LIDARR_URL
           valueFrom:
             configMapKeyRef:
@@ -36,6 +41,11 @@ spec:
             configMapKeyRef:
               key: SONARR_URL
               name: scraparr-config-env
+        - name: JELLYFIN_API_KEY
+          valueFrom:
+            secretKeyRef:
+              key: JELLYFIN_API_KEY
+              name: scraparr-sealed-secret
         - name: LIDARR_API_KEY
           valueFrom:
             secretKeyRef:
