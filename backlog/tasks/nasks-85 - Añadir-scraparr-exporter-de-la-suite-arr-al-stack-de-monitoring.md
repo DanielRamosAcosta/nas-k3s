@@ -1,10 +1,10 @@
 ---
 id: NASKS-85
 title: Añadir scraparr (exporter de la suite *arr) al stack de monitoring
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-08-09 19:13'
-updated_date: '2026-08-09 19:17'
+updated_date: '2026-08-09 19:31'
 labels: []
 dependencies: []
 references:
@@ -51,14 +51,24 @@ Sonarr/Radarr/Lidarr no exponen métricas Prometheus nativas. `scraparr` consult
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Existe lib/monitoring/scraparr/scraparr.libsonnet con Deployment (puerto 7100), Service con u.metrics('7100') y SealedSecret con las API keys de sonarr/radarr/lidarr
-- [ ] #2 La imagen ghcr.io/thecfu/scraparr está pineada en lib/versions.json (3.1.0)
-- [ ] #3 Las URLs internas de sonarr/radarr/lidarr (ns arr) se inyectan vía ConfigMap (env) y las API keys vía SealedSecret (env)
-- [ ] #4 El exporter queda cableado en environments/monitoring/main.jsonnet y ArgoCD genera su Application automáticamente
-- [ ] #5 VictoriaMetrics descubre y scrapea el target vía las anotaciones prometheus.io/* (sin tocar victoriametrics.yml) y las métricas scraparr_* son consultables
+- [x] #1 Existe lib/monitoring/scraparr/scraparr.libsonnet con Deployment (puerto 7100), Service con u.metrics('7100') y SealedSecret con las API keys de sonarr/radarr/lidarr
+- [x] #2 La imagen ghcr.io/thecfu/scraparr está pineada en lib/versions.json (3.1.0)
+- [x] #3 Las URLs internas de sonarr/radarr/lidarr (ns arr) se inyectan vía ConfigMap (env) y las API keys vía SealedSecret (env)
+- [x] #4 El exporter queda cableado en environments/monitoring/main.jsonnet y ArgoCD genera su Application automáticamente
+- [x] #5 VictoriaMetrics descubre y scrapea el target vía las anotaciones prometheus.io/* (sin tocar victoriametrics.yml) y las métricas scraparr_* son consultables
 <!-- AC:END -->
 
 ## Definition of Done
 <!-- DOD:BEGIN -->
-- [ ] #1 Desplegar con /deploy
+- [x] #1 Desplegar con /deploy
 <!-- DOD:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+scraparr desplegado en monitoring y dashboard "scraparr" creado en Grafana.
+
+Exporter ghcr.io/thecfu/scraparr:3.1.0 en ns monitoring: Deployment (puerto 7100) + Service (autoscrape vía prometheus.io/*, job kubernetes-service-endpoints) + ConfigMap (URLs internas de sonarr/radarr/lidarr en ns arr) + SealedSecret (SONARR/RADARR/LIDARR_API_KEY). Desplegado vía PR #181. Las 3 API keys se extrajeron de los config.xml de cada app a fichero (sin exponerlas), se verificaron contra /system/status (HTTP 200) y se sellaron. Pod Running 1/1; los 3 conectores reportan "metrics updated" sin errores de auth. VictoriaMetrics scrapea (sonarr_series_total=29, radarr_movies_total=280, lidarr_artists_total=166).
+
+Dashboard Grafana "scraparr" (/d/scraparr/scraparr, uid scraparr) con 14 paneles: overview (services up, series/movies/artists, queue, missing), calidad por app (bargauge min=0 + sort_desc), almacenamiento (tamaño por app + disco libre), y donuts de estado/monitored. Creado vía API — no versionado en git.
+<!-- SECTION:FINAL_SUMMARY:END -->
