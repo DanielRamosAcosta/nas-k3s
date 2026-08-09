@@ -64,7 +64,7 @@
     "version": "0.17.0"
   },
   "delugeExporter": {
-    "image": "ghcr.io/ngosang/deluge-exporter",
+    "image": "docker.io/ngosang/deluge-exporter",
     "version": "1.0.2"
   },
   "kubeStateMetrics": {
