@@ -173,9 +173,7 @@
   },
   "minecraft": {
     "image": "docker.io/itzg/minecraft-server",
-    "version": "java25",
-    "paperVersion": "26.2",
-    "paperBuild": "65"
+    "version": "java25"
   },
   "mcRouter": {
     "image": "docker.io/itzg/mc-router",
