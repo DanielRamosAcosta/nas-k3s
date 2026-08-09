@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: immich-exporter
+  name: immich-exporter
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: immich-exporter
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: immich-exporter
+    spec:
+      containers:
+      - env:
+        - name: IMMICH_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: IMMICH_HOST
+              name: immich-exporter-config-env
+        - name: IMMICH_KEY
+          valueFrom:
+            secretKeyRef:
+              key: IMMICH_KEY
+              name: immich-exporter-sealed-secret
+        image: eithan1231/immich-exporter:2025-05-12-commit-241dce4
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: immich-exporter
+        ports:
+        - containerPort: 3000
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 3000
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
