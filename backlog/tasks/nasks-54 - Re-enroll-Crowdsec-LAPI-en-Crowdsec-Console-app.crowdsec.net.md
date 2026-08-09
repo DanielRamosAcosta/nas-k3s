@@ -1,10 +1,10 @@
 ---
 id: NASKS-54
 title: Re-enroll Crowdsec LAPI en Crowdsec Console (app.crowdsec.net)
-status: In Progress
+status: Done
 assignee: []
 created_date: '2026-04-22 20:34'
-updated_date: '2026-08-07 20:59'
+updated_date: '2026-08-09 19:04'
 labels:
   - infra
   - crowdsec
@@ -61,12 +61,12 @@ Documentar este caveat en el README del módulo.
 
 ## Acceptance criteria
 
-- [ ] Nuevo enrollment key generado en Console y sellado en `crowdsec.secrets.json`.
-- [ ] LAPI pod reiniciado con ENROLL_KEY nuevo tras ArgoCD sync.
-- [ ] `cscli console enroll --overwrite` ejecutado con éxito dentro del pod.
-- [ ] Engine `nas-k3s` aprobado en Console UI.
-- [ ] Console dashboard muestra `Decisions: N` (aunque sea 0 inicialmente), `Alerts: N`, `Hub: ok`.
-- [ ] Logs del LAPI ya no muestran `Machine is not enrolled in the console`.
+- [x] Nuevo enrollment key generado en Console y sellado en `crowdsec.secrets.json`.
+- [x] LAPI pod reiniciado con ENROLL_KEY nuevo tras ArgoCD sync.
+- [x] `cscli console enroll --overwrite` ejecutado con éxito dentro del pod.
+- [x] Engine `nas-k3s` aprobado en Console UI.
+- [x] Console dashboard muestra `Decisions: N` (aunque sea 0 inicialmente), `Alerts: N`, `Hub: ok`.
+- [x] Logs del LAPI ya no muestran `Machine is not enrolled in the console`.
 
 ## No scope
 
@@ -74,3 +74,9 @@ Documentar este caveat en el README del módulo.
 - AppSec / WAF engine de Crowdsec.
 - Bouncers adicionales más allá del ya wireado en Traefik.
 <!-- SECTION:DESCRIPTION:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Vínculo LAPI↔Console reparado. Nuevo enrollment key generado y sellado en crowdsec.secrets.json; LAPI reiniciado vía ArgoCD y `cscli console enroll --overwrite` forzado una vez. Verificado en logs (Loki): el LAPI reciente muestra `Machine is enrolled in the console, Loading PAPI Client` y ya NO aparece `Machine is not enrolled in the console`. Console UI confirmada por el usuario: engine nas-k3s aprobado y dashboard (Decisions/Alerts/Hub) con datos.
+<!-- SECTION:FINAL_SUMMARY:END -->
