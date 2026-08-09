@@ -5,6 +5,7 @@ local loki = import 'monitoring/loki/loki.libsonnet';
 local nodeExporter = import 'monitoring/node-exporter/node-exporter.libsonnet';
 local nutExporter = import 'monitoring/nut-exporter/nut-exporter.libsonnet';
 local promtail = import 'monitoring/promtail/promtail.libsonnet';
+local scraparr = import 'monitoring/scraparr/scraparr.libsonnet';
 local smartctlExporter = import 'monitoring/smartctl-exporter/smartctl-exporter.libsonnet';
 local victoriametrics = import 'monitoring/victoriametrics/victoriametrics.libsonnet';
 local u = import 'utils.libsonnet';
@@ -17,6 +18,7 @@ u.Environment({
   smartctlExporter: smartctlExporter.new(),
   nutExporter: nutExporter.new(),
   immichExporter: immichExporter.new(),
+  scraparr: scraparr.new(),
   kubeStateMetrics: kubeStateMetrics.new(),
   victoriametrics: victoriametrics.new(),
 })
