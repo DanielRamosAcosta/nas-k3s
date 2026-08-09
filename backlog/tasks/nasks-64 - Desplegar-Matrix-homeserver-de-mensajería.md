@@ -15,7 +15,7 @@ references:
     https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
   - 'https://element-hq.github.io/synapse/latest/openid.html'
 priority: medium
-ordinal: 1000
+ordinal: 6000
 ---
 
 ## Description

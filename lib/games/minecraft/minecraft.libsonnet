@@ -66,8 +66,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     configEnv: u.configMap.forEnv(self.statefulSet, {
       EULA: 'TRUE',
       TYPE: 'PAPER',
-      VERSION: versions.minecraft.paperVersion,
-      PAPER_BUILD: versions.minecraft.paperBuild,
+      VERSION: '26.2',
+      PAPER_BUILD: '65',
       PAPER_CHANNEL: 'experimental',
       MEMORY: '4G',
       USE_AIKAR_FLAGS: 'true',

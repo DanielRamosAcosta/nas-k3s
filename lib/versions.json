@@ -51,6 +51,10 @@
     "image": "ghcr.io/druggeri/nut_exporter",
     "version": "3.3.0"
   },
+  "immichExporter": {
+    "image": "eithan1231/immich-exporter",
+    "version": "2025-05-12-commit-241dce4"
+  },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
     "version": "v2.19.1"
@@ -173,9 +177,7 @@
   },
   "minecraft": {
     "image": "docker.io/itzg/minecraft-server",
-    "version": "java25",
-    "paperVersion": "26.2",
-    "paperBuild": "65"
+    "version": "java25"
   },
   "mcRouter": {
     "image": "docker.io/itzg/mc-router",

@@ -10,7 +10,7 @@ labels:
   - immich
 dependencies: []
 priority: medium
-ordinal: 4000
+ordinal: 7000
 ---
 
 ## Description

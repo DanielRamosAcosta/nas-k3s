@@ -16,7 +16,7 @@ references:
   - lib/media/gitea/gitea.libsonnet
   - lib/monitoring/grafana/grafana.libsonnet
 priority: medium
-ordinal: 3000
+ordinal: 6000
 ---
 
 ## Description
