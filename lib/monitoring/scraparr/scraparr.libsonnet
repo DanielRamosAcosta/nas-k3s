@@ -25,6 +25,7 @@ local secrets = import 'monitoring/scraparr/scraparr.secrets.json';
       SONARR_URL: 'http://sonarr.arr.svc.cluster.local:8989',
       RADARR_URL: 'http://radarr.arr.svc.cluster.local:7878',
       LIDARR_URL: 'http://lidarr.arr.svc.cluster.local:8686',
+      JELLYFIN_URL: 'http://jellyfin.media.svc.cluster.local:8096',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.scraparr),
