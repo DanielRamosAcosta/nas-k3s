@@ -1,4 +1,5 @@
 local grafana = import 'monitoring/grafana/grafana.libsonnet';
+local immichExporter = import 'monitoring/immich-exporter/immich-exporter.libsonnet';
 local kubeStateMetrics = import 'monitoring/kube-state-metrics/kube-state-metrics.libsonnet';
 local loki = import 'monitoring/loki/loki.libsonnet';
 local nodeExporter = import 'monitoring/node-exporter/node-exporter.libsonnet';
@@ -15,6 +16,7 @@ u.Environment({
   nodeExporter: nodeExporter.new(),
   smartctlExporter: smartctlExporter.new(),
   nutExporter: nutExporter.new(),
+  immichExporter: immichExporter.new(),
   kubeStateMetrics: kubeStateMetrics.new(),
   victoriametrics: victoriametrics.new(),
 })
