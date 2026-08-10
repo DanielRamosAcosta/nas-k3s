@@ -3,10 +3,10 @@ id: NASKS-67
 title: >-
   Añadir vanity metrics dashboard en Grafana — biblioteca de medios, fotos,
   música
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-06-19 17:58'
-updated_date: '2026-06-21 09:55'
+updated_date: '2026-08-10 18:54'
 labels:
   - grafana
   - monitoring
@@ -141,8 +141,24 @@ Para servicios sin exporter verificado en la comunidad, se pueden construir expo
 
 ## Acceptance Criteria
 <!-- AC:BEGIN -->
-- [ ] #1 Dashboard de Grafana con vanity metrics visibles y funcionales para al menos Radarr, Sonarr, Lidarr, Jellyfin e Immich
-- [ ] #2 Exporters desplegados como recursos Kubernetes en el namespace correspondiente y scrapeados por VictoriaMetrics
-- [ ] #3 Métricas actualizándose correctamente (no valores a cero o stale)
-- [ ] #4 Dashboard guardado en Grafana (provisionado o manual)
+- [x] #1 Dashboard de Grafana con vanity metrics visibles y funcionales para al menos Radarr, Sonarr, Lidarr, Jellyfin e Immich
+- [x] #2 Exporters desplegados como recursos Kubernetes en el namespace correspondiente y scrapeados por VictoriaMetrics
+- [x] #3 Métricas actualizándose correctamente (no valores a cero o stale)
+- [x] #4 Dashboard guardado en Grafana (provisionado o manual)
 <!-- AC:END -->
+
+## Final Summary
+
+<!-- SECTION:FINAL_SUMMARY:BEGIN -->
+Dashboard de vanity metrics "NAS Vanity" (Grafana, uid `vanity`, /d/vanity/nas-vanity) creado vía MCP, ~60 paneles en 8 secciones colapsables: 🏆 Hero, 🎬 Media, 📸 Fotos, 🛡️ Seguridad, 🌐 Red, 📥 Deluge, 🖥️ Infra flex, 🎮 Minecraft. Variedad de viz (stat con sparkline, gauge radial, bargauge, donut, piechart, timeseries), números completos + emojis, tema oscuro.
+
+Exporters desplegados y scrapeados por VictoriaMetrics (todo vía GitOps):
+- scraparr (Sonarr/Radarr/Lidarr/Jellyfin) — NASKS-85 + PR #183 (Jellyfin)
+- immich-exporter (fotos/vídeos/uso por usuario) — NASKS-84
+- CrowdSec nativo (cs_*, pod annotations :6060), Traefik nativo (traefik_*), Navidrome nativo (ND_PROMETHEUS_ENABLED — solo navidrome_info), mc-monitor (minecraft_status_*), deluge-exporter ngosang (deluge_*) — PR #184/#185
+- Infra rescatada del dashboard "Main": discos %, uptime, tráfico total, consumo/€, pods, emails (Loki).
+
+Detalles resueltos en revisión: valores duplicados por instance-churn (wrap en max()), géneros con recuentos reales (radarr_genres_count_total en vez de jellyfin_genres_total=1), tamaño biblioteca ordenado, barcharts problemáticos → bargauge, Deluge/Minecraft separados en secciones propias.
+
+Caveats: el dashboard vive en la BD de Grafana (no versionado en git); recuentos de música de Navidrome movidos a Tier 3 (NASKS-86, exporter custom Subsonic API).
+<!-- SECTION:FINAL_SUMMARY:END -->
