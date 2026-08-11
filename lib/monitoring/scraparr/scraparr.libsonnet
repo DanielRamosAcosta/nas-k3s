@@ -26,6 +26,15 @@ local secrets = import 'monitoring/scraparr/scraparr.secrets.json';
       RADARR_URL: 'http://radarr.arr.svc.cluster.local:7878',
       LIDARR_URL: 'http://lidarr.arr.svc.cluster.local:8686',
       JELLYFIN_URL: 'http://jellyfin.media.svc.cluster.local:8096',
+
+      // Vanity dashboard: 5 min is plenty (default is 30s) and keeps the node baseline flat.
+      SONARR_INTERVAL: '300',
+      RADARR_INTERVAL: '300',
+      LIDARR_INTERVAL: '300',
+      JELLYFIN_INTERVAL: '300',
+
+      // Detailed mode walks every artist (2 extra API calls each) every cycle — the CPU hog. Library-level metrics remain.
+      LIDARR_DETAILED: 'false',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.scraparr),
