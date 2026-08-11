@@ -1,8 +1,13 @@
 apiVersion: v1
 data:
+  JELLYFIN_INTERVAL: "300"
   JELLYFIN_URL: http://jellyfin.media.svc.cluster.local:8096
+  LIDARR_DETAILED: "false"
+  LIDARR_INTERVAL: "300"
   LIDARR_URL: http://lidarr.arr.svc.cluster.local:8686
+  RADARR_INTERVAL: "300"
   RADARR_URL: http://radarr.arr.svc.cluster.local:7878
+  SONARR_INTERVAL: "300"
   SONARR_URL: http://sonarr.arr.svc.cluster.local:8989
 kind: ConfigMap
 metadata:

@@ -21,20 +21,45 @@ spec:
     spec:
       containers:
       - env:
+        - name: JELLYFIN_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: JELLYFIN_INTERVAL
+              name: scraparr-config-env
         - name: JELLYFIN_URL
           valueFrom:
             configMapKeyRef:
               key: JELLYFIN_URL
+              name: scraparr-config-env
+        - name: LIDARR_DETAILED
+          valueFrom:
+            configMapKeyRef:
+              key: LIDARR_DETAILED
+              name: scraparr-config-env
+        - name: LIDARR_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: LIDARR_INTERVAL
               name: scraparr-config-env
         - name: LIDARR_URL
           valueFrom:
             configMapKeyRef:
               key: LIDARR_URL
               name: scraparr-config-env
+        - name: RADARR_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: RADARR_INTERVAL
+              name: scraparr-config-env
         - name: RADARR_URL
           valueFrom:
             configMapKeyRef:
               key: RADARR_URL
+              name: scraparr-config-env
+        - name: SONARR_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: SONARR_INTERVAL
               name: scraparr-config-env
         - name: SONARR_URL
           valueFrom:
