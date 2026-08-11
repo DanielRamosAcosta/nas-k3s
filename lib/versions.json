@@ -89,7 +89,7 @@
   },
   "jdownloader": {
     "image": "docker.io/jlesage/jdownloader-2",
-    "version": "v26.07.2"
+    "version": "v26.08.1"
   },
   "synapse": {
     "image": "ghcr.io/element-hq/synapse",
