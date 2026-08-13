@@ -1,9 +1,10 @@
 ---
 id: NASKS-77
 title: Hardening del plugin Benefits de FacturaScripts
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-06-27 08:19'
+updated_date: '2026-08-09 19:10'
 labels:
   - business
   - facturascripts
@@ -12,7 +13,7 @@ labels:
 dependencies:
   - NASKS-60
 priority: low
-ordinal: 73000
+ordinal: 0.000014901161193847656
 ---
 
 ## Description

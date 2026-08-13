@@ -3,15 +3,15 @@ id: NASKS-51
 title: >-
   Ampliar dashboards Grafana con vizs variadas (state timeline, heatmaps,
   histogramas, stats)
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-04-21 22:20'
-updated_date: '2026-06-19 16:56'
+updated_date: '2026-08-10 19:01'
 labels:
   - monitoring
   - grafana
 dependencies: []
-ordinal: 56000
+ordinal: 0.000007450580596923828
 ---
 
 ## Description

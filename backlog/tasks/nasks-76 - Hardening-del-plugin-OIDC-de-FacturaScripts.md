@@ -1,9 +1,10 @@
 ---
 id: NASKS-76
 title: Hardening del plugin OIDC de FacturaScripts
-status: To Do
+status: Done
 assignee: []
 created_date: '2026-06-27 08:18'
+updated_date: '2026-08-09 19:09'
 labels:
   - business
   - facturascripts
@@ -15,7 +16,7 @@ references:
   - 'https://github.com/jumbojett/OpenID-Connect-PHP'
   - 'https://www.authelia.com/integration/openid-connect/introduction/'
 priority: medium
-ordinal: 72000
+ordinal: 0.000029802322387695312
 ---
 
 ## Description
