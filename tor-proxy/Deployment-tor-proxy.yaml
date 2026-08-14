@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tor-proxy
+  name: tor-proxy
+  namespace: arr
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: tor-proxy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: tor-proxy
+    spec:
+      containers:
+      - image: docker.io/osminogin/tor-simple:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          tcpSocket:
+            port: 8118
+          timeoutSeconds: 5
+        name: tor-proxy
+        ports:
+        - containerPort: 8118
+          name: http-tunnel
+        readinessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          tcpSocket:
+            port: 8118
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 200m
+            memory: 128Mi
+          requests:
+            cpu: 50m
+            memory: 64Mi
+        volumeMounts:
+        - mountPath: /etc/tor/torrc
+          name: torrc
+          subPath: torrc
+      volumes:
+      - configMap:
+          name: torrc
+        name: torrc

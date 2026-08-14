@@ -1,0 +1,14 @@
+apiVersion: v1
+data:
+  torrc: |
+    # Tor configuration for norznab .onion access
+    # HTTPTunnelPort enables HTTP CONNECT proxy (undici ProxyAgent compatible)
+    HTTPTunnelPort 0.0.0.0:8118
+    # Keep SOCKS port disabled to reduce attack surface
+    SocksPort 0
+kind: ConfigMap
+metadata:
+  labels:
+    app: tor-proxy
+  name: torrc
+  namespace: arr
