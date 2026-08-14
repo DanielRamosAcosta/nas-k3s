@@ -141,7 +141,11 @@
   },
   "norznab": {
     "image": "ghcr.io/danielramosacosta/norznab",
-    "version": "main-0713f4a"
+    "version": "main-072ed68"
+  },
+  "torProxy": {
+    "image": "docker.io/osminogin/tor-simple",
+    "version": "latest"
   },
   "postgres": {
     "image": "ghcr.io/immich-app/postgres",
