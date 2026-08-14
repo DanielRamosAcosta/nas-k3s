@@ -141,7 +141,7 @@
   },
   "norznab": {
     "image": "ghcr.io/danielramosacosta/norznab",
-    "version": "main-96bd028"
+    "version": "main-de29e0e"
   },
   "postgres": {
     "image": "ghcr.io/immich-app/postgres",
