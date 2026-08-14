@@ -3,8 +3,6 @@ data:
   DON_TORRENT_BASE_URL: https://dontorrent.review
   DON_TORRENT_TOR_PROXY: http://tor-proxy.arr.svc.cluster.local:8118
   DON_TORRENT_USE_ONION: "true"
-  ENABLE_DON_TORRENT: "true"
-  ENABLE_MARCIANO_TORRENT: "false"
   MARCIANO_TORRENT_BASE_URL: https://marcianotorrent.net
   REQUEST_TIMEOUT_MS: "120000"
 kind: ConfigMap

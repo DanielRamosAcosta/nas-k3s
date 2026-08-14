@@ -43,16 +43,6 @@ spec:
             configMapKeyRef:
               key: DON_TORRENT_USE_ONION
               name: norznab-config-env
-        - name: ENABLE_DON_TORRENT
-          valueFrom:
-            configMapKeyRef:
-              key: ENABLE_DON_TORRENT
-              name: norznab-config-env
-        - name: ENABLE_MARCIANO_TORRENT
-          valueFrom:
-            configMapKeyRef:
-              key: ENABLE_MARCIANO_TORRENT
-              name: norznab-config-env
         - name: MARCIANO_TORRENT_BASE_URL
           valueFrom:
             configMapKeyRef:
@@ -63,7 +53,7 @@ spec:
             configMapKeyRef:
               key: REQUEST_TIMEOUT_MS
               name: norznab-config-env
-        image: ghcr.io/danielramosacosta/norznab:main-072ed68
+        image: ghcr.io/danielramosacosta/norznab:main-83eb0dd
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
