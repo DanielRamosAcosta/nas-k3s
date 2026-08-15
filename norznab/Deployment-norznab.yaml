@@ -53,7 +53,7 @@ spec:
             configMapKeyRef:
               key: REQUEST_TIMEOUT_MS
               name: norznab-config-env
-        image: ghcr.io/danielramosacosta/norznab:main-89dd659
+        image: ghcr.io/danielramosacosta/norznab:main-f03ede2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
