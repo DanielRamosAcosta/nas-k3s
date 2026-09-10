@@ -86,7 +86,7 @@ spec:
             secretKeyRef:
               key: SONARR_API_KEY
               name: scraparr-sealed-secret
-        image: ghcr.io/thecfu/scraparr:3.1.0
+        image: ghcr.io/thecfu/scraparr:3.2.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
