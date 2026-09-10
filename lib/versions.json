@@ -173,7 +173,7 @@
   },
   "facturascripts": {
     "image": "docker.io/facturascripts/facturascripts",
-    "version": "2026.41"
+    "version": "2026.65"
   },
   "wger": {
     "image": "docker.io/wger/server",
