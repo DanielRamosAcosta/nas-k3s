@@ -37,7 +37,7 @@ spec:
             secretKeyRef:
               key: COUCHDB_USER
               name: couchdb-sealed-secret
-        image: docker.io/curlimages/curl:8.21.0
+        image: docker.io/curlimages/curl:8.22.0
         imagePullPolicy: IfNotPresent
         name: create-user
         volumeMounts:
