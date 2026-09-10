@@ -61,7 +61,7 @@
   },
   "mcMonitor": {
     "image": "docker.io/itzg/mc-monitor",
-    "version": "0.17.0"
+    "version": "0.17.1"
   },
   "delugeExporter": {
     "image": "docker.io/ngosang/deluge-exporter",
