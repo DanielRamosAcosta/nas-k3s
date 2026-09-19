@@ -8,13 +8,13 @@ data:
   MOTD: §c§lE§6§ls§e§lc§a§lr§b§lo§9§lt§d§lo§c§ln§6§le§e§lt§a§la
   ONLINE_MODE: "TRUE"
   OPS: Duning
-  PAPER_BUILD: "65"
+  PAPER_BUILD: "19"
   PAPER_CHANNEL: experimental
   RCON_PORT: "25575"
   TYPE: PAPER
   TZ: Atlantic/Canary
   USE_AIKAR_FLAGS: "true"
-  VERSION: "26.2"
+  VERSION: "26.3"
 kind: ConfigMap
 metadata:
   labels:
