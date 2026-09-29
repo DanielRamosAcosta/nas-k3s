@@ -77,7 +77,7 @@
   },
   "grimmory": {
     "image": "grimmory/grimmory",
-    "version": "v3.3.3"
+    "version": "v3.5.0"
   },
   "jellyfin": {
     "image": "docker.io/jellyfin/jellyfin",
