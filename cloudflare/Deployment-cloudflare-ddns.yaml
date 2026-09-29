@@ -36,6 +36,6 @@ spec:
             secretKeyRef:
               key: CLOUDFLARE_API_TOKEN
               name: cloudflare-ddns-sealed-secret
-        image: docker.io/favonia/cloudflare-ddns:1.17.0
+        image: docker.io/favonia/cloudflare-ddns:1.17.1
         imagePullPolicy: IfNotPresent
         name: cloudflare-ddns
