@@ -73,7 +73,7 @@
   },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
-    "version": "1.17.0"
+    "version": "1.17.1"
   },
   "grimmory": {
     "image": "grimmory/grimmory",
