@@ -101,7 +101,7 @@
   },
   "sonarr": {
     "image": "ghcr.io/hotio/sonarr",
-    "version": "release-4.0.19.2979"
+    "version": "release-4.0.20.3014"
   },
   "radarr": {
     "image": "ghcr.io/hotio/radarr",
