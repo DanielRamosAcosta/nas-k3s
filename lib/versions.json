@@ -45,7 +45,7 @@
   },
   "smartctlExporter": {
     "image": "quay.io/prometheuscommunity/smartctl-exporter",
-    "version": "v0.14.0"
+    "version": "v0.15.0"
   },
   "nutExporter": {
     "image": "ghcr.io/druggeri/nut_exporter",
