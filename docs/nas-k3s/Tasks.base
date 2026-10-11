@@ -1,0 +1,22 @@
+filters:
+  and:
+    - file.inFolder("Tasks")
+views:
+  - type: kanban
+    name: Vista
+    filters:
+      and:
+        - parent.isEmpty()
+    groupBy:
+      property: status
+      direction: ASC
+    groupOrder:
+      - To Do
+      - In Progress
+      - Done
+    order:
+      - title
+      - labels
+    sort:
+      - property: ordinal
+        direction: DESC

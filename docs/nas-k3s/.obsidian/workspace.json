@@ -1,0 +1,223 @@
+{
+  "main": {
+    "id": "c0288fcf2c6e6e23",
+    "type": "split",
+    "children": [
+      {
+        "id": "4c0353c0253b062c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "bf8b603e0af57e0c",
+            "type": "leaf",
+            "state": {
+              "type": "bases",
+              "state": {
+                "file": "Tasks.base",
+                "viewName": "Vista"
+              },
+              "icon": "lucide-kanban-square",
+              "title": "Tasks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "cb833e6366464131",
+    "type": "split",
+    "children": [
+      {
+        "id": "f4818d65d3c6acb0",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "da7277796ffabf9c",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Explorador de archivos"
+            }
+          },
+          {
+            "id": "94ddaedda7d6f70c",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Buscar"
+            }
+          },
+          {
+            "id": "00d936db860fe9d1",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Marcadores"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 375.890625
+  },
+  "right": {
+    "id": "44bbf225cacba270",
+    "type": "split",
+    "children": [
+      {
+        "id": "304efb8b8015ff99",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "78ac630405c0deb6",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Tareas.base",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Enlaces entrantes"
+            }
+          },
+          {
+            "id": "b8022eff4d234cc3",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Tareas.base",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Enlaces salientes"
+            }
+          },
+          {
+            "id": "3303a2db2341a799",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Etiquetas"
+            }
+          },
+          {
+            "id": "502e7a26b72c54ed",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "Todas las propiedades"
+            }
+          },
+          {
+            "id": "fb573615c7d8f477",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Tareas.base",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Esquema"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Abrir selector rápido": false,
+      "graph:Abrir vista gráfica": false,
+      "canvas:Crear nuevo lienzo": false,
+      "daily-notes:Abrir la nota de hoy": false,
+      "templates:Insertar plantilla": false,
+      "command-palette:Abrir paleta de comandos": false,
+      "bases:Crear nueva base": false
+    }
+  },
+  "active": "bf8b603e0af57e0c",
+  "lastOpenFiles": [
+    "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
+    "Tasks.base",
+    "Tasks/Vanity metrics Tier 3 — exporters custom (wger, FacturaScripts, grimmory, jDownloader).md",
+    "Tasks/Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable.md",
+    "Tasks/fix(immich) permitir tráfico LAN en GeoBlock tras alias DNS local.md",
+    "Tasks/Fix Invidious Companion PO token validation failure.md",
+    "Tasks/Disable WebDAV in SFTPGo.md",
+    "Tasks/Añadir scraparr (exporter de la suite arr) al stack de monitoring.md",
+    "Tasks/Añadir git hook que ejecute los checks de CI localmente antes de pushear.md",
+    "Tasks/Alertado de despliegues fallidos.md",
+    "Tasks/Actualizar con seguridad FacturaScripts 2025.81 → 2026.3.md",
+    "Tasks/Prueba de todo.md",
+    "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
+    "Tasks/Add alerting to monitoring stack.md",
+    "Tasks/Alertas Grafana para SMTP relay (bounces, deferred, relay caído).md",
+    "Tasks/Añadir backup lógico con pg_dump pg_dumpall.md",
+    "Tasks/Create trip photo albums in Immich.md",
+    "Tasks/Healthcheck deluge — HTTP 8112.md",
+    "Tasks/Healthcheck helper en utils.libsonnet.md",
+    "Tasks/Healthcheck sonarr — HTTP 8989 ping.md",
+    "Tasks/Migrate Tanka directory to its own repository.md",
+    "Tasks/Página de error personalizada para Traefik.md",
+    "Tasks/Refactorizar módulo Traefik para usar utils.md",
+    "Tasks/Set up declarative DNS management from Kubernetes with external-dns.md",
+    "Tasks/Añadir CronJob de backup para CouchDB.md",
+    "Sin título.md",
+    "Templates/Task.md",
+    "Templates",
+    "Tasks",
+    "Tareas.base"
+  ]
+}
