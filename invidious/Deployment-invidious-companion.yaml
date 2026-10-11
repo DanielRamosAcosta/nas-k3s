@@ -50,19 +50,6 @@ spec:
         - mountPath: /var/tmp/youtubei.js
           name: cache
       enableServiceLinks: false
-      initContainers:
-      - command:
-        - /bin/sh
-        - -c
-        - chown -R 10001:10001 /var/tmp/youtubei.js
-        image: busybox:1.38.0
-        imagePullPolicy: IfNotPresent
-        name: fix-perms
-        securityContext:
-          runAsUser: 0
-        volumeMounts:
-        - mountPath: /var/tmp/youtubei.js
-          name: cache
       volumes:
       - hostPath:
           path: /data/invidious/companion-cache
