@@ -6,6 +6,7 @@ data:
   IMMICH_LOG_FORMAT: json
   IMMICH_PORT: "2283"
   IMMICH_TELEMETRY_INCLUDE: all
+  REDIS_DBINDEX: "0"
   REDIS_HOSTNAME: valkey.databases.svc.cluster.local
 kind: ConfigMap
 metadata:

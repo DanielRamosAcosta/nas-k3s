@@ -11,6 +11,7 @@ data:
   dexserver.log.level: info
   notificationscontroller.log.format: text
   notificationscontroller.log.level: info
+  redis.db: "1"
   redis.server: valkey.databases.svc.cluster.local:6379
   repo.server: argocd-repo-server:8081
   reposerver.log.format: text

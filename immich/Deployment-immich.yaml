@@ -51,6 +51,11 @@ spec:
             configMapKeyRef:
               key: IMMICH_TELEMETRY_INCLUDE
               name: immich-config-env
+        - name: REDIS_DBINDEX
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_DBINDEX
+              name: immich-config-env
         - name: REDIS_HOSTNAME
           valueFrom:
             configMapKeyRef:
