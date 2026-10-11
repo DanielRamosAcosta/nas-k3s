@@ -44,19 +44,10 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  statefulSet.spec.template.spec.securityContext.withRunAsUser(5984) +
                  statefulSet.spec.template.spec.securityContext.withRunAsGroup(5984) +
                  statefulSet.spec.template.spec.securityContext.withFsGroup(5984) +
-                 statefulSet.spec.template.spec.withInitContainers([
-                   // La imagen oficial corre como uid 5984; el hostPath se crea como root.
-                   // Este init corre como root (override del securityContext de pod) para chownear.
-                   container.new('fix-perms', u.image(versions.busybox.image, versions.busybox.version)) +
-                   container.withCommand(['/bin/sh', '-c', 'chown -R 5984:5984 /opt/couchdb/data']) +
-                   container.withVolumeMounts([
-                     volumeMount.new(dataVolumeName, '/opt/couchdb/data'),
-                   ]) +
-                   { securityContext: { runAsUser: 0 } },
-                 ]) + statefulSet.spec.template.spec.withVolumes([
-      volume.fromHostPath(dataVolumeName, '/data/couchdb'),
-      u.volume.fromConfigMap(self.config),
-    ]),
+                 statefulSet.spec.template.spec.withVolumes([
+                   volume.fromHostPath(dataVolumeName, '/data/couchdb'),
+                   u.volume.fromConfigMap(self.config),
+                 ]),
 
     service: k.util.serviceFor(self.statefulSet),
 

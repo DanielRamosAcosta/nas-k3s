@@ -55,7 +55,9 @@ Un archivo de configuración con 10 líneas donde cada línea importa es mejor q
 
 Muchas imágenes arrancan su entrypoint **como root** y hacen un `chown -R` sobre sus directorios. Si ahí dentro hay un montaje read-only, el `chown` falla; con `set -e` el entrypoint **aborta antes de loguear nada** → el contenedor sale con código 1 y **cero logs** (síntoma engañoso, parece un fallo de arranque del propio servicio). Correr como el uid de la app salta ese bloque de `chown`.
 
-Caso real: `apache/couchdb` (corre como uid 5984) — montar nuestro `local.ini` read-only provocaba CrashLoopBackOff sin logs hasta fijar `runAsUser: 5984`. Si además el hostPath de datos lo crea root, usa un init container `runAsUser: 0` solo para el `chown` de ese volumen.
+Caso real: `apache/couchdb` (corre como uid 5984) — montar nuestro `local.ini` read-only provocaba CrashLoopBackOff sin logs hasta fijar `runAsUser: 5984`.
+
+Si además el hostPath de datos lo crea root y la app corre non-root, **fija el owner del directorio una vez a mano en el host** (`sudo chown <uid>:<uid> /data/<app>`) en lugar de un init container `runAsUser: 0` que lo chownee en cada arranque. `fsGroup` no aplica a hostPath (el kubelet no lo chownea), y `DirectoryOrCreate` no re-crea ni re-chownea un dir existente, así que la propiedad persiste. Evita un contenedor privilegiado por pod. Contrapartida: la propiedad vive fuera del git; si se borra el dir o se reinstala el NAS, hay que rehacer el `chown`.
 
 ## Observabilidad: logs
 
