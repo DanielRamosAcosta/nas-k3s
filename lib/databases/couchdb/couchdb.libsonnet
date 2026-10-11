@@ -103,7 +103,12 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     ingress_route: u.ingressRoute.from(self.service, 'couchdb.danielramos.me', [{ name: this.crowdsecBouncer.metadata.name }]),
 
     createUser(name, dbName, password, configMap, secret):: {
+      // El spec.template de un Job es inmutable: cualquier cambio (p. ej. bump de la
+      // imagen de curl) rompe el sync de ArgoCD con "field is immutable". Replace=true
+      // hace que ArgoCD borre y recree el Job en vez de parchearlo. Seguro porque el
+      // script de migración es idempotente (tolera 412/409 y reescribe _security).
       migrationJob: k.batch.v1.job.new('couchdb-create-user-' + name) +
+                    k.batch.v1.job.metadata.withAnnotationsMixin({ 'argocd.argoproj.io/sync-options': 'Replace=true' }) +
                     k.batch.v1.job.spec.template.spec.withRestartPolicy('OnFailure') +
                     k.batch.v1.job.spec.template.spec.withContainers([
                       container.new('create-user', u.image(versions.curl.image, versions.curl.version)) +

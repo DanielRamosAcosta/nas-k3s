@@ -1,6 +1,6 @@
 ---
 title: Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en /0)
-status: In Progress
+status: Done
 created_date: '2026-05-08 06:01'
 labels:
   - databases
@@ -50,3 +50,13 @@ Valkey corre con config por defecto y **sin volumen persistente** → ya es 100%
 - **ArgoCD** (`lib/system/argocd/argocd.libsonnet`): añadir `'redis.db': 1` a `configs.params`. El chart lo propaga a `argocd-cmd-params-cm` → env `REDISDB` en server/repo-server/application-controller.
 - Migración "a lo bestia" sin mover datos: al desplegar, ArgoCD reconecta a `/1` (vacía) y reconstruye su caché de manifiestos/diffs en segundos. Las keys viejas en `/0` quedan huérfanas.
 - **Al terminar**: reiniciar el pod de Valkey para limpiar las keys huérfanas de `/0` (caché regenerable, sin persistencia → sin riesgo).
+
+## Implementation Notes
+
+Desplegado vía PR #253 (squash merge en `main`). Convención final de DBs lógicas de Valkey: `/0` Immich, `/1` ArgoCD, `/2` wger cache, `/3` wger celery broker, `/4` wger celery backend.
+
+- **Immich**: `REDIS_DBINDEX: '0'` explícito en `configEnv`. Pod rotado por Reloader, `1/1 Running` sin errores de Redis.
+- **ArgoCD**: `'redis.db': 1` en `configs.params`; el chart lo propaga al ConfigMap `argocd-cmd-params-cm` (`redis.db: "1"`) → env `REDISDB` en server/repo-server/application-controller. Los 3 componentes rotaron a `1/1 Running`.
+- Verificado en logs (Loki): tras mover ArgoCD a `/1` aparecieron `DiffFromCache error: cache: key is missing` (regeneración esperada de la caché vacía) y cesaron en segundos; cero errores de conexión a Redis.
+- **Valkey reiniciado** (`kubectl rollout restart deployment/valkey -n databases`) para vaciar las keys huérfanas de `/0`. Immich y ArgoCD reconectaron sin reinicios (0 restarts).
+- wger ya seguía la convención desde su despliegue; no requirió cambios.
