@@ -67,7 +67,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       EULA: 'TRUE',
       TYPE: 'PAPER',
       VERSION: '26.3',
-      PAPER_BUILD: '19',
+      PAPER_BUILD: '174',
       PAPER_CHANNEL: 'experimental',
       MEMORY: '4G',
       USE_AIKAR_FLAGS: 'true',
