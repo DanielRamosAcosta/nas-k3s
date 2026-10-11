@@ -21,6 +21,7 @@ local helm = tanka.helm.new(std.thisFile);
         configs: {
           params: {
             'server.insecure': true,
+            'redis.db': 1,
           },
           cm: {
             url: 'https://argocd.danielramos.me',

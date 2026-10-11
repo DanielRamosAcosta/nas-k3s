@@ -55,6 +55,7 @@ local immichConfig = importstr './immich.config.json';
       DB_HOSTNAME: 'postgres.databases.svc.cluster.local',
       DB_USERNAME: 'immich',
       REDIS_HOSTNAME: 'valkey.databases.svc.cluster.local',
+      REDIS_DBINDEX: '0',
       IMMICH_CONFIG_FILE: '/app/config/immich.json',
       IMMICH_TELEMETRY_INCLUDE: 'all',
       IMMICH_LOG_FORMAT: 'json',
