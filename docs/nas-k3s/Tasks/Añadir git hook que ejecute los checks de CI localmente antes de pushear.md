@@ -11,7 +11,7 @@ labels:
 dependencies: []
 references:
   - .github/workflows/validate.yml
-priority: medium
+priority: 2
 ordinal: 70000
 ---
 

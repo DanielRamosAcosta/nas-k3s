@@ -10,7 +10,7 @@ labels:
   - infrastructure
 dependencies:
   - NASKS-17
-priority: medium
+priority: 2
 ordinal: 125
 ---
 

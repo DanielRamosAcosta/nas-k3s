@@ -1,7 +1,7 @@
 ---
 title: "{{title}}"
 status: To Do
-priority: medium
+priority: 2
 labels: []
 parent:
 references: []

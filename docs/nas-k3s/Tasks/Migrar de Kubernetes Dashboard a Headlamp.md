@@ -12,7 +12,7 @@ dependencies: []
 references:
   - 'https://github.com/kubernetes/dashboard'
   - 'https://github.com/headlamp-k8s/headlamp'
-priority: medium
+priority: 2
 ordinal: 47000
 ---
 

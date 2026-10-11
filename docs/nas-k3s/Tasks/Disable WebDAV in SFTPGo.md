@@ -10,7 +10,7 @@ labels:
   - chore
   - kubernetes
 dependencies: []
-priority: low
+priority: 3
 ordinal: 41000
 ---
 

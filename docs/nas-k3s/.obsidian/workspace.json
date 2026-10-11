@@ -11,13 +11,14 @@
             "id": "bf8b603e0af57e0c",
             "type": "leaf",
             "state": {
-              "type": "bases",
+              "type": "markdown",
               "state": {
-                "file": "Tasks.base",
-                "viewName": "Vista"
+                "file": "Tasks/Añadir CI con GitHub Actions para validar manifiestos.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-kanban-square",
-              "title": "Tasks"
+              "icon": "lucide-file",
+              "title": "Añadir CI con GitHub Actions para validar manifiestos"
             }
           }
         ]
@@ -189,22 +190,24 @@
   },
   "active": "bf8b603e0af57e0c",
   "lastOpenFiles": [
-    "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
+    "Tasks/Añadir healthchecks (liveness readiness probes) a todos los servicios.md",
+    "Tasks/Añadir CronJob de backup para CouchDB.md",
+    "Tasks/Añadir backup lógico con pg_dump pg_dumpall.md",
+    "Tasks/Actualizar con seguridad FacturaScripts 2025.81 → 2026.3.md",
     "Tasks.base",
+    "Tasks/Añadir git hook que ejecute los checks de CI localmente antes de pushear.md",
+    "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
     "Tasks/Vanity metrics Tier 3 — exporters custom (wger, FacturaScripts, grimmory, jDownloader).md",
     "Tasks/Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable.md",
     "Tasks/fix(immich) permitir tráfico LAN en GeoBlock tras alias DNS local.md",
     "Tasks/Fix Invidious Companion PO token validation failure.md",
     "Tasks/Disable WebDAV in SFTPGo.md",
     "Tasks/Añadir scraparr (exporter de la suite arr) al stack de monitoring.md",
-    "Tasks/Añadir git hook que ejecute los checks de CI localmente antes de pushear.md",
     "Tasks/Alertado de despliegues fallidos.md",
-    "Tasks/Actualizar con seguridad FacturaScripts 2025.81 → 2026.3.md",
     "Tasks/Prueba de todo.md",
     "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
     "Tasks/Add alerting to monitoring stack.md",
     "Tasks/Alertas Grafana para SMTP relay (bounces, deferred, relay caído).md",
-    "Tasks/Añadir backup lógico con pg_dump pg_dumpall.md",
     "Tasks/Create trip photo albums in Immich.md",
     "Tasks/Healthcheck deluge — HTTP 8112.md",
     "Tasks/Healthcheck helper en utils.libsonnet.md",
@@ -213,9 +216,7 @@
     "Tasks/Página de error personalizada para Traefik.md",
     "Tasks/Refactorizar módulo Traefik para usar utils.md",
     "Tasks/Set up declarative DNS management from Kubernetes with external-dns.md",
-    "Tasks/Añadir CronJob de backup para CouchDB.md",
     "Sin título.md",
-    "Templates/Task.md",
     "Templates",
     "Tasks",
     "Tareas.base"

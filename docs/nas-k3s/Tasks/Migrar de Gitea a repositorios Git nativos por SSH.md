@@ -10,7 +10,7 @@ labels:
   - migración
   - git
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 0.1220703125
 ---
 

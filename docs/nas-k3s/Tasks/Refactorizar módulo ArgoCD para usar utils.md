@@ -10,7 +10,7 @@ labels:
 dependencies: []
 references:
   - lib/system/argocd/argocd.libsonnet
-priority: low
+priority: 3
 ordinal: 7.8125
 ---
 

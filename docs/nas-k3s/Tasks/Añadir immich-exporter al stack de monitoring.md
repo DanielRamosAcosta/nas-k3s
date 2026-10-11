@@ -15,7 +15,7 @@ modified_files:
   - lib/monitoring/immich-exporter/immich-exporter.libsonnet
   - lib/monitoring/immich-exporter/immich-exporter.secrets.json
   - environments/monitoring/main.jsonnet
-priority: low
+priority: 3
 type: feature
 ordinal: 81000
 ---

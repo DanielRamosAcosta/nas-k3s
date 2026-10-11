@@ -9,7 +9,7 @@ labels:
   - networking
   - immich
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 8000
 ---
 

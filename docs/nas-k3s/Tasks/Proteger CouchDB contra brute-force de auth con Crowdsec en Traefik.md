@@ -14,7 +14,7 @@ references:
   - lib/system/crowdsec/crowdsec.libsonnet
   - lib/system/traefik/traefik.libsonnet
   - lib/databases/couchdb/couchdb.libsonnet
-priority: high
+priority: 1
 ordinal: 71000
 ---
 

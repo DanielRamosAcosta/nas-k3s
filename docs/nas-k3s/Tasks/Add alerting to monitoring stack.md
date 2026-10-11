@@ -17,7 +17,7 @@ references:
   - tanka/lib/monitoring/promtail.config.yml
   - tanka/lib/monitoring/grafana.libsonnet
   - tanka/lib/monitoring/prometheus.libsonnet
-priority: medium
+priority: 2
 ordinal: 62.5
 ---
 

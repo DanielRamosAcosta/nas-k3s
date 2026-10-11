@@ -11,7 +11,7 @@ references:
   - lib/auth/authelia/authelia.config.yml
   - lib/media/booklore/booklore.libsonnet
   - lib/media/booklore/booklore.logback-spring.xml
-priority: medium
+priority: 2
 ordinal: 0.000059604644775390625
 ---
 

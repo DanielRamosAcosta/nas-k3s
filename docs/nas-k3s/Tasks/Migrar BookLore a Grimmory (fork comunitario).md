@@ -13,7 +13,7 @@ references:
   - 'https://github.com/grimmory-tools/grimmory'
   - 'https://github.com/orgs/grimmory-tools/discussions/120'
   - 'https://github.com/grimmory-tools/grimmory/blob/develop/README.md'
-priority: medium
+priority: 2
 ordinal: 1000
 ---
 

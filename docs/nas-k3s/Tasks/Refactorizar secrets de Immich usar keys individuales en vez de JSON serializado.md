@@ -12,7 +12,7 @@ labels:
 dependencies: []
 references:
   - lib/media/immich/
-priority: low
+priority: 3
 ordinal: 3.90625
 ---
 

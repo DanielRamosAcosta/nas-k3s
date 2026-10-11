@@ -15,7 +15,7 @@ references:
   - 'https://github.com/jellyfin/jellyfin/issues/9954'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
 parent_task_id: NASKS-22
-priority: low
+priority: 3
 ordinal: 14000
 ---
 

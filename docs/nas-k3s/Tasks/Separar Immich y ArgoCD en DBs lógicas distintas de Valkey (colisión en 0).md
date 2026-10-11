@@ -9,7 +9,7 @@ labels:
   - databases
   - tech-debt
 dependencies: []
-priority: low
+priority: 3
 ordinal: 63000
 ---
 

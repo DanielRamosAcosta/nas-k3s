@@ -15,7 +15,7 @@ references:
   - 'https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
 parent_task_id: NASKS-22
-priority: low
+priority: 3
 ordinal: 27000
 ---
 

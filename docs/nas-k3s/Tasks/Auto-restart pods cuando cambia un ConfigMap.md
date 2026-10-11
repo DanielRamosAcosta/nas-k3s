@@ -9,7 +9,7 @@ labels:
   - improvement
   - infrastructure
 dependencies: []
-priority: low
+priority: 3
 ordinal: 0.9765625
 ---
 

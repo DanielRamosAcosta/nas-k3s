@@ -15,7 +15,7 @@ references:
   - lib/communications/synapse/synapse.libsonnet
   - >-
     https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
-priority: low
+priority: 3
 ordinal: 66000
 ---
 

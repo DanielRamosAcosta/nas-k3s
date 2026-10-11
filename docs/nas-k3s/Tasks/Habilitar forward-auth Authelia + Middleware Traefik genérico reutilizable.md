@@ -10,7 +10,7 @@ labels:
   - infra
   - system
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 64000
 ---
 

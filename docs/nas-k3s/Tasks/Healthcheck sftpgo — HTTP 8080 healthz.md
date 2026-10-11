@@ -14,7 +14,7 @@ references:
   - 'https://github.com/drakkan/sftpgo/discussions/665'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
 parent_task_id: NASKS-22
-priority: low
+priority: 3
 ordinal: 26000
 ---
 

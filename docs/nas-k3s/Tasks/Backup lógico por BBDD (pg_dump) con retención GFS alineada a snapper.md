@@ -17,7 +17,7 @@ references:
   - lib/media/immich/immich.libsonnet
   - hosts/nas/snapper.nix (repo infra/system)
   - 'https://immich.app/docs/administration/backup-and-restore'
-priority: high
+priority: 1
 type: enhancement
 ordinal: 77000
 ---

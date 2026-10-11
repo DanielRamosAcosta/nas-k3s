@@ -10,7 +10,7 @@ labels:
   - kubernetes
   - simplification
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 42000
 ---
 

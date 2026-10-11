@@ -13,7 +13,7 @@ references:
   - lib/databases/postgres/postgres.libsonnet
   - lib/databases/postgres/postgres.backup.sh
   - lib/databases/postgres/postgres.cleanup.sh
-priority: medium
+priority: 2
 ordinal: 53000
 ---
 

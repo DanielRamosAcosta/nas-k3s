@@ -16,7 +16,7 @@ references:
   - hosts/shared/services/dnsmasq.nix
   - hosts/shared/services/cloudflared.nix
   - tanka/environments/versions.json
-priority: medium
+priority: 2
 ordinal: 55000
 ---
 

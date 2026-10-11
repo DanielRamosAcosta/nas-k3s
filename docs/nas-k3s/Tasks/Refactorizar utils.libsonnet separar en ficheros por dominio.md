@@ -12,7 +12,7 @@ labels:
 dependencies: []
 references:
   - lib/utils.libsonnet
-priority: low
+priority: 3
 ---
 
 ## Description

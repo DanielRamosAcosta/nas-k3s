@@ -11,7 +11,7 @@ labels:
   - observability
   - followup-nasks-53
 dependencies: []
-priority: low
+priority: 3
 ordinal: 59000
 ---
 

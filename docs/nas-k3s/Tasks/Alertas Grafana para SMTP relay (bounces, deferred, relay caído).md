@@ -11,7 +11,7 @@ labels:
   - alerting
 dependencies:
   - NASKS-40
-priority: medium
+priority: 2
 ordinal: 0.48828125
 ---
 

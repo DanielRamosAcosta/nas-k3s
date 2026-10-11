@@ -10,7 +10,7 @@ labels:
   - monitoring
   - refined
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 9000
 ---
 

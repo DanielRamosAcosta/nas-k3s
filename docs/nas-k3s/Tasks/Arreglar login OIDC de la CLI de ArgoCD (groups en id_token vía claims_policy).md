@@ -12,7 +12,7 @@ references:
   - 'https://argo-cd.readthedocs.io/en/stable/operator-manual/user-management/'
   - lib/system/argocd/argocd.libsonnet
   - lib/auth/authelia/authelia.config.yml
-priority: medium
+priority: 2
 ordinal: 69000
 ---
 

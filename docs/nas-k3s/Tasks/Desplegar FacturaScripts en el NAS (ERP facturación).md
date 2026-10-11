@@ -21,7 +21,7 @@ references:
     configuración)
 documentation:
   - 'https://facturascripts.com/documentacion'
-priority: medium
+priority: 2
 ordinal: 0.0019073486328125
 ---
 

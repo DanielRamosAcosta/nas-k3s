@@ -12,7 +12,7 @@ labels:
   - tech-debt
 dependencies:
   - NASKS-60
-priority: low
+priority: 3
 ordinal: 0.000014901161193847656
 ---
 

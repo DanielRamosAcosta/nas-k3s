@@ -10,7 +10,7 @@ labels:
   - security
   - ci
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 250
 ---
 

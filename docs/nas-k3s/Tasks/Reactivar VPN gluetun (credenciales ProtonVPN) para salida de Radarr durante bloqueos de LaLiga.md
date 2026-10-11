@@ -12,7 +12,7 @@ references:
   - lib/system/gluetun/gluetun.libsonnet
   - lib/system/gluetun/gluetun.secrets.json
   - 'https://wiki.servarr.com/radarr/environment-variables'
-priority: medium
+priority: 2
 type: bug
 ordinal: 85000
 ---

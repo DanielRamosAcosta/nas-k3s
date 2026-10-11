@@ -12,7 +12,7 @@ references:
   - 'https://github.com/slskd/slskd/pull/1709'
 modified_files:
   - lib/arr/slskd/slskd.libsonnet
-priority: medium
+priority: 2
 type: bug
 ordinal: 79000
 ---

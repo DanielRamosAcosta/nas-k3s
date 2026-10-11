@@ -10,7 +10,7 @@ labels:
   - media
   - bug
 dependencies: []
-priority: low
+priority: 3
 ordinal: 46000
 ---
 

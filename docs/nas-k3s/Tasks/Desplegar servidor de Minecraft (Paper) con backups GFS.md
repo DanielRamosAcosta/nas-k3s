@@ -17,7 +17,7 @@ references:
   - 'https://github.com/itzg/mc-router'
   - 'https://github.com/itzg/docker-minecraft-server'
   - 'https://github.com/itzg/docker-mc-backup'
-priority: low
+priority: 3
 type: feature
 ordinal: 80000
 ---

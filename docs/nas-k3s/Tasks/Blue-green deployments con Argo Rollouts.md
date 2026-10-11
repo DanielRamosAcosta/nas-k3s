@@ -11,7 +11,7 @@ labels:
 dependencies:
   - NASKS-22
   - NASKS-23
-priority: low
+priority: 3
 ordinal: 0.00095367431640625
 ---
 

@@ -13,7 +13,7 @@ references:
   - 'https://fill.papermc.io/v3/projects/paper/versions/26.3/builds'
 modified_files:
   - lib/games/minecraft/minecraft.libsonnet
-priority: medium
+priority: 2
 type: chore
 ordinal: 86000
 ---

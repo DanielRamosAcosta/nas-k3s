@@ -10,7 +10,7 @@ labels:
 dependencies: []
 references:
   - 'https://github.com/cdk8s-team/cdk8s/issues/2992'
-priority: low
+priority: 3
 ordinal: 52000
 ---
 

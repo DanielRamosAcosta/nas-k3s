@@ -14,7 +14,7 @@ references:
   - lib/databases/postgres/postgres.libsonnet
   - lib/auth/authelia/authelia.config.yml
   - environments/media/main.jsonnet
-priority: medium
+priority: 2
 ordinal: 0.06103515625
 ---
 

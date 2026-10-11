@@ -12,7 +12,7 @@ references:
   - 'https://github.com/thecfu/scraparr'
   - 'https://github.com/thecfu/scraparr/blob/master/docs/configuration.md'
   - 'https://github.com/thecfu/scraparr/blob/master/docs/connectors.md'
-priority: medium
+priority: 2
 type: chore
 ordinal: 84000
 ---

@@ -14,7 +14,7 @@ references:
   - lib/monitoring/grafana/grafana.libsonnet
   - environments/monitoring/main.jsonnet
   - environments/versions.json
-priority: medium
+priority: 2
 ordinal: 0.030517578125
 ---
 

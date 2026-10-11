@@ -11,7 +11,7 @@ labels:
   - monitoring
 dependencies:
   - NASKS-22
-priority: medium
+priority: 2
 ordinal: 31.25
 ---
 

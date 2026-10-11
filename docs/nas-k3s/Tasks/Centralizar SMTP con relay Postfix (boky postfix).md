@@ -15,7 +15,7 @@ references:
   - lib/auth/authelia/authelia.config.yml
   - lib/media/gitea/gitea.libsonnet
   - lib/monitoring/grafana/grafana.libsonnet
-priority: medium
+priority: 2
 ordinal: 7000
 ---
 

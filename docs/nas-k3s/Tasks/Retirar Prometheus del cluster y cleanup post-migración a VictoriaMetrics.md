@@ -14,7 +14,7 @@ references:
   - lib/monitoring/prometheus/prometheus.libsonnet
   - environments/monitoring/main.jsonnet
   - lib/versions.json
-priority: medium
+priority: 2
 ordinal: 0.00762939453125
 ---
 

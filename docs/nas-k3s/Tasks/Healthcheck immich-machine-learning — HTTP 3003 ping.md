@@ -17,7 +17,7 @@ references:
     https://deepwiki.com/immich-app/immich-charts/3.3-machine-learning-configuration
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
 parent_task_id: NASKS-22
-priority: low
+priority: 3
 ordinal: 10000
 ---
 

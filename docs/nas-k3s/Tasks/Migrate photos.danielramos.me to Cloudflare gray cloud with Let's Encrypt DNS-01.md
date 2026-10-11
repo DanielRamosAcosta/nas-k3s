@@ -14,7 +14,7 @@ labels:
   - tls
   - refined
 dependencies: []
-priority: high
+priority: 1
 ordinal: 5000
 ---
 

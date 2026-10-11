@@ -12,7 +12,7 @@ references:
   - >-
     https://github.com/vrtmrz/obsidian-livesync/blob/main/docs/setup_own_server.md
   - lib/databases/mariadb
-priority: medium
+priority: 2
 ordinal: 67000
 ---
 

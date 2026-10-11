@@ -10,7 +10,7 @@ labels:
   - cloudflare
   - tls
 dependencies: []
-priority: high
+priority: 1
 ordinal: 15.625
 ---
 

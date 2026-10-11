@@ -9,7 +9,7 @@ labels:
   - infra
   - zero-downtime
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 48000
 ---
 

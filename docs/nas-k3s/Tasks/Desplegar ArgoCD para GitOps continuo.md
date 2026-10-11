@@ -21,7 +21,7 @@ documentation:
   - 'https://argo-cd.readthedocs.io/en/stable/user-guide/jsonnet/'
   - >-
     https://raw.githubusercontent.com/authelia/authelia/master/docs/content/integration/openid-connect/clients/argocd/index.md
-priority: high
+priority: 1
 ---
 
 ## Description

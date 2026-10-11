@@ -9,7 +9,7 @@ labels:
   - infrastructure
   - reliability
 dependencies: []
-priority: low
+priority: 3
 ordinal: 1000
 ---
 

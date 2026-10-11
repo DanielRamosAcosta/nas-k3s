@@ -10,7 +10,7 @@ labels:
   - kubernetes
   - argocd
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 38000
 ---
 

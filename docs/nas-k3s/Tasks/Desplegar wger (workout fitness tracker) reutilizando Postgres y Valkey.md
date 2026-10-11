@@ -19,7 +19,7 @@ references:
   - 'https://github.com/wger-project/docker/blob/master/config/prod.env'
   - 'https://github.com/wger-project/docker/blob/master/docker-compose.yml'
   - 'https://wger.de/en/software/api'
-priority: medium
+priority: 2
 ordinal: 0.00011920928955078125
 ---
 

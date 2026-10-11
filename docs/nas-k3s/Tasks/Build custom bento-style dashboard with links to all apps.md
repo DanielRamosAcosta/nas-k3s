@@ -10,7 +10,7 @@ labels:
   - feature
   - kubernetes
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 40000
 ---
 

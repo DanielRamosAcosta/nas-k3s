@@ -9,7 +9,7 @@ labels:
   - traefik
   - ux
 dependencies: []
-priority: low
+priority: 3
 ordinal: 54000
 ---
 

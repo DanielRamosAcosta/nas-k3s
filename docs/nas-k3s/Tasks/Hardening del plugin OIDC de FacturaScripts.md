@@ -15,7 +15,7 @@ dependencies:
 references:
   - 'https://github.com/jumbojett/OpenID-Connect-PHP'
   - 'https://www.authelia.com/integration/openid-connect/introduction/'
-priority: medium
+priority: 2
 ordinal: 0.000029802322387695312
 ---
 

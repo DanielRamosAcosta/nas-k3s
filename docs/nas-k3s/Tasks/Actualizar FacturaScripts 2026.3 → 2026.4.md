@@ -14,7 +14,7 @@ references:
   - 'https://facturascripts.com/publicaciones/novedades-facturascripts-2026-4'
   - lib/versions.json
   - lib/business/facturascripts/facturascripts.libsonnet
-priority: low
+priority: 3
 ordinal: 76000
 ---
 

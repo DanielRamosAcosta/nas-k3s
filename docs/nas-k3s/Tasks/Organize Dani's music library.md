@@ -10,7 +10,7 @@ labels:
   - chore
   - manual
 dependencies: []
-priority: low
+priority: 3
 ordinal: 0.003814697265625
 ---
 

@@ -13,7 +13,7 @@ references:
   - 'https://prometheus.io/docs/prometheus/latest/management_api/'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
 parent_task_id: NASKS-22
-priority: low
+priority: 3
 ordinal: 23000
 ---
 

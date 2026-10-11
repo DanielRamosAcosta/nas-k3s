@@ -10,7 +10,7 @@ labels:
   - victoriametrics
   - backup
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 61000
 ---
 

@@ -10,7 +10,7 @@ labels:
 dependencies: []
 references:
   - lib/system/traefik/traefik.libsonnet
-priority: low
+priority: 3
 ordinal: 1.953125
 ---
 

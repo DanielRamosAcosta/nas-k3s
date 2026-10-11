@@ -10,7 +10,7 @@ dependencies: []
 references:
   - https://github.com/arturgoms/homelab
   - https://wger.readthedocs.io/en/latest/api.html
-priority: low
+priority: 3
 type: feature
 ordinal: 83000
 ---

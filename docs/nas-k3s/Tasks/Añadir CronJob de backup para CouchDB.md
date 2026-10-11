@@ -10,7 +10,7 @@ dependencies:
 references:
   - lib/databases/postgres
   - lib/databases/couchdb
-priority: low
+priority: 3
 ordinal: 68000
 ---
 

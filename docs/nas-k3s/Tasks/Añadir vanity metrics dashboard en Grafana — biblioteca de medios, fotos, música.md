@@ -19,7 +19,7 @@ references:
   - 'https://grafana.com/grafana/dashboards/24489-navidrome/'
   - 'https://grafana.com/grafana/dashboards/12896-radarr-v3/'
   - 'https://github.com/Boerderij/Varken'
-priority: low
+priority: 3
 ordinal: 20000
 ---
 

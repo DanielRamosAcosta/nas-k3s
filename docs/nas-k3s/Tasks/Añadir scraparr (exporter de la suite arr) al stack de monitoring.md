@@ -11,7 +11,7 @@ references:
   - 'https://github.com/thecfu/scraparr'
   - 'https://codeberg.org/thecfu/scraparr'
   - 'https://grafana.com/grafana/dashboards/22934'
-priority: low
+priority: 3
 type: feature
 ordinal: 82000
 ---

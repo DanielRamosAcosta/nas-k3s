@@ -11,7 +11,7 @@ dependencies: []
 references:
   - lib/media/immich/immich.secrets.json
   - lib/media/invidious/invidious.secrets.json
-priority: low
+priority: 3
 ordinal: 0.244140625
 ---
 

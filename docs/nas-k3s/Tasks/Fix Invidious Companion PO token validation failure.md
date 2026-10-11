@@ -10,7 +10,7 @@ labels:
   - bugfix
   - blocked
 dependencies: []
-priority: medium
+priority: 2
 ordinal: 10000
 ---
 

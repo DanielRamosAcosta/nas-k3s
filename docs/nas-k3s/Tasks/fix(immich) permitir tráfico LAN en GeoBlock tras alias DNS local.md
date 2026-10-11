@@ -10,7 +10,7 @@ labels:
   - immich
   - crowdsec
 dependencies: []
-priority: high
+priority: 1
 ordinal: 0.000476837158203125
 ---
 
