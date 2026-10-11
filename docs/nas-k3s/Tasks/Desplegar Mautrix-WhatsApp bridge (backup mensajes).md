@@ -10,7 +10,7 @@ labels:
   - system
   - refined
 dependencies:
-  - NASKS-64
+  - "[[Desplegar Synapse (Matrix homeserver)]]"
 references:
   - 'https://github.com/mautrix/whatsapp'
   - 'https://docs.mau.fi/bridges/go/whatsapp/index.html'

@@ -9,7 +9,7 @@ labels:
   - infrastructure
   - gitops
 dependencies:
-  - NASKS-17
+  - "[[Migrar a Sealed Secrets para poder usar secrets en CI]]"
 references:
   - lib/system/ (donde irá argocd.libsonnet)
   - environments/system/spec.json

@@ -9,7 +9,7 @@ labels:
   - ci
   - infrastructure
 dependencies:
-  - NASKS-17
+  - "[[Migrar a Sealed Secrets para poder usar secrets en CI]]"
 priority: 2
 ordinal: 125
 ---

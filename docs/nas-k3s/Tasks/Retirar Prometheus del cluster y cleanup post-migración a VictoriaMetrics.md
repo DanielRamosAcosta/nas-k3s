@@ -9,7 +9,7 @@ labels:
   - monitoring
   - cleanup
 dependencies:
-  - NASKS-45
+  - "[[Migrar de Prometheus a VictoriaMetrics]]"
 references:
   - lib/monitoring/prometheus/prometheus.libsonnet
   - environments/monitoring/main.jsonnet

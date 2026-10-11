@@ -11,7 +11,7 @@ labels:
   - benefits
   - tech-debt
 dependencies:
-  - NASKS-60
+  - "[[Actualizar con seguridad FacturaScripts 2025.81 → 2026.3]]"
 priority: 3
 ordinal: 0.000014901161193847656
 ---

@@ -6,7 +6,7 @@ assignee: []
 created_date: '2026-06-25 22:53'
 labels: []
 dependencies:
-  - NASKS-71
+  - "[[Desplegar CouchDB para Obsidian LiveSync]]"
 references:
   - lib/databases/postgres
   - lib/databases/couchdb

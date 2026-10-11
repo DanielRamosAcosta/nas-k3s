@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Tasks/Añadir CI con GitHub Actions para validar manifiestos.md",
+                "file": "Tasks/Migrar a Sealed Secrets para poder usar secrets en CI.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Añadir CI con GitHub Actions para validar manifiestos"
+              "title": "Migrar a Sealed Secrets para poder usar secrets en CI"
             }
           }
         ]
@@ -190,6 +190,7 @@
   },
   "active": "bf8b603e0af57e0c",
   "lastOpenFiles": [
+    "Tasks/Añadir CI con GitHub Actions para validar manifiestos.md",
     "Tasks/Añadir healthchecks (liveness readiness probes) a todos los servicios.md",
     "Tasks/Añadir CronJob de backup para CouchDB.md",
     "Tasks/Añadir backup lógico con pg_dump pg_dumpall.md",
@@ -216,7 +217,6 @@
     "Tasks/Página de error personalizada para Traefik.md",
     "Tasks/Refactorizar módulo Traefik para usar utils.md",
     "Tasks/Set up declarative DNS management from Kubernetes with external-dns.md",
-    "Sin título.md",
     "Templates",
     "Tasks",
     "Tareas.base"

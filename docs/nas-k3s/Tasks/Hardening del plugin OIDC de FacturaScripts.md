@@ -11,7 +11,7 @@ labels:
   - oidc
   - tech-debt
 dependencies:
-  - NASKS-60
+  - "[[Actualizar con seguridad FacturaScripts 2025.81 → 2026.3]]"
 references:
   - 'https://github.com/jumbojett/OpenID-Connect-PHP'
   - 'https://www.authelia.com/integration/openid-connect/introduction/'

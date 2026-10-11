@@ -9,8 +9,8 @@ labels:
   - infrastructure
   - reliability
 dependencies:
-  - NASKS-22
-  - NASKS-23
+  - "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
+  - "[[Alertado de despliegues fallidos]]"
 priority: 3
 ordinal: 0.00095367431640625
 ---

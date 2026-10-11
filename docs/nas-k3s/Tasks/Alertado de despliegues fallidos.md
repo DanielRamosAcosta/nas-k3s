@@ -10,7 +10,7 @@ labels:
   - reliability
   - monitoring
 dependencies:
-  - NASKS-22
+  - "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
 priority: 2
 ordinal: 31.25
 ---

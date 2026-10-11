@@ -10,7 +10,7 @@ labels:
   - smtp
   - alerting
 dependencies:
-  - NASKS-40
+  - "[[Centralizar SMTP con relay Postfix (boky postfix)]]"
 priority: 2
 ordinal: 0.48828125
 ---

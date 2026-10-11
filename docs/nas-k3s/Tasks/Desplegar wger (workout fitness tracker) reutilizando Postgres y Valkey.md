@@ -11,7 +11,7 @@ labels:
   - auth
   - refined
 dependencies:
-  - NASKS-63
+  - "[[Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable]]"
 references:
   - 'https://github.com/wger-project/wger'
   - 'https://github.com/wger-project/docker'
