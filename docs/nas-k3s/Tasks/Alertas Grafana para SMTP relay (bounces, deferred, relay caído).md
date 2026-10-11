@@ -1,10 +1,7 @@
 ---
-id: NASKS-41
 title: 'Alertas Grafana para SMTP relay (bounces, deferred, relay caído)'
 status: Done
-assignee: []
 created_date: '2026-03-20 19:41'
-updated_date: '2026-03-21 18:37'
 labels:
   - monitoring
   - smtp
@@ -19,7 +16,7 @@ ordinal: 0.48828125
 
 ## Contexto
 
-Tras desplegar el relay SMTP centralizado (NASKS-40), necesitamos alertas para detectar problemas de entrega de correo. Sin alertas, fallos como credenciales Mailgun expiradas, cola bloqueada o DNS roto pasarían desapercibidos.
+Tras desplegar el relay SMTP centralizado ([[Centralizar SMTP con relay Postfix (boky postfix)]]), necesitamos alertas para detectar problemas de entrega de correo. Sin alertas, fallos como credenciales Mailgun expiradas, cola bloqueada o DNS roto pasarían desapercibidos.
 
 ## Alertas propuestas
 
@@ -62,4 +59,4 @@ Basadas en los logs JSON del relay (`{app="smtp-relay"} | json`):
 
 La documentación de `boky/postfix` **no especifica qué campos JSON genera**. Las queries LogQL propuestas en esta tarea son una suposición basada en el formato estándar de logs de Postfix.
 
-**Plan**: tras desplegar el relay (NASKS-40), inspeccionar los logs reales en Loki → ajustar queries del dashboard y alertas según los campos disponibles.
+**Plan**: tras desplegar el relay ([[Centralizar SMTP con relay Postfix (boky postfix)]]), inspeccionar los logs reales en Loki → ajustar queries del dashboard y alertas según los campos disponibles.

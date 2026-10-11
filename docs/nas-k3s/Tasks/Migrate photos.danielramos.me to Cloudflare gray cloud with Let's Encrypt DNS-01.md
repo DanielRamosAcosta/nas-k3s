@@ -1,12 +1,9 @@
 ---
-id: NASKS-52
 title: >-
   Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt
   DNS-01
 status: Done
-assignee: []
 created_date: '2026-04-22 17:59'
-updated_date: '2026-06-21 09:55'
 labels:
   - infra
   - traefik

@@ -1,10 +1,7 @@
 ---
-id: NASKS-62
 title: Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en /0)
 status: To Do
-assignee: []
 created_date: '2026-05-08 06:01'
-updated_date: '2026-06-19 16:56'
 labels:
   - databases
   - tech-debt

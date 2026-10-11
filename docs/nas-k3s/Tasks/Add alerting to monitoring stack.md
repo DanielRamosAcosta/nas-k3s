@@ -1,10 +1,7 @@
 ---
-id: NASKS-1
 title: Add alerting to monitoring stack
 status: Done
-assignee: []
 created_date: '2026-03-09 16:47'
-updated_date: '2026-03-18 20:52'
 labels:
   - monitoring
   - feature

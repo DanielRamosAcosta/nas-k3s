@@ -1,10 +1,7 @@
 ---
-id: NASKS-27
 title: Investigar imágenes con headers corruptos en library de Immich
 status: Done
-assignee: []
 created_date: '2026-03-18 17:15'
-updated_date: '2026-03-19 07:48'
 labels:
   - immich
   - media

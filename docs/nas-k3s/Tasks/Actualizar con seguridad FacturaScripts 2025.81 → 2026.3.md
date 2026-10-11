@@ -1,10 +1,7 @@
 ---
-id: NASKS-60
 title: Actualizar con seguridad FacturaScripts 2025.81 → 2026.3
 status: Done
-assignee: []
 created_date: '2026-05-07 20:44'
-updated_date: '2026-07-12 16:40'
 labels:
   - business
   - facturascripts
@@ -23,7 +20,7 @@ references:
   - 'https://github.com/FacturaScripts/Verifactu'
   - lib/business/facturascripts/facturascripts.libsonnet
   - lib/versions.json
-priority: medium
+priority: 2
 ordinal: 62000
 ---
 

@@ -1,13 +1,13 @@
 ---
-id: doc-6
-title: Postgres — crear un backup ad-hoc
-type: guide
+name: postgres-create-backup
+description: Crear un backup lógico ad-hoc de todas las BBDD de Postgres, p. ej. antes de un cambio de riesgo (upgrade mayor de un servicio). Úsala cuando el usuario quiera forzar un backup inmediato de la BBDD antes de tocar algo.
 created_date: '2026-07-16 20:57'
 tags:
   - postgres
   - backup
   - runbook
 ---
+
 Forzar un backup lógico inmediato de **todas** las BBDD del clúster Postgres, p. ej. como red de seguridad justo antes de subir una versión mayor de un servicio (immich, synapse, etc.).
 
 No hace falta código nuevo: se dispara a mano el CronJob de dump existente (`postgres-logical-dump`), que descubre las BBDD dinámicamente y escribe un `pg_dump --clean --if-exists | gzip` por cada una en `/cold-data/postgres-backups/logical/<db>/<db>-YYYYMMDD-HHMMSS.sql.gz`.

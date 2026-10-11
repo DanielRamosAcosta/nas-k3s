@@ -11,6 +11,7 @@ views:
       property: status
       direction: ASC
     groupOrder:
+      - Draft
       - To Do
       - In Progress
       - Done

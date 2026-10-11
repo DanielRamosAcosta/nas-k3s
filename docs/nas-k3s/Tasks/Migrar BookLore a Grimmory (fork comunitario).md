@@ -1,10 +1,7 @@
 ---
-id: NASKS-79
 title: Migrar BookLore a Grimmory (fork comunitario)
 status: Done
-assignee: []
 created_date: '2026-07-10 20:43'
-updated_date: '2026-07-17 22:57'
 labels:
   - media
   - migration

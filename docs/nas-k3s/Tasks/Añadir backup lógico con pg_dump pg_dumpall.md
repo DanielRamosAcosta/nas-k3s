@@ -1,10 +1,7 @@
 ---
-id: NASKS-44
 title: Añadir backup lógico con pg_dump/pg_dumpall
 status: To Do
-assignee: []
 created_date: '2026-03-22 01:27'
-updated_date: '2026-03-28 07:54'
 labels:
   - postgres
   - backups

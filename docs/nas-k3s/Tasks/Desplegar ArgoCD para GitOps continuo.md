@@ -1,10 +1,7 @@
 ---
-id: NASKS-21
 title: Desplegar ArgoCD para GitOps continuo
 status: Done
-assignee: []
 created_date: '2026-03-15 21:06'
-updated_date: '2026-03-15 23:45'
 labels:
   - infrastructure
   - gitops

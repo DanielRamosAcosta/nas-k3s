@@ -1,10 +1,7 @@
 ---
-id: NASKS-46
 title: Retirar Prometheus del cluster y cleanup post-migración a VictoriaMetrics
 status: Done
-assignee: []
 created_date: '2026-03-28 14:14'
-updated_date: '2026-03-28 20:05'
 labels:
   - monitoring
   - cleanup
@@ -20,7 +17,7 @@ ordinal: 0.00762939453125
 
 ## Description
 
-Tras completar la migración a VictoriaMetrics (NASKS-45 Fases 0-4), Prometheus sigue corriendo como fallback. Después de un periodo de gracia (~1 semana desde 2026-03-28), retirar Prometheus y limpiar los recursos asociados.
+Tras completar la migración a VictoriaMetrics ([[Migrar de Prometheus a VictoriaMetrics]] Fases 0-4), Prometheus sigue corriendo como fallback. Después de un periodo de gracia (~1 semana desde 2026-03-28), retirar Prometheus y limpiar los recursos asociados.
 
 ## Plan
 

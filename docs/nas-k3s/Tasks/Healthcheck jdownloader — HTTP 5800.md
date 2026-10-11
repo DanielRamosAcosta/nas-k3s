@@ -1,16 +1,12 @@
 ---
-id: NASKS-22.13
 title: 'Healthcheck: jdownloader — HTTP :5800/'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
 dependencies: []
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 13000
 ---

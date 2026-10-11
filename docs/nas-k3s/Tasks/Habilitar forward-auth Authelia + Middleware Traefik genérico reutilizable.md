@@ -1,10 +1,7 @@
 ---
-id: NASKS-63
 title: Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable
 status: To Do
-assignee: []
 created_date: '2026-05-08 06:55'
-updated_date: '2026-06-19 16:56'
 labels:
   - auth
   - infra
@@ -22,7 +19,7 @@ Habilitar el flujo **forward-auth de Authelia** (vía Traefik) como pieza reutil
 
 ## Motivación
 
-Bloqueante para la **fase 3 de NASKS-61 (wger)** — wger no soporta OIDC, OAuth, SAML ni LDAP nativamente, solo `AUTH_PROXY` por headers HTTP. Sin forward-auth no hay SSO.
+Bloqueante para la **fase 3 de [[Desplegar wger (workout fitness tracker) reutilizando Postgres y Valkey]] (wger)** — wger no soporta OIDC, OAuth, SAML ni LDAP nativamente, solo `AUTH_PROXY` por headers HTTP. Sin forward-auth no hay SSO.
 
 La pieza se diseña como genérica para que futuras apps sin OIDC nativo (paperless, vaultwarden si se decidiera, etc.) la puedan reutilizar añadiendo el middleware al IngressRoute.
 
@@ -96,7 +93,7 @@ La pieza se diseña como genérica para que futuras apps sin OIDC nativo (paperl
    ```bash
    kubectl get deploy -n system traefik -o yaml | grep -i crossnamespace
    ```
-4. Validación end-to-end: usar wger (NASKS-61 fase 3) como primer consumidor. Aplicar middleware a su IngressRoute, acceder a `gym.danielramos.me`, verificar redirección a Authelia y que tras login los headers `Remote-*` llegan al pod (verificable en logs de wger durante primer login).
+4. Validación end-to-end: usar wger ([[Desplegar wger (workout fitness tracker) reutilizando Postgres y Valkey]] fase 3) como primer consumidor. Aplicar middleware a su IngressRoute, acceder a `gym.danielramos.me`, verificar redirección a Authelia y que tras login los headers `Remote-*` llegan al pod (verificable en logs de wger durante primer login).
 
 ## Fuera de alcance
 
@@ -110,4 +107,4 @@ La pieza se diseña como genérica para que futuras apps sin OIDC nativo (paperl
 - [ ] #3 Helper jsonnet `u.middleware.autheliaForwardAuth()` disponible en `lib/utils/middleware.libsonnet` y registrado en `lib/utils.libsonnet`
 - [ ] #4 Headers `Remote-User`, `Remote-Email`, `Remote-Name`, `Remote-Groups` llegan al pod consumidor tras forward-auth
 - [ ] #5 Documentación añadida en CLAUDE.md sección Networking & Auth: cuándo OIDC vs forward-auth, cómo aplicar, hereda `two_factor`
-- [ ] #6 Validado end-to-end con wger (fase 3 de NASKS-61) como primer consumidor
+- [ ] #6 Validado end-to-end con wger (fase 3 de [[Desplegar wger (workout fitness tracker) reutilizando Postgres y Valkey]]) como primer consumidor

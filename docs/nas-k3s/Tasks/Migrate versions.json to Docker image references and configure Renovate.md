@@ -1,10 +1,7 @@
 ---
-id: NASKS-15
 title: Migrate versions.json to Docker image references and configure Renovate
 status: Done
-assignee: []
 created_date: '2026-03-09 17:22'
-updated_date: '2026-03-15 17:48'
 labels:
   - devops
   - automation

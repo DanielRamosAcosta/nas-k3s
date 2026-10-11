@@ -1,10 +1,7 @@
 ---
-id: NASKS-43
 title: Migrar a cdk8s
 status: To Do
-assignee: []
 created_date: '2026-03-22 00:47'
-updated_date: '2026-03-28 19:20'
 labels:
   - blocked
 dependencies: []

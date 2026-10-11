@@ -1,10 +1,7 @@
 ---
-id: NASKS-42
 title: Borrar Gitea completamente del cluster
 status: Done
-assignee: []
 created_date: '2026-03-22 00:14'
-updated_date: '2026-03-22 00:47'
 labels:
   - cleanup
   - refined

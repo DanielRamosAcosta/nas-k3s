@@ -1,10 +1,7 @@
 ---
-id: NASKS-17
 title: Migrar a Sealed Secrets para poder usar secrets en CI
 status: Done
-assignee: []
 created_date: '2026-03-15 17:48'
-updated_date: '2026-03-15 21:42'
 labels:
   - infrastructure
   - security

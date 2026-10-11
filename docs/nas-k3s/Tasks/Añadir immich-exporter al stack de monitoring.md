@@ -1,10 +1,7 @@
 ---
-id: NASKS-84
 title: Añadir immich-exporter al stack de monitoring
 status: Done
-assignee: []
 created_date: '2026-08-09 18:24'
-updated_date: '2026-08-09 18:55'
 labels: []
 dependencies: []
 references:

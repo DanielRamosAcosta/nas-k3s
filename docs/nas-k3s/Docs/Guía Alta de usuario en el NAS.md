@@ -1,9 +1,7 @@
 ---
-id: doc-4
-title: 'Guía: Alta de usuario en el NAS'
-type: other
 created_date: '2026-04-04 20:59'
 ---
+
 ## Requisitos previos
 
 - Acceso al cluster k3s (kubectl configurado)

@@ -1,21 +1,18 @@
 ---
-id: DRAFT-2
 title: Configurar downsampling en VictoriaMetrics (requiere licencia Enterprise)
 status: Draft
-assignee: []
 created_date: '2026-03-27 23:25'
 labels:
   - monitoring
   - victoriametrics
   - blocked
 dependencies:
-  - NASKS-45
-priority: low
+  - "[[Migrar de Prometheus a VictoriaMetrics]]"
+priority: 3
 ---
 
 ## Description
 
-<!-- SECTION:DESCRIPTION:BEGIN -->
 Activar downsampling nativo en VictoriaMetrics para reducir la resolución de métricas antiguas progresivamente, controlando el crecimiento de disco a largo plazo.
 
 **Bloqueado** hasta recibir respuesta de VictoriaMetrics sobre licencia Enterprise gratuita para homelab (email enviado el 2026-03-28 via formulario de contacto).
@@ -49,11 +46,8 @@ Activar downsampling nativo en VictoriaMetrics para reducir la resolución de m�
 1. Vivir sin downsampling (~4 GB/año es aceptable en el NAS)
 2. Recording rules manuales para pre-agregar métricas clave
 3. Thanos Compactor (complejo, 4-5 componentes extra)
-<!-- SECTION:DESCRIPTION:END -->
 
 ## Acceptance Criteria
-<!-- AC:BEGIN -->
 - [ ] #1 Licencia Enterprise obtenida (gratuita para homelab)
 - [ ] #2 Flag `-downsampling.period=30d:5m,180d:1h` configurado y verificado en logs de arranque
 - [ ] #3 Verificar que datos >30 días se downsamplean correctamente
-<!-- AC:END -->

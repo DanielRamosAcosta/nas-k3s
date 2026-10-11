@@ -1,8 +1,6 @@
 ---
-id: NASKS-74
 title: Añadir git hook que ejecute los checks de CI localmente antes de pushear
 status: To Do
-assignee: []
 created_date: '2026-06-26 16:00'
 labels:
   - ci
@@ -23,7 +21,7 @@ Un git hook versionado en el repo que ejecute los mismos pasos que el workflow `
 
 ## 🎯 Contexto funcional
 
-Surge de una retrospectiva: al implementar NASKS-71 (CouchDB), un push falló en CI únicamente por formato (`tk fmt --test` detectó el `.libsonnet` editado a mano sin formatear), obligando a un commit `style:` y una ronda extra de CI. Estos fallos son detectables en local con los mismos comandos que corre el CI; un hook los atrapa antes de pushear y elimina esa fricción recurrente (el repo es 100% Jsonnet/Tanka, así que el patrón se repite en cada cambio).
+Surge de una retrospectiva: al implementar [[Desplegar CouchDB para Obsidian LiveSync]] (CouchDB), un push falló en CI únicamente por formato (`tk fmt --test` detectó el `.libsonnet` editado a mano sin formatear), obligando a un commit `style:` y una ronda extra de CI. Estos fallos son detectables en local con los mismos comandos que corre el CI; un hook los atrapa antes de pushear y elimina esa fricción recurrente (el repo es 100% Jsonnet/Tanka, así que el patrón se repite en cada cambio).
 
 ## ⚙️ Contexto técnico
 

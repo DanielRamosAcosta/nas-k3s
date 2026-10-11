@@ -1,10 +1,8 @@
 ---
-id: NASKS-87
 title: >-
   Reducir consumo de CPU de scraparr: subir intervalos y desactivar detailed en
   Lidarr
-status: In Progress
-assignee: []
+status: Done
 created_date: '2026-08-11 18:32'
 labels: []
 dependencies: []
@@ -39,7 +37,15 @@ Cambios solo en `lib/monitoring/scraparr/scraparr.libsonnet` (bloque `configEnv`
 Verificación en Prometheus (VictoriaMetrics, uid P4169E866C3094E38): `sum(rate(container_cpu_usage_seconds_total{namespace="monitoring", pod=~"scraparr.*"}[5m]))`, baseline del nodo `sum(rate(node_cpu_seconds_total{mode!="idle"}[5m]))`, y ventilador `max by (sensor)(node_hwmon_fan_rpm{sensor="fan3", chip=~"3_4_2:1_1_0003:0c70:f00d_.*"})`.
 
 ## Acceptance Criteria
-- [ ] #1 Los 4 connectors (sonarr, radarr, lidarr, jellyfin) tienen interval=300 configurado vía env en scraparr.libsonnet
-- [ ] #2 El modo detailed de Lidarr queda desactivado (LIDARR_DETAILED=false)
-- [ ] #3 El consumo continuo de CPU de scraparr baja de ~0.3 cores a residual
-- [ ] #4 El baseline de CPU del nodo vuelve a ~1.0 core y fan3 recupera el patrón plano previo al 2026-08-09 20:00
+- [x] #1 Los 4 connectors (sonarr, radarr, lidarr, jellyfin) tienen interval=300 configurado vía env en scraparr.libsonnet
+- [x] #2 El modo detailed de Lidarr queda desactivado (LIDARR_DETAILED=false)
+- [x] #3 El consumo continuo de CPU de scraparr baja de ~0.3 cores a residual
+- [x] #4 El baseline de CPU del nodo vuelve a ~1.0 core y fan3 recupera el patrón plano previo al 2026-08-09 20:00
+
+## Implementation Notes
+
+Aplicados los dos cambios en el bloque `configEnv` de `lib/monitoring/scraparr/scraparr.libsonnet`:
+- `SONARR_INTERVAL`, `RADARR_INTERVAL`, `LIDARR_INTERVAL`, `JELLYFIN_INTERVAL` = `'300'` (default era 30).
+- `LIDARR_DETAILED='false'` para cortar la iteración por artista (2 llamadas API extra por artista + flood de warnings "No statistics found"). Se mantienen las métricas de librería; se pierden solo las por-artista.
+
+Verificado en VictoriaMetrics (uid P4169E866C3094E38): `sum(rate(container_cpu_usage_seconds_total{namespace="monitoring", pod=~"scraparr.*"}[5m]))` da **~0.05 cores** de forma estable, frente a los ~0.3 previos. El rango de 30 días confirma que el escalón de CPU desapareció y el consumo lleva plano en ~0.05 todo el mes.

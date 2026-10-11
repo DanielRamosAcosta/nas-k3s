@@ -1,10 +1,8 @@
 ---
-id: NASKS-68
 title: >-
   Refactorizar config de Synapse: eliminar envsubst usando secretos nativos por
   path
 status: To Do
-assignee: []
 created_date: '2026-06-19 21:50'
 labels:
   - synapse

@@ -1,10 +1,7 @@
 ---
-id: NASKS-11
 title: Make K3s resilient to router/network outages
 status: Done
-assignee: []
 created_date: '2026-03-09 17:02'
-updated_date: '2026-04-12 02:15'
 labels: []
 dependencies: []
 priority: 1

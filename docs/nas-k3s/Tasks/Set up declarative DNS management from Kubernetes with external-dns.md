@@ -1,10 +1,7 @@
 ---
-id: NASKS-3
 title: Set up declarative DNS management from Kubernetes with external-dns
 status: To Do
-assignee: []
 created_date: '2026-03-09 16:50'
-updated_date: '2026-04-10 16:17'
 labels:
   - infra
   - feature

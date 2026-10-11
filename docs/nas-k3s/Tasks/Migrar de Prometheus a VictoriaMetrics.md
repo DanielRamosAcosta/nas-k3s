@@ -1,10 +1,7 @@
 ---
-id: NASKS-45
 title: Migrar de Prometheus a VictoriaMetrics
 status: Done
-assignee: []
 created_date: '2026-03-27 19:27'
-updated_date: '2026-03-28 14:16'
 labels:
   - monitoring
   - migration

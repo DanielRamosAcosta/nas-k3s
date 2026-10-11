@@ -1,10 +1,7 @@
 ---
-id: NASKS-28
 title: Investigar JPEGs truncados que fallan en generación de thumbnails en Immich
 status: Done
-assignee: []
 created_date: '2026-03-18 17:15'
-updated_date: '2026-03-19 07:48'
 labels:
   - immich
   - media

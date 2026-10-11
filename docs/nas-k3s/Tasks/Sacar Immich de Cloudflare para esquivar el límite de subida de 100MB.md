@@ -1,10 +1,7 @@
 ---
-id: NASKS-50
 title: Sacar Immich de Cloudflare para esquivar el límite de subida de 100MB
 status: Done
-assignee: []
 created_date: '2026-04-12 01:46'
-updated_date: '2026-06-21 09:55'
 labels:
   - networking
   - immich
@@ -21,8 +18,8 @@ La solución es exponer Immich directamente sin pasar por Cloudflare (DNS-only e
 
 ## Final Summary
 
-Cerrada. El trabajo real se hizo en **NASKS-52** (migración a Cloudflare gray cloud + Let's Encrypt wildcard DNS-01) y **NASKS-53** (Crowdsec full stack + GeoBlock ES/CU). Ambas Done. Esta task era el ticket original del 12-abr planteando el problema a alto nivel; se dejó obsoleta al refinarse el scope en el /grill-me que dio lugar a NASKS-52+NASKS-53.
+Cerrada. El trabajo real se hizo en **[[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]]** (migración a Cloudflare gray cloud + Let's Encrypt wildcard DNS-01) y **[[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]]** (Crowdsec full stack + GeoBlock ES/CU). Ambas Done. Esta task era el ticket original del 12-abr planteando el problema a alto nivel; se dejó obsoleta al refinarse el scope en el /grill-me que dio lugar a [[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]]+[[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]].
 
 Ver en su lugar:
-- NASKS-52 — Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01
-- NASKS-53 — Hardening photos.danielramos.me: Crowdsec + geo-block ES/CU
+- [[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]] — Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01
+- [[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]] — Hardening photos.danielramos.me: Crowdsec + geo-block ES/CU

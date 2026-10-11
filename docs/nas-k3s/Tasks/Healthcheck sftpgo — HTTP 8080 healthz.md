@@ -1,10 +1,7 @@
 ---
-id: NASKS-22.26
 title: 'Healthcheck: sftpgo — HTTP :8080/healthz'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
@@ -13,7 +10,6 @@ references:
   - 'https://docs.sftpgo.com/2.6/config-file/'
   - 'https://github.com/drakkan/sftpgo/discussions/665'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 26000
 ---

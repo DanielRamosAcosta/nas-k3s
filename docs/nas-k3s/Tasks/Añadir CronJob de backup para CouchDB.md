@@ -1,8 +1,6 @@
 ---
-id: NASKS-72
 title: Añadir CronJob de backup para CouchDB
 status: To Do
-assignee: []
 created_date: '2026-06-25 22:53'
 labels: []
 dependencies:
@@ -22,7 +20,7 @@ Añadir un CronJob que haga un dump periódico de la(s) database(s) de CouchDB a
 
 ## 🎯 Contexto funcional
 
-CouchDB (desplegado en NASKS-71) sirve como backend de Obsidian LiveSync, que replica la base de datos en cada dispositivo, así que existe una recuperación natural ("rebuild from this device"). Por eso el despliegue inicial se hizo **sin backup dedicado**.
+CouchDB (desplegado en [[Desplegar CouchDB para Obsidian LiveSync]]) sirve como backend de Obsidian LiveSync, que replica la base de datos en cada dispositivo, así que existe una recuperación natural ("rebuild from this device"). Por eso el despliegue inicial se hizo **sin backup dedicado**.
 
 Sin embargo, un backup dedicado protege de dos escenarios:
 1. Una **corrupción que se propague a todos los dispositivos** antes de detectarla.

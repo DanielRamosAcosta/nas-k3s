@@ -1,10 +1,7 @@
 ---
-id: NASKS-56
 title: Verificar X-Forwarded-For e IP real en logs Traefik para servicios naranjas
 status: To Do
-assignee: []
 created_date: '2026-04-22 20:36'
-updated_date: '2026-06-19 16:56'
 labels:
   - infra
   - traefik
@@ -19,12 +16,12 @@ ordinal: 59000
 
 ## Context
 
-En NASKS-53 añadimos `forwardedHeaders.trustedIPs` a Traefik con los CIDRs de Cloudflare (v4 + v6). El objetivo era que para servicios naranjas (proxied vía CF) el `X-Forwarded-For` llegue con la IP real del cliente y Traefik la use como source, en vez del IP del edge de CF. Esto es crítico para:
+En [[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]] añadimos `forwardedHeaders.trustedIPs` a Traefik con los CIDRs de Cloudflare (v4 + v6). El objetivo era que para servicios naranjas (proxied vía CF) el `X-Forwarded-For` llegue con la IP real del cliente y Traefik la use como source, en vez del IP del edge de CF. Esto es crítico para:
 - Que Crowdsec banee al atacante real, no a CF.
 - Que los logs de Traefik muestren IPs útiles.
 - Que cualquier rate limit futuro sobre naranjas opere contra IPs reales.
 
-Quedó **sin validar al cierre de NASKS-53**. Es el criterio #13 de esa task.
+Quedó **sin validar al cierre de [[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]]**. Es el criterio #13 de esa task.
 
 ## Pasos
 

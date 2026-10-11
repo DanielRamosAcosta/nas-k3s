@@ -1,10 +1,7 @@
 ---
-id: NASKS-78
 title: Arreglar login OIDC de BookLore — permitir scope 'groups' en Authelia
 status: Done
-assignee: []
 created_date: '2026-06-28 19:57'
-updated_date: '2026-07-15 15:46'
 labels: []
 dependencies: []
 references:

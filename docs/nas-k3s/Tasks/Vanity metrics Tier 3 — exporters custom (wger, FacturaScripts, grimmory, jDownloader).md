@@ -1,10 +1,7 @@
 ---
-id: NASKS-86
 title: Vanity metrics Tier 3 — exporters custom (wger, FacturaScripts, grimmory, jDownloader)
 status: Archived
-assignee: []
 created_date: 2026-08-09 20:02
-updated_date: 2026-08-09 23:56
 labels: []
 dependencies: []
 references:
@@ -19,7 +16,7 @@ ordinal: 83000
 
 ## 📌 TLDR
 
-Servicios del NAS que darían buenas "vanity metrics" pero **no tienen exporter oficial ni métricas Prometheus nativas** — requieren construir un exporter custom (Python + prometheus_client) que consulte su API REST (o BD). Se separan de NASKS-67 (que cubre los exporters nativos/comunidad ya disponibles: scraparr, immich-exporter, crowdsec, traefik, navidrome, mc-monitor, deluge).
+Servicios del NAS que darían buenas "vanity metrics" pero **no tienen exporter oficial ni métricas Prometheus nativas** — requieren construir un exporter custom (Python + prometheus_client) que consulte su API REST (o BD). Se separan de [[Añadir vanity metrics dashboard en Grafana — biblioteca de medios, fotos, música]] (que cubre los exporters nativos/comunidad ya disponibles: scraparr, immich-exporter, crowdsec, traefik, navidrome, mc-monitor, deluge).
 
 ## 🎯 Contexto funcional
 
@@ -40,7 +37,7 @@ Completar el "muro de vanity" con métricas personales/de negocio que hoy no son
 
 ## Fuera de alcance
 
-- Los exporters nativos/comunidad (crowdsec, traefik, navidrome, minecraft/mc-monitor, deluge) → van en NASKS-67.
+- Los exporters nativos/comunidad (crowdsec, traefik, navidrome, minecraft/mc-monitor, deluge) → van en [[Añadir vanity metrics dashboard en Grafana — biblioteca de medios, fotos, música]].
 
 ## Acceptance Criteria
 - [ ] #1 Exporter custom para wger desplegado (workouts, volumen, peso) y scrapeado por VictoriaMetrics
@@ -54,4 +51,4 @@ Completar el "muro de vanity" con métricas personales/de negocio que hoy no son
 
 ## Implementation Notes
 
-Navidrome añadido al alcance (2026-08-10): su Prometheus nativo (`ND_PROMETHEUS_ENABLED`, ya activado en NASKS-67) solo expone `navidrome_info` (versión) + métricas Go — NO recuentos de librería. Para vanity de música hace falta exporter custom contra la Subsonic API (p.ej. `getScanStatus` para totales, o `getArtists`/`getAlbumList2`). Credenciales de admin de Navidrome vía SealedSecret.
+Navidrome añadido al alcance (2026-08-10): su Prometheus nativo (`ND_PROMETHEUS_ENABLED`, ya activado en [[Añadir vanity metrics dashboard en Grafana — biblioteca de medios, fotos, música]]) solo expone `navidrome_info` (versión) + métricas Go — NO recuentos de librería. Para vanity de música hace falta exporter custom contra la Subsonic API (p.ej. `getScanStatus` para totales, o `getArtists`/`getAlbumList2`). Credenciales de admin de Navidrome vía SealedSecret.

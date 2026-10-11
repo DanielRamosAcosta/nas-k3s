@@ -1,10 +1,7 @@
 ---
-id: NASKS-19
 title: Migrar de Gitea a repositorios Git nativos por SSH
 status: Done
-assignee: []
 created_date: '2026-03-15 20:43'
-updated_date: '2026-03-22 00:16'
 labels:
   - infra
   - migración

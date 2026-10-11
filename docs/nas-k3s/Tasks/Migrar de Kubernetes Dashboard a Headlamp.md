@@ -1,10 +1,7 @@
 ---
-id: NASKS-20
 title: Migrar de Kubernetes Dashboard a Headlamp
 status: Done
-assignee: []
 created_date: '2026-03-15 21:04'
-updated_date: '2026-03-19 07:48'
 labels:
   - infra
   - migración

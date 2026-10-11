@@ -1,13 +1,11 @@
 ---
-id: doc-5
-title: Auditoría de credenciales en el historial de git y su mitigación
-type: guide
 created_date: '2026-06-26 21:42'
 tags:
   - security
   - secrets
   - audit
 ---
+
 ## Contexto
 
 Este repositorio es público. Antes de la arquitectura actual (Jsonnet + Tanka + Sealed Secrets) existió una arquitectura previa cuyos commits permanecen en el historial de git. Se realizó una auditoría para localizar secretos que pudieran haber quedado expuestos en claro o en base64 en commits antiguos, y verificar que ninguno siga siendo válido hoy.

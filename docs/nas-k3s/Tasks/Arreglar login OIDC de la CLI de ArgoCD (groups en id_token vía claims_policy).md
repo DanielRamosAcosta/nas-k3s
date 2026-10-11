@@ -1,10 +1,7 @@
 ---
-id: NASKS-73
 title: Arreglar login OIDC de la CLI de ArgoCD (groups en id_token vía claims_policy)
 status: Done
-assignee: []
 created_date: '2026-06-26 15:18'
-updated_date: '2026-06-26 17:35'
 labels: []
 dependencies: []
 references:

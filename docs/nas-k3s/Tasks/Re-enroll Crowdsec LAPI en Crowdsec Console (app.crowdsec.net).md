@@ -1,10 +1,7 @@
 ---
-id: NASKS-54
 title: Re-enroll Crowdsec LAPI en Crowdsec Console (app.crowdsec.net)
 status: Done
-assignee: []
 created_date: '2026-04-22 20:34'
-updated_date: '2026-08-09 19:04'
 labels:
   - infra
   - crowdsec
@@ -19,7 +16,7 @@ ordinal: 2000
 
 ## Context
 
-En NASKS-53 desplegamos Crowdsec full stack (agent + LAPI) y pasamos un `ENROLL_KEY` al entrypoint para registrar la instancia contra [app.crowdsec.net](https://app.crowdsec.net) automáticamente. El primer intento manual de `cscli console enroll` que lancé al debugear falló al escribir `console.yaml` (estaba mounteado read-only desde un ConfigMap), pero el key **sí se consumió server-side** antes del fallo local. Resultado:
+En [[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]] desplegamos Crowdsec full stack (agent + LAPI) y pasamos un `ENROLL_KEY` al entrypoint para registrar la instancia contra [app.crowdsec.net](https://app.crowdsec.net) automáticamente. El primer intento manual de `cscli console enroll` que lancé al debugear falló al escribir `console.yaml` (estaba mounteado read-only desde un ConfigMap), pero el key **sí se consumió server-side** antes del fallo local. Resultado:
 
 - El LAPI local cree que está enrolado: `Instance already enrolled. You can use '--overwrite' to force enroll`.
 - La Console UI en cambio reporta: `Machine is not enrolled in the console, can't synchronize with the console`.

@@ -1,10 +1,7 @@
 ---
-id: NASKS-22
 title: Añadir healthchecks (liveness/readiness probes) a todos los servicios
 status: Done
-assignee: []
 created_date: '2026-03-15 23:44'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability

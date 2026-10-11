@@ -1,10 +1,7 @@
 ---
-id: NASKS-23
 title: Alertado de despliegues fallidos
 status: Done
-assignee: []
 created_date: '2026-03-15 23:55'
-updated_date: '2026-03-18 21:11'
 labels:
   - infrastructure
   - reliability

@@ -1,10 +1,7 @@
 ---
-id: NASKS-57
 title: Retirar legacy cloudflare-origin-cert SealedSecret de Traefik
 status: To Do
-assignee: []
 created_date: '2026-04-22 20:37'
-updated_date: '2026-06-19 16:56'
 labels:
   - cleanup
   - traefik
@@ -19,7 +16,7 @@ ordinal: 60000
 
 ## Context
 
-En NASKS-52 migramos el TLSStore default de Traefik desde `defaultCertificate` (Cloudflare Origin wildcard cert) a `defaultGeneratedCert` pointed al resolver letsencrypt. El cert viejo (SealedSecret `cloudflare-origin-cert` + el campo `cloudflareOriginCert` en `traefik.secrets.json`) se dejó en el repo bajo un nombre "legacy" como ruta de rollback rápido por si LE daba problemas.
+En [[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]] migramos el TLSStore default de Traefik desde `defaultCertificate` (Cloudflare Origin wildcard cert) a `defaultGeneratedCert` pointed al resolver letsencrypt. El cert viejo (SealedSecret `cloudflare-origin-cert` + el campo `cloudflareOriginCert` en `traefik.secrets.json`) se dejó en el repo bajo un nombre "legacy" como ruta de rollback rápido por si LE daba problemas.
 
 Lleva ya operativo el LE wildcard sin incidencias. Si pasan ~2-4 semanas de estabilidad, podemos retirar el vestigio para limpiar.
 

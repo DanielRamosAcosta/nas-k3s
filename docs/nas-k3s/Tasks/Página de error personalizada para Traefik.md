@@ -1,10 +1,7 @@
 ---
-id: NASKS-48
 title: Página de error personalizada para Traefik
 status: To Do
-assignee: []
 created_date: '2026-04-05 10:07'
-updated_date: '2026-04-10 16:17'
 labels:
   - traefik
   - ux

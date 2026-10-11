@@ -1,10 +1,7 @@
 ---
-id: NASKS-36
 title: Refactorizar módulo ArgoCD para usar utils
 status: Done
-assignee: []
 created_date: '2026-03-19 20:11'
-updated_date: '2026-03-20 18:05'
 labels:
   - refactor
 dependencies: []

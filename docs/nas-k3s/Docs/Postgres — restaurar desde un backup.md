@@ -1,13 +1,13 @@
 ---
-id: doc-7
-title: Postgres — restaurar desde un backup
-type: guide
+name: postgres-restore-backup
+description: Restaurar una sola BBDD de Postgres desde su dump lógico (runbook por etiqueta app=<db>), sin tocar el resto del clúster. Úsala cuando el usuario quiera restaurar/recuperar la BBDD de un servicio (p. ej. immich tras un upgrade que corrompió su esquema).
 created_date: '2026-07-16 20:57'
 tags:
   - postgres
   - restore
   - runbook
 ---
+
 Restaurar **una sola BBDD** desde su dump lógico (`pg_dump` SQL + gzip), sin tocar el resto del clúster. Escenario típico: un upgrade corrompió el esquema de un servicio (p. ej. immich) y hay que volver atrás solo esa BBDD.
 
 El restore se hace con `kubectl` puro disparando el CronJob **suspendido** `postgres-restore`. El script (`postgres.restore.sh`, en ConfigMap) saca los parámetros del **nombre del Job**: `restore-<db>-<selector>`, donde `<selector>` es `latest` o `YYYYMMDD`.

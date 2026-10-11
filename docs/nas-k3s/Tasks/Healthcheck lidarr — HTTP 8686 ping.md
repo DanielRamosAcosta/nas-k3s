@@ -1,16 +1,12 @@
 ---
-id: NASKS-22.15
 title: 'Healthcheck: lidarr — HTTP :8686/ping'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
 dependencies: []
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 15000
 ---

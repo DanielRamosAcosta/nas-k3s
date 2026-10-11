@@ -1,32 +1,39 @@
 ---
 name: create-task
-description: Explica cómo crear tareas en el backlog. Usar cuando se ordene crear una tarea nueva.
+description: Explica cómo crear tareas en el vault de Obsidian (docs/nas-k3s/Tasks/). Usar cuando se ordene crear una tarea nueva.
 ---
 
-# create-task — crear una tarea en el backlog
+# create-task — crear una tarea en el vault de Obsidian
 
-Primero, decide qué criterios de aceptación debe tener la tarea en base a la conversación mantenida. Transmíteselas al usuario y pídele que las confirme. Una vez confirmadas, crea la tarea en el backlog con la información que te proporcione el usuario.
+Las tareas son notas markdown en `docs/nas-k3s/Tasks/`, visualizadas con la Base `Tasks.base` (kanban por `status`). Se crean a partir de la plantilla `Task` vía el **CLI de Obsidian** — nunca a mano ni con un MCP de backlog (ya no existe).
 
-Si has hecho un análisis de la tarea con el usuario, deja todo documentado al crear la tarea.
+## 1. Acordar los criterios de aceptación
 
-Crea la tarea con:
+Primero, decide qué Acceptance Criteria debe tener la tarea en base a la conversación mantenida. Transmíteselos al usuario y pídele que los confirme. Si has hecho análisis con el usuario, deja todo documentado al rellenar la tarea.
 
-* Título: nombre relevante y descriptivo, 1–200 caracteres.
-* Descripción: explicación detallada de la tarea, con los siguientes títulos de sección:
-  * 📌 TLDR — resumen breve de la tarea, 1–3 frases.
-  * 🎯 Contexto funcional — qué hace la tarea y por qué es necesaria.
-  * ⚙️ Contexto técnico — cómo se implementará la tarea, qué servicios, APIs o librerías se usarán, qué endpoints o métricas se tocarán, etc.
-* Status: `To Do`
-* Priority: Decide la criticidad de la tarea en base a lo hablado
-* References: Si se ha realizado ya alguna investigación, documentación o pruebas, añadir enlaces a los recursos relevantes.
-* Criterios de aceptación: qué condiciones deben cumplirse para que la tarea se considere completada, en alto nivel.
+## 2. Crear la nota desde la plantilla
 
-Si la tarea es para crear un servicio nuevo, introducir "desplegar con /deploy" como DoD, usando el parámetro `definitionOfDoneAdd`, del MCP. No incluirlo como AC.
+```bash
+obsidian create name="<título>" path="Tasks/<título>.md" template="Task" vault="nas-k3s"
+```
 
-## Qué no incluir
+- El CLI resuelve `{{title}}` y `{{date}}` y aplica la plantilla `Task`.
+- Usa un `<título>` sin puntuación problemática en el nombre de fichero (`:` `/` `\` `?` `*` `"` `<` `>` `|`); el título real queda igualmente en la propiedad `title`.
 
-* No incluir un plan de implementación en la descripción (eso será más adelante)
+## 3. Rellenar la nota creada
 
-## Qué no hacer
+- **Description** (ya trae los sub-encabezados):
+  - 📌 TLDR — resumen breve, 1–3 frases.
+  - 🎯 Contexto funcional — qué hace la tarea y por qué es necesaria.
+  - ⚙️ Contexto técnico — cómo se implementará, qué servicios/APIs/librerías, qué endpoints o métricas se tocan.
+- **status**: `To Do` (ya por defecto).
+- **priority**: `1` (alta), `2` (media) o `3` (baja) — decide la criticidad según lo hablado.
+- **labels**: etiquetas de clasificación.
+- **references**: enlaces a investigación/documentación/pruebas ya realizadas.
+- **parent** / **dependencies**: si aplica, como wikilinks (`"[[Otra tarea]]"`).
+- **Acceptance Criteria**: los criterios confirmados, en alto nivel (`- [ ] #1 ...`).
 
-* No busques el siguiente número incremental de la tarea, el MCP lo deducirá.
+## Qué NO hacer al crear
+
+- **No rellenes `## Implementation Plan` ni `## Implementation Notes`** — se completan más adelante (Plan al empezar a ejecutar, Notes al terminar). Deja esas secciones vacías.
+- Si la tarea es para **crear un servicio nuevo**, añade una sección `## Definition of Done` con `- [ ] #1 desplegar con /deploy`. No lo pongas como Acceptance Criterion.

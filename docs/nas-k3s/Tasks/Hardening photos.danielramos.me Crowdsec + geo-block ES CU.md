@@ -1,10 +1,7 @@
 ---
-id: NASKS-53
 title: 'Hardening photos.danielramos.me: Crowdsec + geo-block ES/CU'
 status: Done
-assignee: []
 created_date: '2026-04-22 18:44'
-updated_date: '2026-04-29 06:17'
 labels:
   - infra
   - traefik
@@ -20,11 +17,11 @@ ordinal: 49000
 
 ## Context
 
-Follow-up to NASKS-52. `photos.danielramos.me` is now on Cloudflare gray cloud, directly exposed to internet scanners (Shodan indexes the IP, bots probe `/api/auth/login`).
+Follow-up to [[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]]. `photos.danielramos.me` is now on Cloudflare gray cloud, directly exposed to internet scanners (Shodan indexes the IP, bots probe `/api/auth/login`).
 
 Existing defenses:
 - LE wildcard cert via Traefik TLSStore (valid chain, browsers trust it)
-- Rate limit on `/api/auth/*` (Traefik RateLimit: avg=2, burst=5) — shipped in NASKS-52
+- Rate limit on `/api/auth/*` (Traefik RateLimit: avg=2, burst=5) — shipped in [[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]]
 - Immich's internal login
 
 This task adds two more layers **targeted at photos** (not the orange-proxied services, which already sit behind Cloudflare WAF + country-level rules already enforced at the CF edge by Daniel):
@@ -158,7 +155,7 @@ Middlewares are per-route: remove the middleware list from the Immich IngressRou
 Phase 1 + Phase 2 shipped. Photos.danielramos.me is now behind three layers:
 1. **GeoBlock** (synchronous, Traefik GeoBlock plugin, ES/CU only).
 2. **Crowdsec bouncer** (reactive, blocks IPs in community blocklist + locally-detected attacks on any host).
-3. **Authelia OIDC** (already in place) + **rate limit on /api/auth** (from NASKS-52).
+3. **Authelia OIDC** (already in place) + **rate limit on /api/auth** (from [[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]]).
 
 ## What shipped
 

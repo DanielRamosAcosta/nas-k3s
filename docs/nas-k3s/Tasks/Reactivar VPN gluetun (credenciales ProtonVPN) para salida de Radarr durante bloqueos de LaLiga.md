@@ -1,17 +1,13 @@
 ---
-id: NASKS-88
-title: >-
-  Reactivar VPN gluetun (credenciales ProtonVPN) para salida de Radarr durante
-  bloqueos de LaLiga
-status: In Progress
-assignee: []
-created_date: '2026-08-22 20:44'
+title: Reactivar VPN gluetun (credenciales ProtonVPN) para salida de Radarr durante bloqueos de LaLiga
+status: Done
+created_date: 2026-08-22 20:44
 labels: []
 dependencies: []
 references:
   - lib/system/gluetun/gluetun.libsonnet
   - lib/system/gluetun/gluetun.secrets.json
-  - 'https://wiki.servarr.com/radarr/environment-variables'
+  - https://wiki.servarr.com/radarr/environment-variables
 priority: 2
 type: bug
 ordinal: 85000

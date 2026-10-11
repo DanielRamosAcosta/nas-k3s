@@ -1,10 +1,7 @@
 ---
-id: NASKS-22.27
 title: 'Healthcheck: slskd — HTTP :5030/health'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
@@ -14,7 +11,6 @@ references:
   - 'https://github.com/slskd/slskd/issues/99'
   - 'https://learn.microsoft.com/en-us/aspnet/core/host-and-deploy/health-checks'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 27000
 ---

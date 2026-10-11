@@ -1,11 +1,7 @@
 ---
-id: NASKS-75
 title: Proteger CouchDB contra brute-force de auth con Crowdsec en Traefik
 status: Done
-assignee:
-  - Daniel
 created_date: '2026-06-26 19:46'
-updated_date: '2026-06-26 20:35'
 labels: []
 dependencies: []
 references:

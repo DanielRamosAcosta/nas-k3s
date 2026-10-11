@@ -1,10 +1,7 @@
 ---
-id: NASKS-2
 title: Build custom bento-style dashboard with links to all apps
 status: To Do
-assignee: []
 created_date: '2026-03-09 16:48'
-updated_date: '2026-03-16 11:05'
 labels:
   - dashboard
   - feature

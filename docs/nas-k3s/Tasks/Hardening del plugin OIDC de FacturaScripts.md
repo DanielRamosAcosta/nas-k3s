@@ -1,10 +1,7 @@
 ---
-id: NASKS-76
 title: Hardening del plugin OIDC de FacturaScripts
 status: Done
-assignee: []
 created_date: '2026-06-27 08:18'
-updated_date: '2026-08-09 19:09'
 labels:
   - business
   - facturascripts
@@ -23,7 +20,7 @@ ordinal: 0.000029802322387695312
 
 ## 📌 TLDR
 
-Reducir la deuda técnica del plugin propio OIDC (login con Authelia) de FacturaScripts: dejar de duplicar la lógica de sesión/cookies del core, delegar la verificación de JWT en la librería ya vendorizada y dejar de acceder a superglobales. Detectado al auditar el plugin para el upgrade a 2026.3 (NASKS-60).
+Reducir la deuda técnica del plugin propio OIDC (login con Authelia) de FacturaScripts: dejar de duplicar la lógica de sesión/cookies del core, delegar la verificación de JWT en la librería ya vendorizada y dejar de acceder a superglobales. Detectado al auditar el plugin para el upgrade a 2026.3 ([[Actualizar con seguridad FacturaScripts 2025.81 → 2026.3]]).
 
 ## 🎯 Contexto funcional
 

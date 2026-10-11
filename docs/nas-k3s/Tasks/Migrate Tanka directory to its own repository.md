@@ -1,10 +1,7 @@
 ---
-id: NASKS-16
 title: Migrate Tanka directory to its own repository
 status: Done
-assignee: []
 created_date: '2026-03-09 18:07'
-updated_date: '2026-03-16 11:07'
 labels:
   - infrastructure
   - kubernetes

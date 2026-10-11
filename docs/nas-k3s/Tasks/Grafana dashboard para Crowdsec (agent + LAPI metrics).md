@@ -1,10 +1,7 @@
 ---
-id: NASKS-55
 title: Grafana dashboard para Crowdsec (agent + LAPI metrics)
 status: To Do
-assignee: []
 created_date: '2026-04-22 20:36'
-updated_date: '2026-06-19 16:56'
 labels:
   - observability
   - grafana
@@ -19,7 +16,7 @@ ordinal: 58000
 
 ## Context
 
-En NASKS-53 habilitamos `metrics.enabled: true` en el chart Crowdsec y el LAPI expone `/metrics` en el puerto 6060 del service `crowdsec-service.system` (más el agent en `crowdsec-agent-service`). VictoriaMetrics (scrape generalista) ya los está recogiendo.
+En [[Hardening photos.danielramos.me Crowdsec + geo-block ES CU]] habilitamos `metrics.enabled: true` en el chart Crowdsec y el LAPI expone `/metrics` en el puerto 6060 del service `crowdsec-service.system` (más el agent en `crowdsec-agent-service`). VictoriaMetrics (scrape generalista) ya los está recogiendo.
 
 Falta importar el dashboard oficial de Crowdsec en Grafana para ver:
 - Decisions activas totales / por origen (community vs local)

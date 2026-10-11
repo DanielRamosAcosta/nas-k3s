@@ -1,10 +1,7 @@
 ---
-id: NASKS-59
 title: Activar backups automáticos de VictoriaMetrics con vmbackupmanager
 status: To Do
-assignee: []
 created_date: '2026-04-29 06:54'
-updated_date: '2026-06-19 16:56'
 labels:
   - monitoring
   - victoriametrics

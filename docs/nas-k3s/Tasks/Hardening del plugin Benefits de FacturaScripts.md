@@ -1,10 +1,7 @@
 ---
-id: NASKS-77
 title: Hardening del plugin Benefits de FacturaScripts
 status: Done
-assignee: []
 created_date: '2026-06-27 08:19'
-updated_date: '2026-08-09 19:10'
 labels:
   - business
   - facturascripts
@@ -20,7 +17,7 @@ ordinal: 0.000014901161193847656
 
 ## 📌 TLDR
 
-Reducir la deuda técnica del plugin propio Benefits (dashboard de pérdidas/ganancias) de FacturaScripts: dejar de leer las tablas fiscales con SQL crudo, eliminar un import muerto de API deprecada y migrar al controlador moderno. Detectado al auditar el plugin para el upgrade a 2026.3 (NASKS-60).
+Reducir la deuda técnica del plugin propio Benefits (dashboard de pérdidas/ganancias) de FacturaScripts: dejar de leer las tablas fiscales con SQL crudo, eliminar un import muerto de API deprecada y migrar al controlador moderno. Detectado al auditar el plugin para el upgrade a 2026.3 ([[Actualizar con seguridad FacturaScripts 2025.81 → 2026.3]]).
 
 ## 🎯 Contexto funcional
 

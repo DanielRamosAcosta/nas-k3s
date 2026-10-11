@@ -1,10 +1,7 @@
 ---
-id: NASKS-33
 title: Migrate photos from Cris's Asus laptop to Immich
 status: Done
-assignee: []
 created_date: '2026-03-19 08:20'
-updated_date: '2026-04-10 16:17'
 labels:
   - media
   - chore

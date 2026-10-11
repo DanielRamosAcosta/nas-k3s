@@ -22,7 +22,5 @@ created_date: {{date:YYYY-MM-DD HH:mm}}
 
 ## Implementation Plan
 
-### Fase 0 —
-
 ## Implementation Notes
 

@@ -1,10 +1,7 @@
 ---
-id: NASKS-26
 title: Configurar escalation chain IRM con 2 usuarios (Daniel + padre)
 status: Done
-assignee: []
 created_date: '2026-03-18 08:20'
-updated_date: '2026-06-21 09:55'
 labels:
   - infrastructure
   - monitoring

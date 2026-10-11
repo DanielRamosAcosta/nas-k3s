@@ -1,10 +1,7 @@
 ---
-id: NASKS-18
 title: Añadir CI con GitHub Actions para validar manifiestos
 status: Done
-assignee: []
 created_date: '2026-03-15 17:48'
-updated_date: '2026-03-15 21:42'
 labels:
   - ci
   - infrastructure
@@ -18,7 +15,7 @@ ordinal: 125
 
 Crear un GitHub Action que ejecute `tk eval` en todos los environments cuando se abre una PR. Esto valida que los manifiestos Jsonnet compilan correctamente antes de mergear.
 
-Bloqueado por NASKS-17 (migrar secrets) — sin acceso a secrets en CI, `tk eval` falla.
+Bloqueado por [[Migrar a Sealed Secrets para poder usar secrets en CI]] (migrar secrets) — sin acceso a secrets en CI, `tk eval` falla.
 
 ## Acceptance Criteria
 - [ ] #1 `tk eval` se ejecuta en CI para los 6 environments (arr, media, monitoring, auth, databases, system)

@@ -1,10 +1,7 @@
 ---
-id: doc-2
-title: Queries útiles de Navidrome (SQLite)
-type: other
 created_date: '2026-03-24 23:19'
-updated_date: '2026-03-25 12:25'
 ---
+
 # Queries útiles de Navidrome (SQLite)
 
 La base de datos de Navidrome es SQLite y se encuentra en `/data/navidrome.db` dentro del pod `navidrome-0` (namespace `media`).

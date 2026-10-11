@@ -1,10 +1,7 @@
 ---
-id: NASKS-39
 title: 'De-duplicar secretos compartidos (contraseña BBDD, SMTP, etc.)'
 status: Done
-assignee: []
 created_date: '2026-03-20 08:09'
-updated_date: '2026-03-21 19:09'
 labels:
   - refactor
 dependencies: []

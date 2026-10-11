@@ -1,10 +1,7 @@
 ---
-id: NASKS-40
 title: Centralizar SMTP con relay Postfix (boky/postfix)
 status: Done
-assignee: []
 created_date: '2026-03-20 19:05'
-updated_date: '2026-06-21 09:55'
 labels:
   - infrastructure
   - smtp

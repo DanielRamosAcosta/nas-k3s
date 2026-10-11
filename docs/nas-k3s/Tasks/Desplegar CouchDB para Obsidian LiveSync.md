@@ -1,10 +1,7 @@
 ---
-id: NASKS-71
 title: Desplegar CouchDB para Obsidian LiveSync
 status: Done
-assignee: []
 created_date: '2026-06-25 22:44'
-updated_date: '2026-06-26 18:34'
 labels: []
 dependencies: []
 references:
@@ -241,7 +238,7 @@ El plan se divide en fases pequeñas con despliegue intermedio (commit + push �
 1. Marcar los Acceptance Criteria cumplidos.
 2. Cumplir el DoD: **desplegar con `/deploy`**.
 3. Pedir aprobación explícita del usuario antes de poner la tarea en `Done` y commitear (regla del CLAUDE.md).
-4. La tarea de backups (NASKS-72) queda fuera de scope, ya creada.
+4. La tarea de backups ([[Añadir CronJob de backup para CouchDB]]) queda fuera de scope, ya creada.
 
 ---
 

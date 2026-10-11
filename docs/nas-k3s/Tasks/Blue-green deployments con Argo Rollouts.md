@@ -1,10 +1,7 @@
 ---
-id: NASKS-24
 title: Blue-green deployments con Argo Rollouts
 status: Done
-assignee: []
 created_date: '2026-03-15 23:55'
-updated_date: '2026-04-12 01:44'
 labels:
   - infrastructure
   - reliability

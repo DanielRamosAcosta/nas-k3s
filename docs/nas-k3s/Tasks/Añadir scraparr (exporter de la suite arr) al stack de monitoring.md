@@ -1,10 +1,7 @@
 ---
-id: NASKS-85
 title: Añadir scraparr (exporter de la suite *arr) al stack de monitoring
 status: Done
-assignee: []
 created_date: '2026-08-09 19:13'
-updated_date: '2026-08-09 19:31'
 labels: []
 dependencies: []
 references:

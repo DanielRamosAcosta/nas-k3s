@@ -1,10 +1,7 @@
 ---
-id: NASKS-66
 title: Desplegar Mautrix-WhatsApp bridge (backup mensajes)
 status: Done
-assignee: []
 created_date: '2026-06-19 17:02'
-updated_date: '2026-06-21 09:55'
 labels:
   - app
   - system
@@ -21,7 +18,7 @@ ordinal: 0.0002384185791015625
 
 ## TL;DR
 
-Desplegar el bridge **Mautrix-WhatsApp** junto a Synapse (NASKS-64) en k3s/Tanka para archivar los mensajes de WhatsApp en el NAS. Bridge *puppeted*, con e2ee, backfill al máximo y appservice cableado vía `registration.yaml` pre-generado como SealedSecret (propiedad de Synapse). Se ejecuta en **5 fases** independientes (cambio → deploy → revisar), aislando el cambio delicado sobre Synapse. Detalles finos cerrados en *Implementation Notes* (dry-run).
+Desplegar el bridge **Mautrix-WhatsApp** junto a Synapse ([[Desplegar Synapse (Matrix homeserver)]]) en k3s/Tanka para archivar los mensajes de WhatsApp en el NAS. Bridge *puppeted*, con e2ee, backfill al máximo y appservice cableado vía `registration.yaml` pre-generado como SealedSecret (propiedad de Synapse). Se ejecuta en **5 fases** independientes (cambio → deploy → revisar), aislando el cambio delicado sobre Synapse. Detalles finos cerrados en *Implementation Notes* (dry-run).
 
 ## Contexto funcional
 

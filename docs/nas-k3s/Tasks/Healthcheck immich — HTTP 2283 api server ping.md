@@ -1,10 +1,7 @@
 ---
-id: NASKS-22.9
 title: 'Healthcheck: immich — HTTP :2283/api/server/ping'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-16 19:05'
 labels:
   - infrastructure
   - reliability
@@ -15,7 +12,6 @@ references:
   - 'https://github.com/immich-app/immich/pull/9583'
   - 'https://github.com/immich-app/immich/discussions/6320'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 3000
 ---

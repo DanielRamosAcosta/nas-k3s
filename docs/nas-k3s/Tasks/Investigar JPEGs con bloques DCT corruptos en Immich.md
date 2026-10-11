@@ -1,10 +1,7 @@
 ---
-id: NASKS-29
 title: Investigar JPEGs con bloques DCT corruptos en Immich
 status: Done
-assignee: []
 created_date: '2026-03-18 17:15'
-updated_date: '2026-03-19 07:48'
 labels:
   - immich
   - media

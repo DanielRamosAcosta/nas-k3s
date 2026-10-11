@@ -1,10 +1,7 @@
 ---
-id: NASKS-49
 title: Migrar StatefulSets a Deployments para zero-downtime rolling updates
 status: Done
-assignee: []
 created_date: '2026-04-12 00:04'
-updated_date: '2026-04-12 01:06'
 labels:
   - infra
   - zero-downtime

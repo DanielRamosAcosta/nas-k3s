@@ -1,12 +1,9 @@
 ---
-id: NASKS-37
 title: >-
   Refactorizar secrets de Immich: usar keys individuales en vez de JSON
   serializado
 status: Done
-assignee: []
 created_date: '2026-03-19 20:11'
-updated_date: '2026-03-20 18:05'
 labels:
   - refactor
 dependencies: []

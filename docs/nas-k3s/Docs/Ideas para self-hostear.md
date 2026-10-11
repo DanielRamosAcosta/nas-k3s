@@ -1,10 +1,7 @@
 ---
-id: doc-1
-title: Ideas para self-hostear
-type: other
 created_date: '2026-03-22 10:53'
-updated_date: '2026-03-22 14:41'
 ---
+
 ## Ideas para self-hostear
 
 Lista de aplicaciones consideradas para añadir al homelab, con valoración inicial.

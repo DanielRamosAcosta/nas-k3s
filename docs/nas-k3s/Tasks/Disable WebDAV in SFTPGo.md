@@ -1,10 +1,7 @@
 ---
-id: NASKS-8
 title: Disable WebDAV in SFTPGo
 status: Done
-assignee: []
 created_date: '2026-03-09 16:54'
-updated_date: '2026-03-16 11:07'
 labels:
   - security
   - chore

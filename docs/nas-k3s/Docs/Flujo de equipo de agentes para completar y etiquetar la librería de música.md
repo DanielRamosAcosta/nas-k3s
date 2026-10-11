@@ -1,9 +1,7 @@
 ---
-id: doc-3
-title: Flujo de equipo de agentes para completar y etiquetar la librería de música
-type: other
 created_date: '2026-03-29 00:13'
 ---
+
 ## Objetivo
 
 Completar álbumes incompletos y corregir tags de la librería de música del NAS mediante un equipo coordinado de 3 agentes especializados (beets, lidarr, slskd) ejecutando un flujo cíclico supervisado.

@@ -1,10 +1,7 @@
 ---
-id: NASKS-58
 title: 'fix(immich): permitir tráfico LAN en GeoBlock tras alias DNS local'
 status: Done
-assignee: []
 created_date: '2026-04-23 09:28'
-updated_date: '2026-04-29 06:17'
 labels:
   - bug
   - immich
@@ -16,7 +13,7 @@ ordinal: 0.000476837158203125
 
 ## Description
 
-Tras introducir el alias DNS local `photos.danielramos.me → 192.168.1.200` (NASKS-52), las peticiones desde la LAN llegan a Traefik con la IP real privada (ej. 192.168.1.11). El middleware `immich-geoblock-es-cu` tiene `allowLocalRequests: false`, por lo que deniega esas peticiones con 403 antes de comprobar el país.
+Tras introducir el alias DNS local `photos.danielramos.me → 192.168.1.200` ([[Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01]]), las peticiones desde la LAN llegan a Traefik con la IP real privada (ej. 192.168.1.11). El middleware `immich-geoblock-es-cu` tiene `allowLocalRequests: false`, por lo que deniega esas peticiones con 403 antes de comprobar el país.
 
 Log confirmatorio:
 ```

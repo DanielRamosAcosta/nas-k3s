@@ -1,10 +1,7 @@
 ---
-id: NASKS-22.24
 title: 'Healthcheck: promtail — HTTP :9080/ready'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
@@ -13,7 +10,6 @@ references:
   - 'https://grafana.com/docs/loki/latest/send-data/promtail/configuration/'
   - 'https://github.com/grafana/loki/pull/468'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 24000
 ---

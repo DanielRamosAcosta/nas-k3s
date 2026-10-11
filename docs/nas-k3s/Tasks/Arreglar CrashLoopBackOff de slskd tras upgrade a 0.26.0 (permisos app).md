@@ -1,10 +1,7 @@
 ---
-id: NASKS-83
 title: Arreglar CrashLoopBackOff de slskd tras upgrade a 0.26.0 (permisos /app)
 status: Done
-assignee: []
 created_date: '2026-08-07 16:53'
-updated_date: '2026-08-07 16:57'
 labels: []
 dependencies: []
 references:

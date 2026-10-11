@@ -1,10 +1,7 @@
 ---
-id: NASKS-22.23
 title: 'Healthcheck: prometheus — HTTP :9090 /-/healthy + /-/ready'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:15'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
@@ -12,7 +9,6 @@ dependencies: []
 references:
   - 'https://prometheus.io/docs/prometheus/latest/management_api/'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 23000
 ---

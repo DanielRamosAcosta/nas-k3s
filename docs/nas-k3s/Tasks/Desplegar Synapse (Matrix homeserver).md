@@ -1,10 +1,7 @@
 ---
-id: NASKS-64
 title: Desplegar Synapse (Matrix homeserver)
 status: Done
-assignee: []
 created_date: '2026-06-19'
-updated_date: '2026-06-19 20:08'
 labels:
   - app
   - system
@@ -22,7 +19,7 @@ ordinal: 6000
 
 ## TLDR
 
-Desplegar Synapse (homeserver Matrix) en `matrix.danielramos.me` con Postgres y SSO via Authelia. Servirá de base para el bridge Mautrix-WhatsApp (NASKS-66). Despliegue en tres fases: namespace → BBDD → Synapse básico → OIDC.
+Desplegar Synapse (homeserver Matrix) en `matrix.danielramos.me` con Postgres y SSO via Authelia. Servirá de base para el bridge Mautrix-WhatsApp ([[Desplegar Mautrix-WhatsApp bridge (backup mensajes)]]). Despliegue en tres fases: namespace → BBDD → Synapse básico → OIDC.
 
 ## Requisitos funcionales
 
@@ -30,7 +27,7 @@ Desplegar Synapse (homeserver Matrix) en `matrix.danielramos.me` con Postgres y 
 - Login exclusivo via Authelia SSO — sin contraseñas Matrix propias
 - El primer login via Authelia crea la cuenta Matrix automáticamente
 - User ID resultante: `@dani:matrix.danielramos.me`
-- Preparado para conectar el bridge Mautrix-WhatsApp (NASKS-66)
+- Preparado para conectar el bridge Mautrix-WhatsApp ([[Desplegar Mautrix-WhatsApp bridge (backup mensajes)]])
 - Sin federación — uso privado
 
 ## Plan técnico
@@ -64,7 +61,7 @@ Cliente Matrix (Element, FluffyChat, etc.)
 - URL previews: deshabilitadas
 - Sin resource limits
 - Element Web: descartado por ahora
-- `app_service_config_files`: vacío en Fase 1; se añade al desplegar el bridge en NASKS-66
+- `app_service_config_files`: vacío en Fase 1; se añade al desplegar el bridge en [[Desplegar Mautrix-WhatsApp bridge (backup mensajes)]]
 
 **Configuración OIDC (Fase 2):**
 
@@ -166,4 +163,4 @@ Synapse (homeserver Matrix) desplegado en matrix.danielramos.me con Postgres com
 
 **PRs:** #103 (integración OIDC) y #104 (fix: restaurar type:http requerido en el listener de cliente — bug latente introducido por el refactor f25f3b5 que provocaba KeyError 'type' / CrashLoopBackOff al rolar la config).
 
-Cliente iOS recomendado: Element Classic o FluffyChat (Element X NO es compatible: exige OIDC nativo vía MAS, no el SSO delegado m.login.sso). Base lista para el bridge Mautrix-WhatsApp (NASKS-66).
+Cliente iOS recomendado: Element Classic o FluffyChat (Element X NO es compatible: exige OIDC nativo vía MAS, no el SSO delegado m.login.sso). Base lista para el bridge Mautrix-WhatsApp ([[Desplegar Mautrix-WhatsApp bridge (backup mensajes)]]).

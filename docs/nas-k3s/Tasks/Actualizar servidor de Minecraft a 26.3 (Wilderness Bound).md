@@ -1,16 +1,13 @@
 ---
-id: NASKS-89
 title: Actualizar servidor de Minecraft a 26.3 (Wilderness Bound)
-status: In Progress
-assignee: []
-created_date: '2026-09-19 06:45'
-updated_date: '2026-09-19 06:45'
+status: Done
+created_date: 2026-09-19 06:45
 labels: []
 dependencies: []
 references:
-  - 'https://minecraft.wiki/w/Java_Edition_26.3'
-  - 'https://papermc.io/downloads/paper'
-  - 'https://fill.papermc.io/v3/projects/paper/versions/26.3/builds'
+  - https://minecraft.wiki/w/Java_Edition_26.3
+  - https://papermc.io/downloads/paper
+  - https://fill.papermc.io/v3/projects/paper/versions/26.3/builds
 modified_files:
   - lib/games/minecraft/minecraft.libsonnet
 priority: 2

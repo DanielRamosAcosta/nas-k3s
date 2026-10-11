@@ -1,10 +1,7 @@
 ---
-id: NASKS-22.3
 title: 'Healthcheck: booklore — HTTP :6060/api/v1/healthcheck'
 status: Done
-assignee: []
 created_date: '2026-03-16 08:14'
-updated_date: '2026-03-17 07:02'
 labels:
   - infrastructure
   - reliability
@@ -13,7 +10,6 @@ references:
   - 'https://github.com/booklore-app/booklore/releases/tag/v1.16.2'
   - 'https://github.com/booklore-app/booklore/pull/2024'
 parent: "[[Añadir healthchecks (liveness readiness probes) a todos los servicios]]"
-parent_task_id: NASKS-22
 priority: 3
 ordinal: 3000
 ---

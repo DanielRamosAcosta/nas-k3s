@@ -1,10 +1,7 @@
 ---
-id: NASKS-61
 title: Desplegar wger (workout/fitness tracker) reutilizando Postgres y Valkey
 status: Done
-assignee: []
 created_date: '2026-05-07 20:50'
-updated_date: '2026-06-21 09:55'
 labels:
   - app
   - business
@@ -31,7 +28,7 @@ Desplegar [wger](https://github.com/wger-project/wger) — gestor self-hosted de
 
 ## Dependencias
 
-- **NASKS-63** (Habilitar forward-auth Authelia + Middleware Traefik genérico) — bloqueante **solo para la fase 3**. Las fases 1 y 2 son independientes.
+- **[[Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable]]** (Habilitar forward-auth Authelia + Middleware Traefik genérico) — bloqueante **solo para la fase 3**. Las fases 1 y 2 son independientes.
 
 ## Decisiones cerradas (grilling + 2 simulacros)
 
@@ -59,7 +56,7 @@ Desplegar [wger](https://github.com/wger-project/wger) — gestor self-hosted de
 | 20 | Healthcheck | Usar `/api/v2/version/` para startup/liveness, o omitir startupProbe (evaluar al implementar). |
 | 21 | `SIGNING_KEY` | Verificar al implementar si es realmente requerido. Puede ser opcional si no usamos DRF JWT. |
 
-> Nota: existe **NASKS-62** (separar Immich `/0` y ArgoCD `/1` que actualmente comparten `/0`). Wger usa `/2-/4`, no colisiona.
+> Nota: existe **[[Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0)]]** (separar Immich `/0` y ArgoCD `/1` que actualmente comparten `/0`). Wger usa `/2-/4`, no colisiona.
 
 ## Stack & componentes
 
@@ -177,7 +174,7 @@ ArgoCD genera la Application automáticamente al detectar el label `app: wger`.
 - [ ] #3 Fase 2: wger accesible en https://gym.danielramos.me con login admin/adminadmin (sin Authelia todavía); UI navegable
 - [ ] #4 Fase 2: Celery worker (concurrency=2) y celery beat operativos; sync-exercises manual funciona y catalog aparece en UI
 - [ ] #5 Fase 2: VictoriaMetrics scrapea métricas vía annotations en Service (`up{kubernetes_namespace="business", kubernetes_name=~"wger.*"}` devuelve 1)
-- [ ] #6 Fase 3 (tras NASKS-63): IngressRoute con middleware `u.middleware.autheliaForwardAuth()`; acceso a gym.danielramos.me redirige a Authelia y entra como user SSO
+- [ ] #6 Fase 3 (tras [[Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable]]): IngressRoute con middleware `u.middleware.autheliaForwardAuth()`; acceso a gym.danielramos.me redirige a Authelia y entra como user SSO
 - [ ] #7 Fase 3: bootstrap completado — user SSO promocionado a superuser y `admin` borrado de la DB
 - [ ] #8 wger usa Postgres compartido con role+db `wger` creados por migrationJob; sin Postgres dedicado
 - [ ] #9 wger usa Valkey compartido con DBs lógicas /2, /3, /4; sin Redis dedicado
@@ -263,9 +260,9 @@ Si falla, no contamina nada. Rollback = revert + drop role/db.
    kubectl exec -n monitoring deploy/<vmagent> -- wget -qO- http://wger.business.svc.cluster.local:8000/metrics | head
    ```
 
-### Fase 3 — Forward-auth + bootstrap SSO (cierra NASKS-63)
+### Fase 3 — Forward-auth + bootstrap SSO (cierra [[Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable]])
 
-**Pre-requisito:** ejecutar el contenido completo de **NASKS-63** (Middleware Traefik `authelia-forwardauth` + helper `u.middleware.autheliaForwardAuth()` + `allowCrossNamespace: true` en Traefik values).
+**Pre-requisito:** ejecutar el contenido completo de **[[Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable]]** (Middleware Traefik `authelia-forwardauth` + helper `u.middleware.autheliaForwardAuth()` + `allowCrossNamespace: true` en Traefik values).
 
 **Cambios en wger:**
 - Añadir variables `AUTH_PROXY_*` al ConfigMap:

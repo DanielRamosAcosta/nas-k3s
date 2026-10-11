@@ -1,10 +1,7 @@
 ---
-id: NASKS-25
 title: 'Refactorizar utils.libsonnet: separar en ficheros por dominio'
 status: Done
-assignee: []
 created_date: '2026-03-16 07:25'
-updated_date: '2026-03-16 07:56'
 labels:
   - infrastructure
   - refactor
