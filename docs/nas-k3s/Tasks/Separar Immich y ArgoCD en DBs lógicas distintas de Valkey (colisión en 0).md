@@ -1,6 +1,6 @@
 ---
 title: Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en /0)
-status: To Do
+status: In Progress
 created_date: '2026-05-08 06:01'
 labels:
   - databases
@@ -41,3 +41,12 @@ A partir de ahí, cada nuevo servicio toma el siguiente índice libre y se docum
 ## Fuera de alcance
 
 - Migrar datos: ambos servicios pueden perder cache (regenerable). No hay datos persistentes en Valkey.
+
+## Implementation Plan
+
+Valkey corre con config por defecto y **sin volumen persistente** → ya es 100% volátil (pierde todo en cada reinicio del pod) y expone las 16 DBs por defecto. wger ya sigue la convención (`/2` cache, `/3` celery broker, `/4` celery backend). Solo faltan Immich y ArgoCD.
+
+- **Immich** (`lib/media/immich/immich.libsonnet`): añadir `REDIS_DBINDEX: '0'` explícito al `configEnv` (ya era `/0` implícito; se hace explícito por claridad).
+- **ArgoCD** (`lib/system/argocd/argocd.libsonnet`): añadir `'redis.db': 1` a `configs.params`. El chart lo propaga a `argocd-cmd-params-cm` → env `REDISDB` en server/repo-server/application-controller.
+- Migración "a lo bestia" sin mover datos: al desplegar, ArgoCD reconecta a `/1` (vacía) y reconstruye su caché de manifiestos/diffs en segundos. Las keys viejas en `/0` quedan huérfanas.
+- **Al terminar**: reiniciar el pod de Valkey para limpiar las keys huérfanas de `/0` (caché regenerable, sin persistencia → sin riesgo).
