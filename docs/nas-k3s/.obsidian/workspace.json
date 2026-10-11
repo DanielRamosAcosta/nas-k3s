@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "4c0353c0253b062c",
+        "id": "7a093a959bcc9173",
         "type": "tabs",
         "children": [
           {
-            "id": "bf8b603e0af57e0c",
+            "id": "d6480624db7df58e",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
+                "file": "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0)"
+              "title": "Activar backups automáticos de VictoriaMetrics con vmbackupmanager"
             }
           }
         ]
@@ -55,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "booklore",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -188,12 +188,18 @@
       "bases:Crear nueva base": false
     }
   },
-  "active": "bf8b603e0af57e0c",
+  "active": "d6480624db7df58e",
   "lastOpenFiles": [
     "Tasks.base",
+    "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
+    "Docs/Auditoría de credenciales en el historial de git y su mitigación.md",
+    "Docs/Flujo de equipo de agentes para completar y etiquetar la librería de música.md",
+    "Docs/Ideas para self-hostear.md",
+    "Tasks/Página de error personalizada para Traefik.md",
+    "Tasks/Create trip photo albums in Immich.md",
+    "Tasks/Añadir git hook que ejecute los checks de CI localmente antes de pushear.md",
     "Tasks/Reducir consumo de CPU de scraparr subir intervalos y desactivar detailed en Lidarr.md",
     "Templates/Task.md",
-    "Docs/Ideas para self-hostear.md",
     "Docs/Guía Alta de usuario en el NAS.md",
     "Docs/Postgres — restaurar desde un backup.md",
     "Docs/Postgres — crear un backup ad-hoc.md",
@@ -210,13 +216,7 @@
     "Tasks/Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01.md",
     "Tasks/Remove PV PVC from all deployments and use hostPath directly.md",
     "Tasks/Refactorizar utils.libsonnet separar en ficheros por dominio.md",
-    "Tasks/Refactorizar u.Environment() para soportar agrupación de apps por label.md",
-    "Tasks/Refactorizar módulo Traefik para usar utils.md",
-    "Tasks/Refactorizar módulo ArgoCD para usar utils.md",
-    "Docs/Auditoría de credenciales en el historial de git y su mitigación.md",
-    "Docs/Flujo de equipo de agentes para completar y etiquetar la librería de música.md",
     "Docs",
-    "Tasks/Montar SMTP relay interno para centralizar credenciales de correo.md",
     "Templates",
     "Tasks",
     "Tareas.base"
