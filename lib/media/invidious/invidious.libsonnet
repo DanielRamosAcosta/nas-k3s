@@ -67,18 +67,6 @@ local invidiousConfig = import './invidious.config.json';
                            ]) +
                            u.probes.tcp(8282),
                          ]) +
-                         // El companion corre como appuser (uid 10001). El hostPath lo crea
-                         // kubelet como root:root, así que el proceso no puede escribir el
-                         // kv_cache.sqlite3 y cae a caché en memoria. Init container root que
-                         // chownea el dir al uid de la app (mismo patrón que couchdb).
-                         deployment.spec.template.spec.withInitContainers([
-                           container.new('fix-perms', u.image(versions.busybox.image, versions.busybox.version)) +
-                           container.withCommand(['/bin/sh', '-c', 'chown -R 10001:10001 /var/tmp/youtubei.js']) +
-                           container.withVolumeMounts([
-                             volumeMount.new('cache', '/var/tmp/youtubei.js'),
-                           ]) +
-                           { securityContext: { runAsUser: 0 } },
-                         ]) +
                          deployment.spec.template.spec.withVolumes([
                            volume.fromHostPath('cache', '/data/invidious/companion-cache') + volume.hostPath.withType('DirectoryOrCreate'),
                          ]) +
