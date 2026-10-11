@@ -258,15 +258,21 @@ Cuando pidas una decisión al usuario y tengas análisis suficiente para inclina
 
 ## Gestión del proyecto
 
-Todo el trabajo se gestiona en **Backlog.md** (archivos de tarea bajo `backlog/tasks/`).
+Todo el trabajo se gestiona en un **vault de Obsidian versionado en el repo**, bajo `docs/nas-k3s/`. Las tareas son notas markdown en `docs/nas-k3s/Tasks/`, visualizadas con la Base `Tasks.base` (kanban por `status`: Draft → To Do → In Progress → Done). Las guías/runbooks viven en `docs/nas-k3s/Docs/`.
 
 ### Reglas
 
-1. **NUNCA trabajar sin ticket.** Ten siempre una o más tareas en `in_progress` que representen el trabajo actual. Si no existe ninguna, encuentra o pregunta al usuario para crear la tarea apropiada antes de empezar.
-2. **Creación vs Edición**: Para crear, usamos la skill `create-task`. Para editar, editamos el markdown a mano usando el formato adecuado.
+1. **NUNCA trabajar sin ticket.** Ten siempre una o más tareas en `In Progress` que representen el trabajo actual. Si no existe ninguna, encuentra o pregunta al usuario para crear la tarea apropiada antes de empezar.
+2. **Creación vs Edición**: Para crear, usa la skill `create-task` (crea la nota desde la plantilla `Task` vía el CLI de Obsidian). Para editar, edita el markdown a mano.
 3. **Flujo de finalización.** Cuando una tarea esté terminada, confírmalo con el usuario. Solo tras su aprobación explícita: establece `status: Done` y commitea.
 4. **Nunca te auto-apruebes.** No muevas tareas a `Done` ni commitees sin el OK explícito del usuario.
 
+### Formato de tarea
+
+- **Frontmatter**: `title`, `status` (Draft/To Do/In Progress/Done), `priority` (`1` alta, `2` media, `3` baja), `labels`, `created_date`, `ordinal` (orden manual), `references`, y `dependencies`/`parent` como wikilinks (`"[[Otra tarea]]"`).
+- **Cuerpo**: `## Description` (📌 TLDR, 🎯 Contexto funcional, ⚙️ Contexto técnico), `## Acceptance Criteria` (`- [ ] #N`), `## Implementation Plan` (al empezar a ejecutar), `## Implementation Notes` (al terminar).
+- La plantilla base está en `docs/nas-k3s/Templates/Task.md`.
+
 ### Finalizar tareas (a mano)
 
-Al terminar una tarea, edita su archivo markdown y establece `status: Done` en el frontmatter. NO archives el archivo ni lo muevas fuera de `backlog/tasks/` — las tareas permanecen en su sitio. No uses ninguna herramienta MCP de escritura para esto.
+Al terminar una tarea, edita su nota y establece `status: Done` en el frontmatter. NO muevas ni borres el fichero — las tareas permanecen en `docs/nas-k3s/Tasks/`.
