@@ -26,7 +26,7 @@ spec:
             secretKeyRef:
               key: SERVER_SECRET_KEY
               name: invidious-companion-sealed-secret
-        image: quay.io/invidious/invidious-companion:master-11cc6ac
+        image: quay.io/invidious/invidious-companion:2026.09.19-bb3b37f
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
