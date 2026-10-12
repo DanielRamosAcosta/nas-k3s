@@ -1,7 +1,7 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
   local deployment = k.apps.v1.deployment,
