@@ -1,6 +1,6 @@
 ---
 title: Activar backups automáticos de VictoriaMetrics con vmbackupmanager
-status: To Do
+status: Blocked
 created_date: '2026-04-29 06:54'
 labels:
   - monitoring
@@ -10,6 +10,10 @@ dependencies: []
 priority: 2
 ordinal: 61000
 ---
+
+## Blocker
+
+Bloqueada por un tema físico de almacenamiento: ahora mismo `/cold-data` no es el montaje directo del pool btrfs, sino que cada directorio interno es un subvolumen independiente. Hay que arreglar esa estructura (que `/cold-data` sea el montaje directo del pool) antes de poder abordar los backups de VictoriaMetrics.
 
 ## Description
 

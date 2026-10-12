@@ -1,9 +1,7 @@
 ---
-title: >-
-  Refactorizar config de Synapse: eliminar envsubst usando secretos nativos por
-  path
-status: In Progress
-created_date: '2026-06-19 21:50'
+title: "Refactorizar config de Synapse: eliminar envsubst usando secretos nativos por path"
+status: Done
+created_date: 2026-06-19 21:50
 labels:
   - synapse
   - refactor
@@ -11,8 +9,7 @@ labels:
 dependencies: []
 references:
   - lib/communications/synapse/synapse.libsonnet
-  - >-
-    https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
+  - https://element-hq.github.io/synapse/latest/usage/configuration/config_documentation.html
 priority: 3
 ordinal: 66000
 ---

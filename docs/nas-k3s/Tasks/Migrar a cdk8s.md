@@ -1,12 +1,11 @@
 ---
 title: Migrar a cdk8s
-status: To Do
-created_date: '2026-03-22 00:47'
+status: Blocked
+created_date: 2026-03-22 00:47
 labels:
-  - blocked
 dependencies: []
 references:
-  - 'https://github.com/cdk8s-team/cdk8s/issues/2992'
+  - https://github.com/cdk8s-team/cdk8s/issues/2992
 priority: 3
 ordinal: 52000
 ---
