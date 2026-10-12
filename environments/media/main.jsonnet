@@ -4,6 +4,7 @@ local immich = import 'media/immich/immich.libsonnet';
 local invidious = import 'media/invidious/invidious.libsonnet';
 local jellyfin = import 'media/jellyfin/jellyfin.libsonnet';
 local navidrome = import 'media/navidrome/navidrome.libsonnet';
+local seerr = import 'media/seerr/seerr.libsonnet';
 local sftpgo = import 'media/sftpgo/sftpgo.libsonnet';
 local u = import 'utils.libsonnet';
 
@@ -11,6 +12,7 @@ u.Environment({
   beets: beets.new(),
   immich: immich.new(),
   navidrome: navidrome.new(),
+  seerr: seerr.new(),
   sftpgo: sftpgo.new(),
   grimmory: grimmory.new(),
   jellyfin: jellyfin.new(),
