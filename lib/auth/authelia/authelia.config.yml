@@ -306,3 +306,26 @@ identity_providers:
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: none
+
+      - client_id: 'seerr'
+        client_name: Seerr
+        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_SEERR_CLIENT_SECRET_DIGEST` }}'
+        public: false
+        authorization_policy: two_factor
+        consent_mode: 'implicit'
+        require_pkce: true
+        pkce_challenge_method: 'S256'
+        redirect_uris:
+          - 'https://seerr.danielramos.me/login'
+          - 'https://seerr.danielramos.me/profile/settings/linked-accounts'
+        scopes:
+          - openid
+          - profile
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
+        access_token_signed_response_alg: none
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_post
