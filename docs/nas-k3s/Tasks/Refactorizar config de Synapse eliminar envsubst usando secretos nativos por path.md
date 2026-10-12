@@ -2,7 +2,7 @@
 title: >-
   Refactorizar config de Synapse: eliminar envsubst usando secretos nativos por
   path
-status: To Do
+status: In Progress
 created_date: '2026-06-19 21:50'
 labels:
   - synapse
@@ -41,6 +41,22 @@ El "engorro" viene de que inline-amos los secretos dentro del YAML. Synapse sopo
 **Pre-requisito de verificación:** confirmar contra la versión de Synapse en `versions.json` que existen `form_secret_path` y `client_secret_path` (los dos no verificados al 100%). Si alguno no existe en esa versión, mantener ese valor concreto vía un mecanismo alternativo o evaluar bump de versión.
 
 Ficheros afectados: `lib/communications/synapse/synapse.libsonnet`, `synapse.homeserver.yaml`, `synapse.registration.yaml`, `synapse.secrets.json`.
+
+## Implementation Plan
+
+**Verificación previa (hecha):** las 4 opciones `*_path` existen en Synapse v1.162.0 (`versions.json`): `macaroon_secret_key_path` (1.121), `form_secret_path` (1.126), `registration_shared_secret_path` (1.67), oidc `client_secret_path` (1.91). No hace falta bump. `envsubst` NO se puede quitar de `versions.json` (lo usan authelia, facturascripts, immich, invidious, mautrix-whatsapp) → criterio #2 se cierra documentando que sigue en uso por otros.
+
+**`client_id` de OIDC:** no existe `client_id_path` y el `client_id` no es secreto en OAuth2 (viaja en la URL del navegador) → se inlinea como valor público en el `homeserver.yaml` estático. Deja de estar sellado.
+
+**Permisos:** el proceso Synapse corre como uid 991 (gosu-drop del entrypoint). Montajes read-only `root:0644` se leen igual que ya funciona `signing.key` hoy; `/media` (hostPath) ya es 991:991. No hace falta `securityContext` ni chown.
+
+**Decisión tokens appservice (usuario): preservar.** Se leen AS/HS actuales del cluster a ficheros temporales (nunca a stdout), se renderiza el `registration.yaml` y se sella completo. mautrix-whatsapp queda intacto (sigue renderizando su copia vía envsubst desde el template compartido y usando el env-var `whatsapp-appservice-sealed-secret`, que Synapse sigue creando). Trade-off aceptado: los tokens quedan duplicados (env-var para mautrix + fichero sellado para Synapse) y el `registration.yaml` sellado es opaco en git.
+
+**Cambios concretos:**
+1. `synapse.homeserver.yaml` → estático, sin `${}`: `*_path` apuntando a `/secrets/<key>`, `client_id` inline, `database.args.password` eliminado.
+2. `synapse.libsonnet` → sin init container; `/config` (ConfigMap estático), `/secrets` (SealedSecret `synapse-secrets` multi-clave), `/appservice/registration.yaml` (SealedSecret de fichero completo), `/keys` (sin cambios); env `PGPASSWORD` desde `synapse-db-sealed-secret`.
+3. `synapse.registration.yaml` → sin cambios (sigue siendo el template compartido, fuente de verdad que lee mautrix y con el que se construye el fichero sellado).
+4. `synapse.secrets.json` → re-sellado: `synapseSecrets` (4 claves para name `synapse-secrets`), `registrationFile` (fichero completo), se elimina el bloque `synapse` env-var y `OIDC_CLIENT_ID`; `signingKey` y `whatsappAppservice` sin cambios.
 
 ## Acceptance Criteria
 - [ ] #1 El init container `config-init` con envsubst se elimina del deployment de Synapse

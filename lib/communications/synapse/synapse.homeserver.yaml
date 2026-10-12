@@ -23,11 +23,10 @@ database:
     user: synapse
     host: postgres.databases.svc.cluster.local
     database: synapse
-    password: "${SYNAPSE_DB_PASSWORD}"
 
-macaroon_secret_key: "${MACAROON_SECRET_KEY}"
-registration_shared_secret: "${REGISTRATION_SHARED_SECRET}"
-form_secret: "${FORM_SECRET}"
+macaroon_secret_key_path: /secrets/macaroon_secret_key
+registration_shared_secret_path: /secrets/registration_shared_secret
+form_secret_path: /secrets/form_secret
 
 report_stats: false
 suppress_key_server_warning: true
@@ -63,8 +62,8 @@ oidc_providers:
     idp_name: "Authelia"
     discover: true
     issuer: "https://auth.danielramos.me"
-    client_id: "${OIDC_CLIENT_ID}"
-    client_secret: "${OIDC_CLIENT_SECRET}"
+    client_id: "synapse"
+    client_secret_path: /secrets/oidc_client_secret
     scopes: ["openid", "profile", "email"]
     allow_existing_users: true
     user_profile_method: "userinfo_endpoint"

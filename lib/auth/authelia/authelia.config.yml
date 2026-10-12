@@ -262,7 +262,7 @@ identity_providers:
         userinfo_signed_response_alg: RS256
         token_endpoint_auth_method: client_secret_basic
 
-      - client_id: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_SYNAPSE_CLIENT_ID` }}'
+      - client_id: 'synapse'
         client_name: Synapse
         client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_SYNAPSE_CLIENT_SECRET_DIGEST` }}'
         public: false
