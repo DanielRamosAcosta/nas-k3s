@@ -23,6 +23,11 @@ spec:
       - env:
         - name: SYNAPSE_CONFIG_PATH
           value: /config/homeserver.yaml
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: SYNAPSE_DB_PASSWORD
+              name: synapse-db-sealed-secret
         image: ghcr.io/element-hq/synapse:v1.162.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
@@ -59,92 +64,33 @@ spec:
           timeoutSeconds: 5
         volumeMounts:
         - mountPath: /config
-          name: config
+          name: synapse-config
+        - mountPath: /secrets
+          name: synapse-secrets
         - mountPath: /keys/signing.key
           name: signing-key-sealed-secret
           subPath: signing.key
-        - mountPath: /appservice
-          name: appservice
+        - mountPath: /appservice/registration.yaml
+          name: registration-yaml-sealed-secret
+          subPath: registration.yaml
         - mountPath: /media
           name: media
         - mountPath: /data
           name: data
       enableServiceLinks: false
-      initContainers:
-      - command:
-        - /bin/sh
-        - -c
-        - envsubst < /tpl/homeserver.yaml > /config/homeserver.yaml && envsubst <
-          /tpl/registration.yaml > /appservice/registration.yaml
-        env:
-        - name: FORM_SECRET
-          valueFrom:
-            secretKeyRef:
-              key: FORM_SECRET
-              name: synapse-sealed-secret
-        - name: MACAROON_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              key: MACAROON_SECRET_KEY
-              name: synapse-sealed-secret
-        - name: OIDC_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              key: OIDC_CLIENT_ID
-              name: synapse-sealed-secret
-        - name: OIDC_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              key: OIDC_CLIENT_SECRET
-              name: synapse-sealed-secret
-        - name: REGISTRATION_SHARED_SECRET
-          valueFrom:
-            secretKeyRef:
-              key: REGISTRATION_SHARED_SECRET
-              name: synapse-sealed-secret
-        - name: SYNAPSE_DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              key: SYNAPSE_DB_PASSWORD
-              name: synapse-db-sealed-secret
-        - name: AS_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: AS_TOKEN
-              name: whatsapp-appservice-sealed-secret
-        - name: HS_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: HS_TOKEN
-              name: whatsapp-appservice-sealed-secret
-        image: docker.io/bhgedigital/envsubst:v1.0-alpine3.6
-        imagePullPolicy: IfNotPresent
-        name: config-init
-        volumeMounts:
-        - mountPath: /tpl/homeserver.yaml
-          name: synapse-homeserver-tpl
-          subPath: homeserver.yaml
-        - mountPath: /tpl/registration.yaml
-          name: synapse-registration-tpl
-          subPath: registration.yaml
-        - mountPath: /config
-          name: config
-        - mountPath: /appservice
-          name: appservice
       volumes:
       - configMap:
-          name: synapse-homeserver-tpl
-        name: synapse-homeserver-tpl
-      - configMap:
-          name: synapse-registration-tpl
-        name: synapse-registration-tpl
-      - emptyDir: {}
-        name: config
-      - emptyDir: {}
-        name: appservice
+          name: synapse-config
+        name: synapse-config
+      - name: synapse-secrets
+        secret:
+          secretName: synapse-secrets
       - name: signing-key-sealed-secret
         secret:
           secretName: signing-key-sealed-secret
+      - name: registration-yaml-sealed-secret
+        secret:
+          secretName: registration-yaml-sealed-secret
       - hostPath:
           path: /cold-data/synapse/media
         name: media

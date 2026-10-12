@@ -21,7 +21,7 @@ spec:
     metadata:
       annotations:
         checksum/lapi-configmap: 019312792dae271706ab52bb85f26bec484ac2afe0e1a9262dd06468ea123be2
-        checksum/lapi-secret: 547af5e8c953120ba97b389796abffc26e53c26142e85f725d7fe86c1e9de30b
+        checksum/lapi-secret: 5cb528d6e00513c656453790900d81b048b7a715b484b01e3ab71e44d64eb58e
         prometheus.io/port: "6060"
         prometheus.io/scrape: "true"
         reloader.stakater.com/auto: "true"
