@@ -21,9 +21,9 @@ local helm = tanka.helm.new(std.thisFile);
           effect: 'NoSchedule',
         },
       ],
-      // Let's Encrypt ACME resolver (DNS-01 via Cloudflare API).
-      // Used only by services on gray cloud (e.g. photos.danielramos.me).
-      // Orange-proxied services keep the default TLSStore (cloudflare-origin-cert).
+      // Let's Encrypt ACME resolver (DNS-01 via Cloudflare API). Issues the
+      // `*.danielramos.me` wildcard used by the default TLSStore, which serves
+      // both gray-cloud (e.g. photos.danielramos.me) and orange-proxied services.
       additionalArguments: [
         '--certificatesresolvers.letsencrypt.acme.email=danielramosacosta1@gmail.com',
         '--certificatesresolvers.letsencrypt.acme.storage=/data/acme.json',
@@ -196,12 +196,5 @@ local helm = tanka.helm.new(std.thisFile);
     cfDnsApiTokenSealedSecret: u.sealedSecret.forEnvNamed('traefik-cf-dns-api-token', {
       CF_DNS_API_TOKEN: secrets.cfDnsApiToken,
     }),
-    // Legacy CF Origin cert kept in SealedSecrets for quick rollback; not
-    // referenced by any resource currently. Can be removed after LE wildcard
-    // has been stable for a few weeks.
-    legacyCloudflareOriginSealedSecret: u.sealedSecret.forTls(
-      'cloudflare-origin-cert',
-      secrets.cloudflareOriginCert,
-    ),
   },
 }

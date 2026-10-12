@@ -1,6 +1,6 @@
 ---
 title: Retirar legacy cloudflare-origin-cert SealedSecret de Traefik
-status: To Do
+status: In Progress
 created_date: '2026-04-22 20:37'
 labels:
   - cleanup
@@ -39,9 +39,27 @@ Lleva ya operativo el LE wildcard sin incidencias. Si pasan ~2-4 semanas de esta
 
 ## Acceptance criteria
 
-- [ ] No hay referencias a `cloudflare-origin-cert` en `lib/`.
+- [x] No hay referencias a `cloudflare-origin-cert` en `lib/`.
 - [ ] El SealedSecret `cloudflare-origin-cert` y su Secret asociado ya no existen en el cluster (confirmado con `kubectl get`).
-- [ ] Todos los servicios siguen con cert LE válido (smoke test curl).
+- [x] Todos los servicios siguen con cert LE válido (smoke test curl).
+
+## Implementation Notes
+
+Verificación previa (2026-10-12, ~6 meses tras la migración de abril):
+
+- `kubectl get tlsstore,ingressroute,middleware -A` → **ninguna** resource referencia `cloudflare-origin-cert`. El `Secret`/`SealedSecret` seguían en el cluster (206 días) pero colgados, sin uso.
+- Traefik: **cero** errores/warnings de TLS/cert/ACME en Loki en las 2 semanas previas (430 líneas, todo `info`, TLS 1.3, 200/204).
+- Smoke test del cert servido directamente por Traefik (gray-cloud `photos.danielramos.me`, sin pasar por el edge de CF): `issuer=Let's Encrypt (YR1)`, `subject=CN=danielramos.me` (wildcard), válido hasta 2026-11-18 → renovación DNS-01 operativa.
+
+Cambios aplicados:
+
+- `lib/system/traefik/traefik.libsonnet`: eliminado el bloque `legacyCloudflareOriginSealedSecret` (+ su comentario de rollback). Actualizado el comentario del resolver ACME, que seguía describiendo el TLSStore default como el Origin cert (obsoleto desde abril).
+- `lib/system/traefik/traefik.secrets.json`: eliminado el campo `cloudflareOriginCert` (vía `jq del`, sin leer el valor).
+- `lib/databases/couchdb/couchdb.libsonnet`: actualizado el comentario que nombraba `cloudflare-origin-cert` como TLSStore default → wildcard LE.
+
+`tk eval` de `system` y `databases` compila OK; `grep -rni cloudflare-origin-cert lib/` vacío.
+
+Pendiente tras `/deploy`: confirmar que ArgoCD hace prune del `SealedSecret`/`Secret` en el cluster (AC #2).
 
 ## No scope
 

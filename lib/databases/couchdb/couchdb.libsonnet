@@ -88,7 +88,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       },
     },
 
-    // Ingress orange-proxied por Cloudflare: tls.store default (cloudflare-origin-cert),
+    // Ingress orange-proxied por Cloudflare: tls.store default (wildcard LE *.danielramos.me),
     // sin Authelia (rompería Obsidian LiveSync, que manda basic auth). Auth la lleva el
     // basic auth nativo de CouchDB; el bouncer de Crowdsec banea las IPs con brute-force.
     ingress_route: u.ingressRoute.from(self.service, 'couchdb.danielramos.me', [{ name: this.crowdsecBouncer.metadata.name }]),
