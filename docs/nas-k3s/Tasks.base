@@ -13,6 +13,7 @@ views:
     groupOrder:
       - Draft
       - To Do
+      - Blocked
       - In Progress
       - Done
     order:
