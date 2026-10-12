@@ -1,6 +1,6 @@
 ---
 title: "Desplegar seerr en el NAS con OIDC"
-status: In Progress
+status: Done
 priority: 2
 labels: [seerr, oidc, media]
 parent:
@@ -101,15 +101,15 @@ seerr tiene 3 toggles independientes en `settings.main`: `localLogin` (email/pas
 
 ## Acceptance Criteria
 
-- [ ] #1 BBDD `seerr` + usuario en el Postgres compartido creados con `add-new-ddbb-user` (incl. SealedSecret de `DB_PASS`)
-- [ ] #2 Módulo Jsonnet nuevo para seerr en `lib/media/` (Deployment UID 1000, Service, IngressRoute `seerr.danielramos.me`, hostPath `/app/config`, env de Postgres) + versión en `versions.json` + alta en `environments/media/main.jsonnet`
-- [ ] #3 Cliente OIDC `seerr` registrado en Authelia (`auth.danielramos.me`) con los dos redirect URIs
-- [ ] #4 `settings.json` con el bloque OIDC apuntando a Authelia (método a decidir: edición manual vs init-merge)
-- [ ] #5 Login OIDC contra Authelia funcionando end-to-end
+- [x] #1 BBDD `seerr` + usuario en el Postgres compartido creados con `add-new-ddbb-user` (incl. SealedSecret de `DB_PASS`)
+- [x] #2 Módulo Jsonnet nuevo para seerr en `lib/media/` (Deployment UID 1000, Service, IngressRoute `seerr.danielramos.me`, hostPath `/app/config`, env de Postgres) + versión en `versions.json` + alta en `environments/media/main.jsonnet`
+- [x] #3 Cliente OIDC `seerr` registrado en Authelia (`auth.danielramos.me`) con los dos redirect URIs
+- [x] #4 `settings.json` con el bloque OIDC apuntando a Authelia (edición manual en el hostPath con scale 0/1)
+- [x] #5 Login OIDC contra Authelia funcionando end-to-end (confirmado desde incógnito)
 
 ## Definition of Done
 
-- [ ] #1 desplegar con /deploy
+- [x] #1 desplegar con /deploy
 
 ## Implementation Plan
 
@@ -227,3 +227,25 @@ Ejecución **secuencial fase a fase**: implementar una fase, desplegar lo que in
 8. **Checkpoint final**: solo funciona el login OIDC; el owner entra por Authelia; un segundo usuario de Authelia se autoprovisiona con permiso Request.
 
 ## Implementation Notes
+
+Desplegado end-to-end. Login OIDC contra Authelia funcionando (confirmado desde incógnito). Solo OIDC activo.
+
+### Lo que se hizo (por fase)
+- **Fase 1** (PR #262): BBDD + rol `seerr` en Postgres compartido vía `add-new-ddbb-user`. Job `postgres-create-user-seerr` OK.
+- **Fase 2** (PR #263): módulo `lib/media/seerr/seerr.libsonnet` (Deployment UID 1000, endurecido, hostPath `/data/seerr` → `/app/config`, env Postgres, `DB_PASS` desde SealedSecret cluster-wide `userSeerr`). Imagen `ghcr.io/danielramosacosta/seerr:sha-d2a5a2b`. Pod Running, migraciones Postgres OK.
+- **Fase 3**: bootstrap del owner (dani, id 1) vía wizard conectando Jellyfin (`jellyfin.media.svc.cluster.local:8096`). Bibliotecas Películas+Series sincronizadas.
+- **Fase 4** (PR #264): cliente OIDC `seerr` en Authelia + bloque OIDC en `settings.json` + vinculación de la cuenta Authelia al owner + hardening a solo-OIDC.
+
+### Desviaciones del plan (importantes)
+- **`token_endpoint_auth_method: client_secret_post`**, NO `client_secret_basic` como asumía el plan. Verificado leyendo el código del PR (`server/routes/auth.ts`: `openIdClient.discovery(..., clientSecret, undefined, ...)` → el 4º arg `clientAuthentication` en `undefined` usa el **default de openid-client v6, que es `ClientSecretPost`** — confirmado en la doc de la librería). La guía de Jellyseerr (fork distinto) también usa `client_secret_post`.
+- **`client_id: 'seerr'` literal** en `authelia.config.yml` (patrón synapse), NO un random sellado. Convención confirmada por el usuario: client_id = nombre del servicio (refactor pendiente para alinear el resto). Solo se sella el **digest** del secret (`IDENTITY_PROVIDERS_OIDC_CLIENTS_SEERR_CLIENT_SECRET_DIGEST`). No hay `seerr.secrets.json` (seerr no lee credenciales por env var).
+- **`defaultPermissions` ya era 32 (Request)** por defecto — no hubo que tocarlo. `newUserLogin: true` por proveedor.
+- El bloque OIDC vive en `settings.json` bajo la clave **top-level `oidc`** (`{providers:[...]}`), y el toggle `oidcLogin` bajo `main`. El secret en claro se metió a mano en el host (seerr no lo expone por env). `oidc` top-level ≠ `main.oidc`.
+
+### Bootstrap del owner: bloqueo con la contraseña de Jellyfin (no previsto)
+El owner solo se crea autenticando contra Jellyfin con un **admin con contraseña local conocida**. `dani` (único admin, auth local `DefaultAuthenticationProvider`) entra por SSO y no recordaba su contraseña local. El panel admin y "Mi perfil" de Jellyfin exigen la contraseña actual para cambiarla; el reset por PIN no dejó una contraseña usable por API. **Solución**: con Jellyfin parado, se escribió directamente en `jellyfin.db` el hash PBKDF2-SHA512 de una contraseña temporal (mismo formato/iteraciones que Jellyfin, verificado), se reinició y se usó para el wizard. El usuario luego cambió la contraseña a una suya. Backup en `/data/jellyfin/config/data/jellyfin.db.bak-seerr`.
+
+### Pendientes / follow-ups
+- **`trust proxy` de Express**: en logs aparece `ValidationError: X-Forwarded-For header is set but 'trust proxy' is false`. seerr está tras Traefik; conviene configurar el trust proxy (afecta a la precisión del rate-limit por IP, no al OIDC). No bloqueante.
+- La config OIDC de seerr (`settings.json`) vive **fuera de git** (estado runtime en el hostPath). Si se recrea el pod/hostPath hay que rehacer el bloque `oidc` + toggles. Igual que la propiedad del hostPath.
+- Backups de `settings.json` en el host: `.bak-oidc` y `.bak-hardening`.
