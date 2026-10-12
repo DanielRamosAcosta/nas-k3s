@@ -11,6 +11,10 @@
     "image": "docker.io/deluan/navidrome",
     "version": "0.64.2"
   },
+  "seerr": {
+    "image": "ghcr.io/danielramosacosta/seerr",
+    "version": "sha-d2a5a2b"
+  },
   "sftpgo": {
     "image": "docker.io/drakkan/sftpgo",
     "version": "v2.7.6-alpine"
