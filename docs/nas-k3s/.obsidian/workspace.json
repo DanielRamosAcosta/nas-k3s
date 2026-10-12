@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "7a093a959bcc9173",
+        "id": "ebfc6792265de1a1",
         "type": "tabs",
         "children": [
           {
-            "id": "d6480624db7df58e",
+            "id": "fb6b65bb45931cf2",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Activar backups automáticos de VictoriaMetrics con vmbackupmanager"
+              "title": "Nueva pestaña"
             }
           }
         ]
@@ -188,9 +184,13 @@
       "bases:Crear nueva base": false
     }
   },
-  "active": "d6480624db7df58e",
+  "active": "fb6b65bb45931cf2",
   "lastOpenFiles": [
+    "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header).md",
     "Tasks.base",
+    "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header) tras 3.6.0.md/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header) tras 3.6.md",
+    "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header) tras 3.6.0.md",
+    "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
     "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
     "Docs/Auditoría de credenciales en el historial de git y su mitigación.md",
     "Docs/Flujo de equipo de agentes para completar y etiquetar la librería de música.md",
@@ -210,12 +210,8 @@
     "Tasks/Retirar legacy cloudflare-origin-cert SealedSecret de Traefik.md",
     "Tasks/Añadir CronJob de backup para CouchDB.md",
     "2026-10-11.md",
-    "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
     "Tasks/Actualizar con seguridad FacturaScripts 2025.81 → 2026.3.md",
     "Tasks/Migrate versions.json to Docker image references and configure Renovate.md",
-    "Tasks/Migrate photos.danielramos.me to Cloudflare gray cloud with Let's Encrypt DNS-01.md",
-    "Tasks/Remove PV PVC from all deployments and use hostPath directly.md",
-    "Tasks/Refactorizar utils.libsonnet separar en ficheros por dominio.md",
     "Docs",
     "Templates",
     "Tasks",
