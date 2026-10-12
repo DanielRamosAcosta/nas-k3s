@@ -1,6 +1,6 @@
 ---
 title: Retirar legacy cloudflare-origin-cert SealedSecret de Traefik
-status: In Progress
+status: Done
 created_date: '2026-04-22 20:37'
 labels:
   - cleanup
@@ -40,7 +40,7 @@ Lleva ya operativo el LE wildcard sin incidencias. Si pasan ~2-4 semanas de esta
 ## Acceptance criteria
 
 - [x] No hay referencias a `cloudflare-origin-cert` en `lib/`.
-- [ ] El SealedSecret `cloudflare-origin-cert` y su Secret asociado ya no existen en el cluster (confirmado con `kubectl get`).
+- [x] El SealedSecret `cloudflare-origin-cert` y su Secret asociado ya no existen en el cluster (confirmado con `kubectl get`).
 - [x] Todos los servicios siguen con cert LE válido (smoke test curl).
 
 ## Implementation Notes
@@ -59,7 +59,7 @@ Cambios aplicados:
 
 `tk eval` de `system` y `databases` compila OK; `grep -rni cloudflare-origin-cert lib/` vacío.
 
-Pendiente tras `/deploy`: confirmar que ArgoCD hace prune del `SealedSecret`/`Secret` en el cluster (AC #2).
+Deploy (PR #271, 2026-10-12): merge → CI exporta `manifests` → ArgoCD prune. Confirmado con `kubectl`: `Secret` y `SealedSecret` `cloudflare-origin-cert` → `NotFound`. Traefik sigue `Running 1/1` sin reinicio (recurso huérfano, no toca el Deployment) y sin errores TLS/cert/ACME en logs tras el cambio.
 
 ## No scope
 
