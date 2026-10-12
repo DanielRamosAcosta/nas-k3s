@@ -1,6 +1,6 @@
 ---
 title: Montar SMTP relay interno para centralizar credenciales de correo
-status: Draft
+status: Done
 created_date: '2026-03-16 20:47'
 labels:
   - infrastructure

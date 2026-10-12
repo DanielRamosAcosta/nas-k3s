@@ -5,8 +5,10 @@ local squaremap = import 'games/squaremap/squaremap.libsonnet';
 local u = import 'utils.libsonnet';
 
 u.Environment({
-  minecraft: minecraft.new(),
-  mcRouter: mcRouter.new(),
-  minecraftBackup: minecraftBackup.new(),
-  squaremap: squaremap.new(),
+  minecraft: {
+    minecraft: minecraft.new(),
+    mcRouter: mcRouter.new(),
+    minecraftBackup: minecraftBackup.new(),
+    squaremap: squaremap.new(),
+  },
 })

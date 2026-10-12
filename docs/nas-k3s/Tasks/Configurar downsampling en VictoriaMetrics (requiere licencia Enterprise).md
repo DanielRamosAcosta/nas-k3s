@@ -1,6 +1,6 @@
 ---
 title: Configurar downsampling en VictoriaMetrics (requiere licencia Enterprise)
-status: Draft
+status: Done
 created_date: '2026-03-27 23:25'
 labels:
   - monitoring
