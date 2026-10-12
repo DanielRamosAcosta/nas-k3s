@@ -26,12 +26,13 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     service: k.util.serviceFor(self.deployment),
 
     config: u.configMap.forEnv(self.deployment, {
-      DON_TORRENT_BASE_URL: 'https://dontorrent.review',
+      DON_TORRENT_BASE_URL: 'https://dontorrent.meme',
       MARCIANO_TORRENT_BASE_URL: 'https://marcianotorrent.net',
       REQUEST_TIMEOUT_MS: '120000',
-      // DonTorrent via Tor .onion (bypasses SNI-based ISP block on clearnet)
-      DON_TORRENT_USE_ONION: 'true',
-      DON_TORRENT_TOR_PROXY: 'http://tor-proxy.arr.svc.cluster.local:8118',
+      // DonTorrent por clearnet: el hidden service .onion dejó de resolver
+      // ("No more HSDir available to query") y el dominio clearnet es alcanzable
+      // directo (dontorrent.review redirige 301 a dontorrent.meme).
+      DON_TORRENT_USE_ONION: 'false',
       // Proxy vía gluetun desactivado temporalmente — el tráfico sale directo por la red del NAS.
       // HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
       // HTTPS_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
