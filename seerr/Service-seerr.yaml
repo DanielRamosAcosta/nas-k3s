@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: seerr
+    name: seerr
+  name: seerr
+  namespace: media
+spec:
+  ports:
+  - name: seerr-server
+    port: 5055
+    targetPort: 5055
+  selector:
+    name: seerr

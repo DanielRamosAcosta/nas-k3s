@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: seerr
+  name: seerr
+  namespace: media
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: seerr
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: seerr
+    spec:
+      containers:
+      - env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: DB_HOST
+              name: seerr-config-env
+        - name: DB_NAME
+          valueFrom:
+            configMapKeyRef:
+              key: DB_NAME
+              name: seerr-config-env
+        - name: DB_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: DB_PORT
+              name: seerr-config-env
+        - name: DB_TYPE
+          valueFrom:
+            configMapKeyRef:
+              key: DB_TYPE
+              name: seerr-config-env
+        - name: DB_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DB_USER
+              name: seerr-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: seerr-config-env
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              key: DB_PASS
+              name: seerr-shared-sealed-secret
+        image: ghcr.io/danielramosacosta/seerr:sha-d2a5a2b
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/v1/settings/public
+            port: 5055
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: seerr
+        ports:
+        - containerPort: 5055
+          name: server
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /api/v1/settings/public
+            port: 5055
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+        startupProbe:
+          failureThreshold: 30
+          httpGet:
+            path: /api/v1/settings/public
+            port: 5055
+            scheme: HTTP
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /app/config
+          name: config
+      securityContext:
+        runAsGroup: 1000
+        runAsUser: 1000
+      volumes:
+      - hostPath:
+          path: /data/seerr
+        name: config

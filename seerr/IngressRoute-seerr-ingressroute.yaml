@@ -1,0 +1,19 @@
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  labels:
+    app: seerr
+  name: seerr-ingressroute
+  namespace: media
+spec:
+  entryPoints:
+  - websecure
+  routes:
+  - kind: Rule
+    match: Host(`seerr.danielramos.me`)
+    services:
+    - name: seerr
+      port: 5055
+  tls:
+    store:
+      name: default
