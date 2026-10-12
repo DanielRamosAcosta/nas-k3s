@@ -11,11 +11,10 @@ views:
       property: status
       direction: ASC
     groupOrder:
-      - Draft
       - To Do
-      - Blocked
       - In Progress
       - Done
+      - Blocked
     order:
       - title
       - labels

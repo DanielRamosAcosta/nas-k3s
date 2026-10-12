@@ -4,17 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "ebfc6792265de1a1",
+        "id": "b113dae080fee744",
         "type": "tabs",
         "children": [
           {
-            "id": "fb6b65bb45931cf2",
+            "id": "214600ae9b082461",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
-              "icon": "lucide-file",
-              "title": "Nueva pestaña"
+              "type": "bases",
+              "state": {
+                "file": "Tasks.base",
+                "viewName": "Vista"
+              },
+              "icon": "lucide-kanban-square",
+              "title": "Tasks"
             }
           }
         ]
@@ -184,34 +187,34 @@
       "bases:Crear nueva base": false
     }
   },
-  "active": "fb6b65bb45931cf2",
+  "active": "214600ae9b082461",
   "lastOpenFiles": [
-    "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header).md",
+    "Tasks/Página de error personalizada para Traefik.md",
     "Tasks.base",
+    "Tasks/Añadir backup lógico con pg_dump pg_dumpall.md",
+    "Tasks/Create trip photo albums in Immich.md",
+    "Tasks/Habilitar forward-auth Authelia + Middleware Traefik genérico reutilizable.md",
+    "Tasks/Verificar X-Forwarded-For e IP real en logs Traefik para servicios naranjas.md",
+    "Tasks/Retirar legacy cloudflare-origin-cert SealedSecret de Traefik.md",
+    "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
+    "Tasks/Añadir CronJob de backup para CouchDB.md",
+    "Tasks/Añadir git hook que ejecute los checks de CI localmente antes de pushear.md",
+    "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header).md",
+    "Tasks/Migrar auth de wger a OIDC nativo (django-allauth).md",
+    "Tasks/Refactorizar u.Environment() para soportar agrupación de apps por label.md",
+    "Tasks/Configurar downsampling en VictoriaMetrics (requiere licencia Enterprise).md",
+    "Tasks/Montar SMTP relay interno para centralizar credenciales de correo.md",
+    "Tasks/Migrar a cdk8s.md",
+    "Tasks/Refactorizar config de Synapse eliminar envsubst usando secretos nativos por path.md",
+    "Tasks/Proxy smart bypass LaLiga para los arr.md",
+    "Tasks/Imagen propia de seerr con OIDC (PR 2715).md",
+    "Tasks/Desplegar seerr en el NAS con OIDC.md",
+    "Tasks/Migrar todos los client_id de OIDC a identificadores legibles.md",
     "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header) tras 3.6.0.md/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header) tras 3.6.md",
     "Tasks/Simplificar protección brute-force de CouchDB con lockout nativo (peer_header) tras 3.6.0.md",
-    "Tasks/Activar backups automáticos de VictoriaMetrics con vmbackupmanager.md",
     "Tasks/Separar Immich y ArgoCD en DBs lógicas distintas de Valkey (colisión en 0).md",
     "Docs/Auditoría de credenciales en el historial de git y su mitigación.md",
     "Docs/Flujo de equipo de agentes para completar y etiquetar la librería de música.md",
-    "Docs/Ideas para self-hostear.md",
-    "Tasks/Página de error personalizada para Traefik.md",
-    "Tasks/Create trip photo albums in Immich.md",
-    "Tasks/Añadir git hook que ejecute los checks de CI localmente antes de pushear.md",
-    "Tasks/Reducir consumo de CPU de scraparr subir intervalos y desactivar detailed en Lidarr.md",
-    "Templates/Task.md",
-    "Docs/Guía Alta de usuario en el NAS.md",
-    "Docs/Postgres — restaurar desde un backup.md",
-    "Docs/Postgres — crear un backup ad-hoc.md",
-    "Tasks/Blue-green deployments con Argo Rollouts.md",
-    "Tasks/ZZ prueba borrar.md",
-    "Docs/Queries útiles de Navidrome (SQLite).md",
-    "Tasks/Grafana dashboard para Crowdsec (agent + LAPI metrics).md",
-    "Tasks/Retirar legacy cloudflare-origin-cert SealedSecret de Traefik.md",
-    "Tasks/Añadir CronJob de backup para CouchDB.md",
-    "2026-10-11.md",
-    "Tasks/Actualizar con seguridad FacturaScripts 2025.81 → 2026.3.md",
-    "Tasks/Migrate versions.json to Docker image references and configure Renovate.md",
     "Docs",
     "Templates",
     "Tasks",
