@@ -33,6 +33,11 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       // ("No more HSDir available to query") y el dominio clearnet es alcanzable
       // directo (dontorrent.review redirige 301 a dontorrent.meme).
       DON_TORRENT_USE_ONION: 'false',
+      // Config anterior vía Tor .onion — recuperar si el clearnet vuelve a estar
+      // bloqueado por SNI-DPI del ISP y el hidden service vuelve a resolver:
+      //   DON_TORRENT_BASE_URL: 'https://dontorrent.review',
+      //   DON_TORRENT_USE_ONION: 'true',
+      //   DON_TORRENT_TOR_PROXY: 'http://tor-proxy.arr.svc.cluster.local:8118',
       // Proxy vía gluetun desactivado temporalmente — el tráfico sale directo por la red del NAS.
       // HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
       // HTTPS_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
