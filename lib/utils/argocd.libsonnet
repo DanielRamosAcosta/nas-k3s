@@ -23,14 +23,19 @@ local app = argocdLib.argoproj.v1alpha1.application;
     resources: resources,
   },
 
-  // Extract unique app labels from resources in an environment
-  discoverApps(env):: std.set([
-    env.resources[key][rkey].metadata.labels.app
-    for key in std.objectFields(env.resources)
-    for rkey in std.objectFields(env.resources[key])
-    if std.isObject(env.resources[key][rkey])
-       && std.objectHas(std.get(std.get(env.resources[key][rkey], 'metadata', {}), 'labels', {}), 'app')
-  ]),
+  // Extract unique app labels from resources in an environment.
+  // Deep-walks to any nesting depth so grouped apps (e.g. { loki: { loki, promtail } })
+  // are discovered; stops at the first object with `metadata` (the resource itself).
+  discoverApps(env)::
+    local collect(node) =
+      if !std.isObject(node) then
+        []
+      else if std.objectHas(node, 'metadata') then
+        local labels = std.get(node.metadata, 'labels', {});
+        if std.objectHas(labels, 'app') then [labels.app] else []
+      else
+        std.flattenArrays([collect(node[key]) for key in std.objectFields(node)]);
+    std.set(collect(env.resources)),
 
   // Build { appName: namespace } map from all environments
   buildAppsMap(envs, initial={}):: std.foldl(
