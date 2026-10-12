@@ -33,11 +33,6 @@ spec:
             configMapKeyRef:
               key: DON_TORRENT_BASE_URL
               name: norznab-config-env
-        - name: DON_TORRENT_TOR_PROXY
-          valueFrom:
-            configMapKeyRef:
-              key: DON_TORRENT_TOR_PROXY
-              name: norznab-config-env
         - name: DON_TORRENT_USE_ONION
           valueFrom:
             configMapKeyRef:
