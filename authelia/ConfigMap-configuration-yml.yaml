@@ -114,6 +114,14 @@ data:
     \       scopes:\n          - openid\n          - profile\n          - email\n
     \       response_types:\n          - code\n        grant_types:\n          - authorization_code\n
     \       access_token_signed_response_alg: none\n        userinfo_signed_response_alg:
+    none\n        token_endpoint_auth_method: client_secret_post\n\n      - client_id:
+    'wger'\n        client_name: wger\n        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_WGER_CLIENT_SECRET_DIGEST`
+    }}'\n        public: false\n        authorization_policy: two_factor\n        consent_mode:
+    'implicit'\n        require_pkce: false\n        pkce_challenge_method: ''\n        redirect_uris:\n
+    \         - 'https://gym.danielramos.me/accounts/oidc/authelia/login/callback/'\n
+    \       scopes:\n          - openid\n          - profile\n          - email\n
+    \       response_types:\n          - code\n        grant_types:\n          - authorization_code\n
+    \       access_token_signed_response_alg: none\n        userinfo_signed_response_alg:
     none\n        token_endpoint_auth_method: client_secret_post\n"
 kind: ConfigMap
 metadata:

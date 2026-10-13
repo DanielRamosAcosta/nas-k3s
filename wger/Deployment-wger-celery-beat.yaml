@@ -238,6 +238,11 @@ spec:
             configMapKeyRef:
               key: X_FORWARDED_PROTO_HEADER_SET
               name: wger-config-env
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: OIDC_CLIENT_SECRET
+              name: wger-sealed-secret
         - name: SECRET_KEY
           valueFrom:
             secretKeyRef:

@@ -111,6 +111,11 @@ spec:
             secretKeyRef:
               key: IDENTITY_PROVIDERS_OIDC_CLIENTS_SYNAPSE_CLIENT_SECRET_DIGEST
               name: authelia-sealed-secret
+        - name: IDENTITY_PROVIDERS_OIDC_CLIENTS_WGER_CLIENT_SECRET_DIGEST
+          valueFrom:
+            secretKeyRef:
+              key: IDENTITY_PROVIDERS_OIDC_CLIENTS_WGER_CLIENT_SECRET_DIGEST
+              name: authelia-sealed-secret
         - name: AUTHELIA_STORAGE_POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
