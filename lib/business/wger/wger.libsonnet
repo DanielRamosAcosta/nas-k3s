@@ -20,8 +20,9 @@ local nginxConfContent = importstr './wger.nginx.conf';
   // del entrypoint de la imagen).
   local provisionOidcSnippet = |||
     import os
-    from allauth.socialaccount.models import SocialApp
+    from allauth.socialaccount.models import SocialApp, SocialAccount
     from django.contrib.sites.models import Site
+    from django.contrib.auth import get_user_model
     app, _ = SocialApp.objects.update_or_create(
         provider='openid_connect', provider_id='authelia',
         defaults=dict(name='Authelia',
@@ -29,6 +30,13 @@ local nginxConfContent = importstr './wger.nginx.conf';
                       secret=os.environ['OIDC_CLIENT_SECRET'],
                       settings={'server_url': 'https://auth.danielramos.me'}))
     app.sites.add(Site.objects.get(id=1))
+    username = os.environ.get('OIDC_BOOTSTRAP_USERNAME')
+    subject = os.environ.get('OIDC_BOOTSTRAP_SUBJECT')
+    if username and subject:
+        user = get_user_model().objects.filter(username=username).first()
+        if user:
+            SocialAccount.objects.update_or_create(
+                provider='authelia', uid=subject, defaults=dict(user=user))
   |||,
 
   local staticVolumeName = 'static',
@@ -158,11 +166,13 @@ local nginxConfContent = importstr './wger.nginx.conf';
       WGER_SOCIAL_PROVIDERS: 'openid_connect',
       OIDC_CLIENT_ID: 'wger',
 
-      AUTH_PROXY_HEADER: 'HTTP_REMOTE_USER',
-      AUTH_PROXY_USER_EMAIL_HEADER: 'HTTP_REMOTE_EMAIL',
-      AUTH_PROXY_USER_NAME_HEADER: 'HTTP_REMOTE_NAME',
-      AUTH_PROXY_TRUSTED_IPS: '127.0.0.1,10.42.0.0/16',
-      AUTH_PROXY_CREATE_UNKNOWN_USER: 'True',
+      // Pre-enlace de la cuenta local existente (creada antaño por el forward-auth) a su
+      // identidad OIDC. Con ALLOW_REGISTRATION=False el signup social está cerrado, así que sin
+      // este SocialAccount el primer login OIDC se rechazaría. El 'subject' es el identificador
+      // opaco estable que Authelia asigna a este usuario (no es secreto; viaja en el id_token).
+      // Lo aplica el mismo Job 'wger-provision-oidc' de forma idempotente.
+      OIDC_BOOTSTRAP_USERNAME: 'dani',
+      OIDC_BOOTSTRAP_SUBJECT: '0a50e2cb-cbb7-4e8c-bf73-293049f3e2e6',
 
       ENABLE_EMAIL: 'True',
       EMAIL_HOST: 'smtp-relay.system.svc.cluster.local',
@@ -177,15 +187,9 @@ local nginxConfContent = importstr './wger.nginx.conf';
 
     sealedSecretShared: u.sealedSecret.wide.forEnvNamed('wger-shared-sealed-secret', { DJANGO_DB_PASSWORD: postgresSecrets.userWger }),
 
-    ingressRoute: u.ingressRoute.from(
-      self.service,
-      'gym.danielramos.me',
-      middlewares=[u.middleware.autheliaForwardAuth()],
-      extraRoutes=[{
-        match: 'Host(`gym.danielramos.me`) && PathPrefix(`/api`)',
-        kind: 'Rule',
-        services: [{ name: this.service.metadata.name, port: this.service.spec.ports[0].port }],
-      }],
-    ),
+    // Login vía OIDC nativo (allauth) — sin forward-auth de Traefik. Ruta plana: ni la raíz ni
+    // /api llevan auth de Traefik (wger gestiona su propia sesión; /api sigue usando tokens
+    // propios de wger).
+    ingressRoute: u.ingressRoute.from(self.service, 'gym.danielramos.me'),
   },
 }
