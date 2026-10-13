@@ -216,6 +216,11 @@ spec:
             configMapKeyRef:
               key: NUMBER_OF_PROXIES
               name: wger-config-env
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            configMapKeyRef:
+              key: OIDC_CLIENT_ID
+              name: wger-config-env
         - name: SITE_URL
           valueFrom:
             configMapKeyRef:
@@ -260,6 +265,11 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: WGER_INSTANCE
+              name: wger-config-env
+        - name: WGER_SOCIAL_PROVIDERS
+          valueFrom:
+            configMapKeyRef:
+              key: WGER_SOCIAL_PROVIDERS
               name: wger-config-env
         - name: WGER_USE_GUNICORN
           valueFrom:

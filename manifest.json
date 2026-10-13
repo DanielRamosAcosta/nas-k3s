@@ -405,6 +405,7 @@
     "wger/Deployment-wger-celery-worker.yaml": "environments/business/main.jsonnet",
     "wger/Deployment-wger.yaml": "environments/business/main.jsonnet",
     "wger/IngressRoute-wger-ingressroute.yaml": "environments/business/main.jsonnet",
+    "wger/Job-wger-provision-oidc.yaml": "environments/business/main.jsonnet",
     "wger/SealedSecret-wger-sealed-secret.yaml": "environments/business/main.jsonnet",
     "wger/SealedSecret-wger-shared-sealed-secret.yaml": "environments/business/main.jsonnet",
     "wger/Service-wger.yaml": "environments/business/main.jsonnet"

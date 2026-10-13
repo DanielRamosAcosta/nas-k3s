@@ -32,6 +32,7 @@ data:
   EXPOSE_PROMETHEUS_METRICS: "True"
   FROM_EMAIL: NAS <nas@mail.danielramos.me>
   NUMBER_OF_PROXIES: "1"
+  OIDC_CLIENT_ID: wger
   SITE_URL: https://gym.danielramos.me
   SYNC_EXERCISE_IMAGES_CELERY: "False"
   SYNC_EXERCISE_VIDEOS_CELERY: "False"
@@ -41,6 +42,7 @@ data:
   TZ: Europe/Madrid
   USE_CELERY: "True"
   WGER_INSTANCE: https://wger.de
+  WGER_SOCIAL_PROVIDERS: openid_connect
   WGER_USE_GUNICORN: "True"
   X_FORWARDED_PROTO_HEADER_SET: "True"
 kind: ConfigMap
