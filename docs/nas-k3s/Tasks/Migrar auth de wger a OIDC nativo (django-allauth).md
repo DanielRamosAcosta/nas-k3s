@@ -1,6 +1,6 @@
 ---
 title: "Migrar auth de wger a OIDC nativo (django-allauth)"
-status: To Do
+status: In Progress
 priority: 3
 labels: [wger, oidc, authelia, business]
 parent:

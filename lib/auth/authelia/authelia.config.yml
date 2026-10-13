@@ -329,3 +329,25 @@ identity_providers:
         access_token_signed_response_alg: none
         userinfo_signed_response_alg: none
         token_endpoint_auth_method: client_secret_post
+
+      - client_id: 'wger'
+        client_name: wger
+        client_secret: '{{ env `IDENTITY_PROVIDERS_OIDC_CLIENTS_WGER_CLIENT_SECRET_DIGEST` }}'
+        public: false
+        authorization_policy: two_factor
+        consent_mode: 'implicit'
+        require_pkce: false
+        pkce_challenge_method: ''
+        redirect_uris:
+          - 'https://gym.danielramos.me/accounts/oidc/authelia/login/callback/'
+        scopes:
+          - openid
+          - profile
+          - email
+        response_types:
+          - code
+        grant_types:
+          - authorization_code
+        access_token_signed_response_alg: none
+        userinfo_signed_response_alg: none
+        token_endpoint_auth_method: client_secret_post
