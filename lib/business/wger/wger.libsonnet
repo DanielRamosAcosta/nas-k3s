@@ -12,6 +12,24 @@ local nginxConfContent = importstr './wger.nginx.conf';
   local containerPort = k.core.v1.containerPort,
   local volume = k.core.v1.volume,
   local volumeMount = k.core.v1.volumeMount,
+  local job = k.batch.v1.job,
+
+  // Provisiona el SocialApp de allauth (fila en Postgres, fuera de git) de forma idempotente.
+  // update_or_create keyed en provider+provider_id; sites.add tolera re-ejecución. Se invoca
+  // via manage.py shell -c, que lee los settings Django directamente de env vars (no depende
+  // del entrypoint de la imagen).
+  local provisionOidcSnippet = |||
+    import os
+    from allauth.socialaccount.models import SocialApp
+    from django.contrib.sites.models import Site
+    app, _ = SocialApp.objects.update_or_create(
+        provider='openid_connect', provider_id='authelia',
+        defaults=dict(name='Authelia',
+                      client_id=os.environ['OIDC_CLIENT_ID'],
+                      secret=os.environ['OIDC_CLIENT_SECRET'],
+                      settings={'server_url': 'https://auth.danielramos.me'}))
+    app.sites.add(Site.objects.get(id=1))
+  |||,
 
   local staticVolumeName = 'static',
   local mediaVolumeName = 'media',
@@ -78,6 +96,20 @@ local nginxConfContent = importstr './wger.nginx.conf';
                 ]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
+    provisionOidcJob: job.new('wger-provision-oidc') +
+                      job.metadata.withAnnotationsMixin({
+                        'argocd.argoproj.io/hook': 'PostSync',
+                        'argocd.argoproj.io/hook-delete-policy': 'BeforeHookCreation',
+                      }) +
+                      job.spec.template.spec.withRestartPolicy('OnFailure') +
+                      job.spec.template.spec.withEnableServiceLinks(false) +
+                      job.spec.template.spec.withContainers([
+                        container.new('provision-oidc', u.image(versions.wger.image, versions.wger.version)) +
+                        container.withWorkingDir('/home/wger/src') +
+                        container.withCommand(['python3', 'manage.py', 'shell', '-c', provisionOidcSnippet]) +
+                        container.withEnv(commonEnv(this)),
+                      ]),
+
     service: k.util.serviceFor(self.deployment) + u.metrics(port='8000', path='/prometheus/metrics'),
 
     nginxConfig: u.configMap.forFile('default.conf', nginxConfContent) + { metadata+: { name: 'wger-nginx-conf' } },
@@ -119,6 +151,12 @@ local nginxConfContent = importstr './wger.nginx.conf';
       CACHE_API_EXERCISES_CELERY: 'False',
 
       EXPOSE_PROMETHEUS_METRICS: 'True',
+
+      // OIDC nativo vía django-allauth (proveedor genérico openid_connect contra Authelia).
+      // client_id legible en claro; client_secret llega vía sealedSecret. El registro SocialApp
+      // (fila en Postgres) lo provisiona el Job 'wger-provision-oidc' (hook PostSync de ArgoCD).
+      WGER_SOCIAL_PROVIDERS: 'openid_connect',
+      OIDC_CLIENT_ID: 'wger',
 
       AUTH_PROXY_HEADER: 'HTTP_REMOTE_USER',
       AUTH_PROXY_USER_EMAIL_HEADER: 'HTTP_REMOTE_EMAIL',
