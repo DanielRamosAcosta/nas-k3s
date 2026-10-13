@@ -339,7 +339,7 @@ identity_providers:
         require_pkce: false
         pkce_challenge_method: ''
         redirect_uris:
-          - 'https://gym.danielramos.me/accounts/oidc/authelia/login/callback/'
+          - 'https://gym.danielramos.me/account/oidc/authelia/login/callback/'
         scopes:
           - openid
           - profile
