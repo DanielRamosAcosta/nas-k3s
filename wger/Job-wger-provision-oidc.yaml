@@ -19,8 +19,9 @@ spec:
         - -c
         - |
           import os
-          from allauth.socialaccount.models import SocialApp
+          from allauth.socialaccount.models import SocialApp, SocialAccount
           from django.contrib.sites.models import Site
+          from django.contrib.auth import get_user_model
           app, _ = SocialApp.objects.update_or_create(
               provider='openid_connect', provider_id='authelia',
               defaults=dict(name='Authelia',
@@ -28,6 +29,13 @@ spec:
                             secret=os.environ['OIDC_CLIENT_SECRET'],
                             settings={'server_url': 'https://auth.danielramos.me'}))
           app.sites.add(Site.objects.get(id=1))
+          username = os.environ.get('OIDC_BOOTSTRAP_USERNAME')
+          subject = os.environ.get('OIDC_BOOTSTRAP_SUBJECT')
+          if username and subject:
+              user = get_user_model().objects.filter(username=username).first()
+              if user:
+                  SocialAccount.objects.update_or_create(
+                      provider='authelia', uid=subject, defaults=dict(user=user))
         env:
         - name: ALLOW_GUEST_USERS
           valueFrom:
@@ -38,31 +46,6 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: ALLOW_REGISTRATION
-              name: wger-config-env
-        - name: AUTH_PROXY_CREATE_UNKNOWN_USER
-          valueFrom:
-            configMapKeyRef:
-              key: AUTH_PROXY_CREATE_UNKNOWN_USER
-              name: wger-config-env
-        - name: AUTH_PROXY_HEADER
-          valueFrom:
-            configMapKeyRef:
-              key: AUTH_PROXY_HEADER
-              name: wger-config-env
-        - name: AUTH_PROXY_TRUSTED_IPS
-          valueFrom:
-            configMapKeyRef:
-              key: AUTH_PROXY_TRUSTED_IPS
-              name: wger-config-env
-        - name: AUTH_PROXY_USER_EMAIL_HEADER
-          valueFrom:
-            configMapKeyRef:
-              key: AUTH_PROXY_USER_EMAIL_HEADER
-              name: wger-config-env
-        - name: AUTH_PROXY_USER_NAME_HEADER
-          valueFrom:
-            configMapKeyRef:
-              key: AUTH_PROXY_USER_NAME_HEADER
               name: wger-config-env
         - name: CACHE_API_EXERCISES_CELERY
           valueFrom:
@@ -188,6 +171,16 @@ spec:
           valueFrom:
             configMapKeyRef:
               key: NUMBER_OF_PROXIES
+              name: wger-config-env
+        - name: OIDC_BOOTSTRAP_SUBJECT
+          valueFrom:
+            configMapKeyRef:
+              key: OIDC_BOOTSTRAP_SUBJECT
+              name: wger-config-env
+        - name: OIDC_BOOTSTRAP_USERNAME
+          valueFrom:
+            configMapKeyRef:
+              key: OIDC_BOOTSTRAP_USERNAME
               name: wger-config-env
         - name: OIDC_CLIENT_ID
           valueFrom:

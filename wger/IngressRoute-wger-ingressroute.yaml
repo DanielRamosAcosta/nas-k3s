@@ -11,14 +11,6 @@ spec:
   routes:
   - kind: Rule
     match: Host(`gym.danielramos.me`)
-    middlewares:
-    - name: authelia-forwardauth
-      namespace: auth
-    services:
-    - name: wger
-      port: 80
-  - kind: Rule
-    match: Host(`gym.danielramos.me`) && PathPrefix(`/api`)
     services:
     - name: wger
       port: 80
