@@ -193,7 +193,7 @@
   },
   "curl": {
     "image": "docker.io/curlimages/curl",
-    "version": "8.22.0"
+    "version": "8.23.0"
   },
   "minecraft": {
     "image": "docker.io/itzg/minecraft-server",
