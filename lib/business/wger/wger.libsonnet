@@ -5,6 +5,7 @@ local postgresSecrets = import 'databases/postgres/postgres.secrets.json';
 local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 local nginxConfContent = importstr './wger.nginx.conf';
+local loginTemplateContent = importstr './wger.login.html';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -37,6 +38,13 @@ local nginxConfContent = importstr './wger.nginx.conf';
         if user:
             SocialAccount.objects.update_or_create(
                 provider='authelia', uid=subject, defaults=dict(user=user))
+    # SSO-only: anula cualquier contrasena local usable. Mata el login local y,
+    # de paso, el password reset de Django (PasswordResetForm.get_users omite las
+    # cuentas sin contrasena usable, asi que no envia email de reset a nadie).
+    for u in get_user_model().objects.all():
+        if u.has_usable_password():
+            u.set_unusable_password()
+            u.save(update_fields=['password'])
   |||,
 
   local staticVolumeName = 'static',
@@ -68,6 +76,8 @@ local nginxConfContent = importstr './wger.nginx.conf';
                   container.withVolumeMounts([
                     volumeMount.new(staticVolumeName, '/home/wger/static'),
                     volumeMount.new(mediaVolumeName, '/home/wger/media'),
+                    // Override SSO-only del login: reemplaza el account/login.html de la imagen.
+                    volumeMount.new(this.loginTemplate.metadata.name, '/home/wger/src/wger/core/templates/account/login.html') + volumeMount.withSubPath('login.html') + volumeMount.withReadOnly(true),
                   ]) +
                   u.probes.withStartup.http('/api/v2/version/', 8000),
                 ]) +
@@ -75,6 +85,7 @@ local nginxConfContent = importstr './wger.nginx.conf';
                   volume.fromEmptyDir(staticVolumeName),
                   volume.fromHostPath(mediaVolumeName, '/cold-data/wger/media'),
                   { name: this.nginxConfig.metadata.name, configMap: { name: this.nginxConfig.metadata.name } },
+                  { name: this.loginTemplate.metadata.name, configMap: { name: this.loginTemplate.metadata.name } },
                 ]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
@@ -121,6 +132,8 @@ local nginxConfContent = importstr './wger.nginx.conf';
     service: k.util.serviceFor(self.deployment) + u.metrics(port='8000', path='/prometheus/metrics'),
 
     nginxConfig: u.configMap.forFile('default.conf', nginxConfContent) + { metadata+: { name: 'wger-nginx-conf' } },
+
+    loginTemplate: u.configMap.forFile('login.html', loginTemplateContent) + { metadata+: { name: 'wger-login-template' } },
 
     configEnv: u.configMap.forEnv(self.deployment, {
       TIME_ZONE: 'Europe/Madrid',
