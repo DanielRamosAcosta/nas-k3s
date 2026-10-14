@@ -6,6 +6,8 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
 
 local nginxConfContent = importstr './wger.nginx.conf';
 local loginTemplateContent = importstr './wger.login.html';
+local djangoSettingsCustom = importstr './wger.settings.custom.py';
+local ssoAdapterContent = importstr './wger_sso_adapter.py';
 
 {
   local deployment = k.apps.v1.deployment,
@@ -21,9 +23,12 @@ local loginTemplateContent = importstr './wger.login.html';
   // del entrypoint de la imagen).
   local provisionOidcSnippet = |||
     import os
-    from allauth.socialaccount.models import SocialApp, SocialAccount
+    from allauth.socialaccount.models import SocialApp
     from django.contrib.sites.models import Site
     from django.contrib.auth import get_user_model
+    U = get_user_model()
+    # Registro del proveedor OIDC (fila en Postgres, fuera de git). Idempotente y
+    # reproducible desde cero: lee client_id/secret de env (SealedSecret).
     app, _ = SocialApp.objects.update_or_create(
         provider='openid_connect', provider_id='authelia',
         defaults=dict(name='Authelia',
@@ -31,25 +36,37 @@ local loginTemplateContent = importstr './wger.login.html';
                       secret=os.environ['OIDC_CLIENT_SECRET'],
                       settings={'server_url': 'https://auth.danielramos.me'}))
     app.sites.add(Site.objects.get(id=1))
-    username = os.environ.get('OIDC_BOOTSTRAP_USERNAME')
-    subject = os.environ.get('OIDC_BOOTSTRAP_SUBJECT')
-    if username and subject:
-        user = get_user_model().objects.filter(username=username).first()
-        if user:
-            SocialAccount.objects.update_or_create(
-                provider='authelia', uid=subject, defaults=dict(user=user))
     # SSO-only: anula cualquier contrasena local usable. Mata el login local y,
     # de paso, el password reset de Django (PasswordResetForm.get_users omite las
     # cuentas sin contrasena usable, asi que no envia email de reset a nadie).
-    for u in get_user_model().objects.all():
+    for u in U.objects.all():
         if u.has_usable_password():
             u.set_unusable_password()
             u.save(update_fields=['password'])
+    # Designa al admin del gym. En un rebuild desde cero la cuenta no existe hasta
+    # su primer login OIDC (se auto-aprovisiona); el siguiente sync la promociona.
+    admin_username = os.environ.get('OIDC_ADMIN_USERNAME')
+    if admin_username:
+        admin = U.objects.filter(username=admin_username).first()
+        if admin and not (admin.is_superuser and admin.is_staff):
+            admin.is_superuser = True
+            admin.is_staff = True
+            admin.save(update_fields=['is_superuser', 'is_staff'])
   |||,
 
   local staticVolumeName = 'static',
   local mediaVolumeName = 'media',
   local beatVolumeName = 'beat',
+  local djangoSettingsVolumeName = 'django-settings',
+
+  // Override de settings (DJANGO_SETTINGS_MODULE=settings.custom) + módulo del adapter
+  // social. Se montan en TODOS los contenedores que corren Django con esos settings
+  // (web, celery worker/beat y el Job de provisión), si no fallarían con ImportError.
+  local djangoSettingsMounts = [
+    volumeMount.new(djangoSettingsVolumeName, '/home/wger/src/settings/custom.py') + volumeMount.withSubPath('custom.py') + volumeMount.withReadOnly(true),
+    volumeMount.new(djangoSettingsVolumeName, '/home/wger/src/wger_sso_adapter.py') + volumeMount.withSubPath('wger_sso_adapter.py') + volumeMount.withReadOnly(true),
+  ],
+  local djangoSettingsVolume = { name: djangoSettingsVolumeName, configMap: { name: 'wger-django-settings' } },
 
   local commonEnv(this) =
     u.envVars.fromConfigMap(this.configEnv) +
@@ -78,7 +95,7 @@ local loginTemplateContent = importstr './wger.login.html';
                     volumeMount.new(mediaVolumeName, '/home/wger/media'),
                     // Override SSO-only del login: reemplaza el account/login.html de la imagen.
                     volumeMount.new(this.loginTemplate.metadata.name, '/home/wger/src/wger/core/templates/account/login.html') + volumeMount.withSubPath('login.html') + volumeMount.withReadOnly(true),
-                  ]) +
+                  ] + djangoSettingsMounts) +
                   u.probes.withStartup.http('/api/v2/version/', 8000),
                 ]) +
                 deployment.spec.template.spec.withVolumes([
@@ -86,6 +103,7 @@ local loginTemplateContent = importstr './wger.login.html';
                   volume.fromHostPath(mediaVolumeName, '/cold-data/wger/media'),
                   { name: this.nginxConfig.metadata.name, configMap: { name: this.nginxConfig.metadata.name } },
                   { name: this.loginTemplate.metadata.name, configMap: { name: this.loginTemplate.metadata.name } },
+                  djangoSettingsVolume,
                 ]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
@@ -95,10 +113,11 @@ local loginTemplateContent = importstr './wger.login.html';
                     container.withEnv(commonEnv(this)) +
                     container.withVolumeMounts([
                       volumeMount.new(mediaVolumeName, '/home/wger/media'),
-                    ]),
+                    ] + djangoSettingsMounts),
                   ]) +
                   deployment.spec.template.spec.withVolumes([
                     volume.fromHostPath(mediaVolumeName, '/cold-data/wger/media'),
+                    djangoSettingsVolume,
                   ]) +
                   deployment.spec.template.spec.withEnableServiceLinks(false),
 
@@ -108,10 +127,11 @@ local loginTemplateContent = importstr './wger.login.html';
                   container.withEnv(commonEnv(this)) +
                   container.withVolumeMounts([
                     volumeMount.new(beatVolumeName, '/home/wger/beat'),
-                  ]),
+                  ] + djangoSettingsMounts),
                 ]) +
                 deployment.spec.template.spec.withVolumes([
                   volume.fromHostPath(beatVolumeName, '/data/wger/celery-beat'),
+                  djangoSettingsVolume,
                 ]) +
                 deployment.spec.template.spec.withEnableServiceLinks(false),
 
@@ -122,11 +142,13 @@ local loginTemplateContent = importstr './wger.login.html';
                       }) +
                       job.spec.template.spec.withRestartPolicy('OnFailure') +
                       job.spec.template.spec.withEnableServiceLinks(false) +
+                      job.spec.template.spec.withVolumes([djangoSettingsVolume]) +
                       job.spec.template.spec.withContainers([
                         container.new('provision-oidc', u.image(versions.wger.image, versions.wger.version)) +
                         container.withWorkingDir('/home/wger/src') +
                         container.withCommand(['python3', 'manage.py', 'shell', '-c', provisionOidcSnippet]) +
-                        container.withEnv(commonEnv(this)),
+                        container.withEnv(commonEnv(this)) +
+                        container.withVolumeMounts(djangoSettingsMounts),
                       ]),
 
     service: k.util.serviceFor(self.deployment) + u.metrics(port='8000', path='/prometheus/metrics'),
@@ -134,6 +156,11 @@ local loginTemplateContent = importstr './wger.login.html';
     nginxConfig: u.configMap.forFile('default.conf', nginxConfContent) + { metadata+: { name: 'wger-nginx-conf' } },
 
     loginTemplate: u.configMap.forFile('login.html', loginTemplateContent) + { metadata+: { name: 'wger-login-template' } },
+
+    djangoSettings: k.core.v1.configMap.new('wger-django-settings', {
+      'custom.py': djangoSettingsCustom,
+      'wger_sso_adapter.py': ssoAdapterContent,
+    }),
 
     configEnv: u.configMap.forEnv(self.deployment, {
       TIME_ZONE: 'Europe/Madrid',
@@ -179,13 +206,12 @@ local loginTemplateContent = importstr './wger.login.html';
       WGER_SOCIAL_PROVIDERS: 'openid_connect',
       OIDC_CLIENT_ID: 'wger',
 
-      // Pre-enlace de la cuenta local existente (creada antaño por el forward-auth) a su
-      // identidad OIDC. Con ALLOW_REGISTRATION=False el signup social está cerrado, así que sin
-      // este SocialAccount el primer login OIDC se rechazaría. El 'subject' es el identificador
-      // opaco estable que Authelia asigna a este usuario (no es secreto; viaja en el id_token).
-      // Lo aplica el mismo Job 'wger-provision-oidc' de forma idempotente.
-      OIDC_BOOTSTRAP_USERNAME: 'dani',
-      OIDC_BOOTSTRAP_SUBJECT: '0a50e2cb-cbb7-4e8c-bf73-293049f3e2e6',
+      // SSO-only + auto-aprovisionamiento: settings.custom abre solo el alta social
+      // (ver wger.settings.custom.py) para que cualquier usuario de Authelia se cree
+      // la cuenta en su primer login. El alta local sigue cerrada.
+      DJANGO_SETTINGS_MODULE: 'settings.custom',
+      // Usuario (preferred_username de Authelia) que el Job marca como superuser/staff.
+      OIDC_ADMIN_USERNAME: 'dani',
 
       ENABLE_EMAIL: 'True',
       EMAIL_HOST: 'smtp-relay.system.svc.cluster.local',
