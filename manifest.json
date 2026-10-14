@@ -400,6 +400,7 @@
     "victoriametrics/ServiceAccount-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "victoriametrics/StatefulSet-victoriametrics.yaml": "environments/monitoring/main.jsonnet",
     "wger/ConfigMap-wger-config-env.yaml": "environments/business/main.jsonnet",
+    "wger/ConfigMap-wger-login-template.yaml": "environments/business/main.jsonnet",
     "wger/ConfigMap-wger-nginx-conf.yaml": "environments/business/main.jsonnet",
     "wger/Deployment-wger-celery-beat.yaml": "environments/business/main.jsonnet",
     "wger/Deployment-wger-celery-worker.yaml": "environments/business/main.jsonnet",

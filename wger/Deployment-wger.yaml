@@ -323,6 +323,10 @@ spec:
           name: static
         - mountPath: /home/wger/media
           name: media
+        - mountPath: /home/wger/src/wger/core/templates/account/login.html
+          name: wger-login-template
+          readOnly: true
+          subPath: login.html
       enableServiceLinks: false
       volumes:
       - emptyDir: {}
@@ -333,3 +337,6 @@ spec:
       - configMap:
           name: wger-nginx-conf
         name: wger-nginx-conf
+      - configMap:
+          name: wger-login-template
+        name: wger-login-template

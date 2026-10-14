@@ -36,6 +36,13 @@ spec:
               if user:
                   SocialAccount.objects.update_or_create(
                       provider='authelia', uid=subject, defaults=dict(user=user))
+          # SSO-only: anula cualquier contrasena local usable. Mata el login local y,
+          # de paso, el password reset de Django (PasswordResetForm.get_users omite las
+          # cuentas sin contrasena usable, asi que no envia email de reset a nadie).
+          for u in get_user_model().objects.all():
+              if u.has_usable_password():
+                  u.set_unusable_password()
+                  u.save(update_fields=['password'])
         env:
         - name: ALLOW_GUEST_USERS
           valueFrom:

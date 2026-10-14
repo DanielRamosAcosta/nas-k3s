@@ -1,0 +1,42 @@
+apiVersion: v1
+data:
+  login.html: |
+    {% extends "template.html" %}
+    {% load i18n wger_extras %}
+
+    {% block title %}{% translate "Login" %}{% endblock %}
+
+    {% block header %}
+    {% endblock %}
+
+    {# SSO-only: solo se ofrece el login OIDC (Authelia). El formulario local de
+       usuario/contraseña, el registro y el password reset se omiten a propósito.
+       Además las contraseñas locales se anulan (ver Job wger-provision-oidc), así
+       que ni el login local ni el reset de Django funcionan aunque se alcancen. #}
+    {% block template %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'warning' %}alert-warning{% elif message.tags == 'info' %}alert-info{% elif message.tags == 'success' %}alert-success{% endif %}">
+                    <a href="#" class="close extra-bold" data-bs-dismiss="alert">&times;</a>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <div class="row justify-content-center">
+            <div class="col-lg-5 col-md-7">
+                <div class="card my-4">
+                    <div class="card-body p-4 text-center">
+                        <h2 class="mb-4">{% translate "Login" %}</h2>
+                        {% include "user/social_login.html" %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endblock %}
+kind: ConfigMap
+metadata:
+  labels:
+    app: wger
+  name: wger-login-template
+  namespace: business
