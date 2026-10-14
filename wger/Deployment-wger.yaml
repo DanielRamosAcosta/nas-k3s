@@ -146,6 +146,11 @@ spec:
             configMapKeyRef:
               key: DJANGO_PERFORM_MIGRATIONS
               name: wger-config-env
+        - name: DJANGO_SETTINGS_MODULE
+          valueFrom:
+            configMapKeyRef:
+              key: DJANGO_SETTINGS_MODULE
+              name: wger-config-env
         - name: EMAIL_HOST
           valueFrom:
             configMapKeyRef:
@@ -191,15 +196,10 @@ spec:
             configMapKeyRef:
               key: NUMBER_OF_PROXIES
               name: wger-config-env
-        - name: OIDC_BOOTSTRAP_SUBJECT
+        - name: OIDC_ADMIN_USERNAME
           valueFrom:
             configMapKeyRef:
-              key: OIDC_BOOTSTRAP_SUBJECT
-              name: wger-config-env
-        - name: OIDC_BOOTSTRAP_USERNAME
-          valueFrom:
-            configMapKeyRef:
-              key: OIDC_BOOTSTRAP_USERNAME
+              key: OIDC_ADMIN_USERNAME
               name: wger-config-env
         - name: OIDC_CLIENT_ID
           valueFrom:
@@ -327,6 +327,14 @@ spec:
           name: wger-login-template
           readOnly: true
           subPath: login.html
+        - mountPath: /home/wger/src/settings/custom.py
+          name: django-settings
+          readOnly: true
+          subPath: custom.py
+        - mountPath: /home/wger/src/wger_sso_adapter.py
+          name: django-settings
+          readOnly: true
+          subPath: wger_sso_adapter.py
       enableServiceLinks: false
       volumes:
       - emptyDir: {}
@@ -340,3 +348,6 @@ spec:
       - configMap:
           name: wger-login-template
         name: wger-login-template
+      - configMap:
+          name: wger-django-settings
+        name: django-settings

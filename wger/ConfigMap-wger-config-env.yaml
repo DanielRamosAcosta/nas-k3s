@@ -18,6 +18,7 @@ data:
   DJANGO_DB_USER: wger
   DJANGO_DEBUG: "False"
   DJANGO_PERFORM_MIGRATIONS: "True"
+  DJANGO_SETTINGS_MODULE: settings.custom
   EMAIL_HOST: smtp-relay.system.svc.cluster.local
   EMAIL_HOST_PASSWORD: ""
   EMAIL_HOST_USER: ""
@@ -27,8 +28,7 @@ data:
   EXPOSE_PROMETHEUS_METRICS: "True"
   FROM_EMAIL: NAS <nas@mail.danielramos.me>
   NUMBER_OF_PROXIES: "1"
-  OIDC_BOOTSTRAP_SUBJECT: 0a50e2cb-cbb7-4e8c-bf73-293049f3e2e6
-  OIDC_BOOTSTRAP_USERNAME: dani
+  OIDC_ADMIN_USERNAME: dani
   OIDC_CLIENT_ID: wger
   SITE_URL: https://gym.danielramos.me
   SYNC_EXERCISE_IMAGES_CELERY: "False"
