@@ -1,3 +1,4 @@
+local blackbox = import 'monitoring/blackbox/blackbox.libsonnet';
 local delugeExporter = import 'monitoring/deluge-exporter/deluge-exporter.libsonnet';
 local grafana = import 'monitoring/grafana/grafana.libsonnet';
 local immichExporter = import 'monitoring/immich-exporter/immich-exporter.libsonnet';
@@ -28,5 +29,6 @@ u.Environment({
     mcMonitor: mcMonitor.new(),
     delugeExporter: delugeExporter.new(),
     kubeStateMetrics: kubeStateMetrics.new(),
+    blackbox: blackbox.new(),
   },
 })

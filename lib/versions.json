@@ -75,6 +75,10 @@
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
     "version": "v2.20.0"
   },
+  "blackboxExporter": {
+    "image": "quay.io/prometheus/blackbox-exporter",
+    "version": "v0.29.0"
+  },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
     "version": "1.17.1"
