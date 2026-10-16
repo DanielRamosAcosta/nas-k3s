@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "9104"
+    prometheus.io/scrape: "true"
+  labels:
+    app: mariadb-exporter
+    name: mysqld-exporter
+  name: mysqld-exporter
+  namespace: databases
+spec:
+  ports:
+  - name: mysqld-exporter-metrics
+    port: 9104
+    targetPort: 9104
+  selector:
+    name: mysqld-exporter
