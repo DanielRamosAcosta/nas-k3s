@@ -34,7 +34,7 @@ spec:
             secretKeyRef:
               key: COUCHDB_USER
               name: couchdb-sealed-secret
-        image: docker.io/apache/couchdb:3.5.2
+        image: docker.io/apache/couchdb:3.5.3
         imagePullPolicy: IfNotPresent
         name: couchdb
         ports:
