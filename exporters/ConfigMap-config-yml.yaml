@@ -1,0 +1,30 @@
+apiVersion: v1
+data:
+  config.yml: |
+    modules:
+      # Sonda HTTP para detectar bloqueos del ISP: un RST/timeout del operador
+      # (caso LaLiga/SNI-DPI) deja probe_success=0. No seguimos redirects (medimos
+      # la respuesta directa) y aceptamos cualquier 2xx. fail_if_not_ssl queda en su
+      # default (false): no exigimos TLS, solo que el endpoint responda.
+      http_2xx:
+        prober: http
+        http:
+          preferred_ip_protocol: ip4
+          ip_protocol_fallback: false
+          follow_redirects: false
+          fail_if_not_ssl: false
+      # Sonda DNS para detectar secuestro/bloqueo de resolvers (DoH 1.1.1.1):
+      # query A contra el resolver objetivo; si el ISP lo intercepta, falla.
+      dns:
+        prober: dns
+        dns:
+          preferred_ip_protocol: ip4
+          ip_protocol_fallback: false
+          query_name: cloudflare.com
+          query_type: A
+kind: ConfigMap
+metadata:
+  labels:
+    app: exporters
+  name: config-yml
+  namespace: monitoring

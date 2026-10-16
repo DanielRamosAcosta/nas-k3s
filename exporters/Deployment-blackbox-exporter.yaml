@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: exporters
+  name: blackbox-exporter
+  namespace: monitoring
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: blackbox-exporter
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: blackbox-exporter
+    spec:
+      containers:
+      - image: quay.io/prometheus/blackbox-exporter:v0.29.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/healthy
+            port: 9115
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: blackbox-exporter
+        ports:
+        - containerPort: 9115
+          name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /-/healthy
+            port: 9115
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /etc/blackbox_exporter/config.yml
+          name: config-yml
+          subPath: config.yml
+      volumes:
+      - configMap:
+          name: config-yml
+        name: config-yml

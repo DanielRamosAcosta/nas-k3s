@@ -107,6 +107,41 @@ data:
               ups:  "salicru"
         params:
           ups: [ "salicru" ]
+      # Sonda HTTP via blackbox-exporter (vantage del NAS): detecta bloqueos del ISP
+      # (RST/timeout por SNI-DPI, caso LaLiga). Baile multi-target: VM pasa cada
+      # target como ?target=, el exporter lo sondea y VM lo re-etiqueta como instance.
+      - job_name: 'blackbox-http'
+        metrics_path: /probe
+        params:
+          module: [http_2xx]
+        static_configs:
+          - targets:
+              - https://api.radarr.video        # caso LaLiga: rango Cloudflare 188.114.96.0/24
+              - https://whisparr.servarr.com     # mismo rango Cloudflare, SNI distinto
+              - https://www.google.com           # control sano: nunca se bloquea
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: blackbox-exporter.monitoring.svc.cluster.local:9115
+      # Sonda DNS via blackbox-exporter: detecta secuestro/bloqueo de resolvers
+      # (DoH 1.1.1.1). query A a cloudflare.com contra el resolver objetivo.
+      - job_name: 'blackbox-dns'
+        metrics_path: /probe
+        params:
+          module: [dns]
+        static_configs:
+          - targets:
+              - 1.1.1.1:53                        # secuestro DNS del gateway
+        relabel_configs:
+          - source_labels: [__address__]
+            target_label: __param_target
+          - source_labels: [__param_target]
+            target_label: instance
+          - target_label: __address__
+            replacement: blackbox-exporter.monitoring.svc.cluster.local:9115
 kind: ConfigMap
 metadata:
   labels:
