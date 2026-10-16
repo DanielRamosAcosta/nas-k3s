@@ -20,9 +20,10 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
       ]) +
       u.probes.http('/', 9104),
     ]) + deployment.spec.template.spec.withVolumes([
-      // 0600 — mysqld-exporter v0.20 rejects a world/group-readable .my.cnf
+      // 0644 — el exporter corre como usuario non-root y el fichero lo crea root,
+      // así que debe ser legible por el grupo/otros para poder abrirlo.
       u.volume.fromSealedSecret(self.myCnfSecret) +
-      { secret+: { defaultMode: std.parseOctal('0600') } },
+      { secret+: { defaultMode: std.parseOctal('0644') } },
     ]),
 
     service: k.util.serviceFor(self.deployment) + u.metrics('9104'),
