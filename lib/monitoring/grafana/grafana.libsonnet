@@ -29,7 +29,7 @@ local victoriametricsDatasource = importstr './grafana.datasource.victoriametric
                 ]) +
                 u.injectFiles([self.lokiDatasource, self.victoriametricsDatasource]),
 
-    service: k.util.serviceFor(self.deployment),
+    service: k.util.serviceFor(self.deployment) + u.metrics(port='3000'),
 
     configEnv: u.configMap.forEnv(self.deployment, {
       GF_SERVER_ROOT_URL: 'https://grafana.danielramos.me',
