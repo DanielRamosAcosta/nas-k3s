@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: valkey-exporter
+  name: redis-exporter
+  namespace: databases
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: redis-exporter
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: redis-exporter
+    spec:
+      containers:
+      - env:
+        - name: REDIS_ADDR
+          valueFrom:
+            configMapKeyRef:
+              key: REDIS_ADDR
+              name: redis-exporter-config-env
+        image: docker.io/oliver006/redis_exporter:v1.94.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9121
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: redis-exporter
+        ports:
+        - containerPort: 9121
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9121
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
