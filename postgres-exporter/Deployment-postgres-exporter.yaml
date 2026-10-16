@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: postgres-exporter
+  name: postgres-exporter
+  namespace: databases
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: postgres-exporter
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: postgres-exporter
+    spec:
+      containers:
+      - env:
+        - name: DATA_SOURCE_URI
+          valueFrom:
+            configMapKeyRef:
+              key: DATA_SOURCE_URI
+              name: postgres-exporter-config-env
+        - name: DATA_SOURCE_USER
+          valueFrom:
+            configMapKeyRef:
+              key: DATA_SOURCE_USER
+              name: postgres-exporter-config-env
+        - name: PG_EXPORTER_EXTEND_QUERY_PATH
+          valueFrom:
+            configMapKeyRef:
+              key: PG_EXPORTER_EXTEND_QUERY_PATH
+              name: postgres-exporter-config-env
+        - name: DATA_SOURCE_PASS
+          valueFrom:
+            secretKeyRef:
+              key: DATA_SOURCE_PASS
+              name: postgres-exporter-sealed-secret
+        image: quay.io/prometheuscommunity/postgres-exporter:v0.20.1
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9187
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: postgres-exporter
+        ports:
+        - containerPort: 9187
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /
+            port: 9187
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /etc/postgres-exporter/postgres-queries.yml
+          name: postgres-queries-yml
+          subPath: postgres-queries.yml
+      volumes:
+      - configMap:
+          name: postgres-queries-yml
+        name: postgres-queries-yml

@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  DATA_SOURCE_URI: postgres.databases.svc.cluster.local:5432/monitoring?sslmode=disable
+  DATA_SOURCE_USER: monitoring
+  PG_EXPORTER_EXTEND_QUERY_PATH: /etc/postgres-exporter/postgres-queries.yml
+kind: ConfigMap
+metadata:
+  labels:
+    app: postgres-exporter
+  name: postgres-exporter-config-env
+  namespace: databases
