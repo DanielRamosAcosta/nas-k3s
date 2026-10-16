@@ -1,6 +1,6 @@
 ---
 title: "Anotaciones de scrape para servicios con metricas sin recoger"
-status: In Progress
+status: Done
 priority: 3
 labels: [monitoring, observability]
 parent:
@@ -29,9 +29,9 @@ Verificado en VictoriaMetrics que **sí** se scrapean ya (no tocar): Traefik, Au
 
 ## Acceptance Criteria
 
-- [ ] #1 Loki scrapeado por VictoriaMetrics (`loki_build_info` presente)
-- [ ] #2 Promtail scrapeado por VictoriaMetrics (`promtail_*` presente)
-- [ ] #3 Auditoría del resto de workloads confirmada: documentado qué expone `/metrics` sin recoger y si se añade o se descarta
+- [x] #1 Loki scrapeado por VictoriaMetrics (`loki_build_info` presente)
+- [x] #2 Promtail scrapeado por VictoriaMetrics (`promtail_*` presente)
+- [x] #3 Auditoría del resto de workloads confirmada: documentado qué expone `/metrics` sin recoger y si se añade o se descarta
 
 ## Implementation Plan
 
