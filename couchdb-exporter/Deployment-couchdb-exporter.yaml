@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: couchdb-exporter
+  name: couchdb-exporter
+  namespace: databases
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: couchdb-exporter
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: couchdb-exporter
+    spec:
+      containers:
+      - env:
+        - name: COUCHDB_URI
+          valueFrom:
+            configMapKeyRef:
+              key: COUCHDB_URI
+              name: couchdb-exporter-config-env
+        - name: TELEMETRY_ADDRESS
+          valueFrom:
+            configMapKeyRef:
+              key: TELEMETRY_ADDRESS
+              name: couchdb-exporter-config-env
+        - name: COUCHDB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_USER
+              name: couchdb-sealed-secret
+        - name: COUCHDB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: COUCHDB_PASSWORD
+              name: couchdb-sealed-secret
+        image: docker.io/gesellix/couchdb-prometheus-exporter:v30.17.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9984
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: couchdb-exporter
+        ports:
+        - containerPort: 9984
+          name: metrics
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /metrics
+            port: 9984
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
