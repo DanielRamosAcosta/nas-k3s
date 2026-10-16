@@ -189,7 +189,7 @@
   },
   "couchdb": {
     "image": "docker.io/apache/couchdb",
-    "version": "3.5.2"
+    "version": "3.5.3"
   },
   "curl": {
     "image": "docker.io/curlimages/curl",
