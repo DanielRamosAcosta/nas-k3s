@@ -205,6 +205,6 @@
   },
   "mcBackup": {
     "image": "docker.io/itzg/mc-backup",
-    "version": "2026.9.3"
+    "version": "2026.10.0"
   }
 }
