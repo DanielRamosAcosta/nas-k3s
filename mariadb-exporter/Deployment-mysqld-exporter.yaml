@@ -53,5 +53,5 @@ spec:
       volumes:
       - name: my-cnf-sealed-secret
         secret:
-          defaultMode: 384
+          defaultMode: 420
           secretName: my-cnf-sealed-secret
