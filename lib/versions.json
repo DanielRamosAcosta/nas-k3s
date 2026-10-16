@@ -79,6 +79,10 @@
     "image": "quay.io/prometheus/mysqld-exporter",
     "version": "v0.20.0"
   },
+  "postgresExporter": {
+    "image": "quay.io/prometheuscommunity/postgres-exporter",
+    "version": "v0.20.1"
+  },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
     "version": "v2.20.0"
