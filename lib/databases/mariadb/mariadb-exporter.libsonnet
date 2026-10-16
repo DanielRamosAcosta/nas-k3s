@@ -1,7 +1,7 @@
 local u = import '../../utils.libsonnet';
 local versions = import '../../versions.json';
-local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 local secrets = import 'databases/mariadb/mariadb.secrets.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
 
 {
   local deployment = k.apps.v1.deployment,
