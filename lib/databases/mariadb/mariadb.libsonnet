@@ -13,6 +13,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local dataVolumeName = 'data',
 
   local createUserMigration = importstr './mariadb.create-user.sh',
+  local createMonitoringUserMigration = importstr './mariadb.create-monitoring-user.sh',
 
   new():: {
     statefulSet: statefulSet.new('mariadb', replicas=1, containers=[
@@ -43,6 +44,27 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     userGrimmory: self.createUser('grimmory', secrets.userGrimmory, self.createUserMigration, self.sealedSecret),
 
     createUserMigration: u.configMap.forFile('mariadb.create-user.sh', createUserMigration),
+
+    monitoringUserSecret: u.sealedSecret.forEnvNamed('mariadb-monitoring-sealed-secret', secrets.monitoring),
+
+    createMonitoringUserMigration: u.configMap.forFile('mariadb.create-monitoring-user.sh', createMonitoringUserMigration),
+
+    createMonitoringUserJob: k.batch.v1.job.new('mariadb-create-monitoring-user') +
+                             k.batch.v1.job.spec.template.spec.withRestartPolicy('OnFailure') +
+                             k.batch.v1.job.spec.template.spec.withContainers([
+                               container.new('create-monitoring-user', u.image(versions.mariadb.image, versions.mariadb.version)) +
+                               container.withCommand(['/bin/bash', '/mnt/scripts/mariadb.create-monitoring-user.sh']) +
+                               container.withEnv(
+                                 u.envVars.fromSealedSecret(self.monitoringUserSecret) +
+                                 u.envVars.fromSealedSecret(self.sealedSecret)
+                               ) +
+                               container.withVolumeMounts([
+                                 u.volumeMount.fromFile(self.createMonitoringUserMigration, '/mnt/scripts'),
+                               ]),
+                             ]) +
+                             k.batch.v1.job.spec.template.spec.withVolumes([
+                               u.volume.fromConfigMap(self.createMonitoringUserMigration),
+                             ]),
 
     createUser(name, password, configMap, secret):: {
       migrationJob: k.batch.v1.job.new('mariadb-create-user-' + name) +
