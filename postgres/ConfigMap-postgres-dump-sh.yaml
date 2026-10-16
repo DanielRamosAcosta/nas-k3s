@@ -35,6 +35,13 @@ data:
       mv "$tmp" "$final"
 
       echo "==> [$db] listo ($(du -h "$final" | cut -f1))"
+
+      # Marcador de frescura para el postgres-exporter. Con guard: el script corre con
+      # 'set -euo pipefail'; un fallo del UPSERT (BBDD 'monitoring' no lista, etc.) NO
+      # debe abortar el backup real del resto de BBDD.
+      psql -h "$PGHOST" -p "$PGPORT" -U postgres -d monitoring -v ON_ERROR_STOP=1 \
+        -c "INSERT INTO backup_log(db, finished_at) VALUES ('$db', now()) ON CONFLICT (db) DO UPDATE SET finished_at = EXCLUDED.finished_at;" \
+        || echo "WARN: backup_log upsert falló para $db (backup OK, marcador no actualizado)"
     done
 
     echo "==> Dump lógico completado para todas las BBDD"
