@@ -43,7 +43,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                    volume.fromHostPath(dataVolumeName, '/data/victoriametrics/data'),
                  ]),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='8428'),
 
     configuration: u.configMap.forFile('victoriametrics.yml', configuration),
 

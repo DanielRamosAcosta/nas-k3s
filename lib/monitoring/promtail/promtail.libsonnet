@@ -32,6 +32,10 @@ local configuration = importstr './promtail.config.yml';
                  ]) +
                  u.probes.http('/ready', 9080),
                ]) +
+               daemonSet.spec.template.metadata.withAnnotations({
+                 'prometheus.io/scrape': 'true',
+                 'prometheus.io/port': '9080',
+               }) +
                daemonSet.spec.template.spec.withServiceAccount('promtail') +
                daemonSet.spec.template.spec.withVolumes([
                  u.volume.fromConfigMap(self.configuration),

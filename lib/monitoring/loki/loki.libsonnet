@@ -33,7 +33,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
                  statefulSet.spec.template.spec.securityContext.withFsGroup(10001) +
                  statefulSet.spec.template.spec.securityContext.withFsGroupChangePolicy('OnRootMismatch'),
 
-    service: k.util.serviceFor(self.statefulSet),
+    service: k.util.serviceFor(self.statefulSet) + u.metrics(port='3100'),
 
     configuration: u.configMap.forFile('local-config.yaml', configuration),
 
