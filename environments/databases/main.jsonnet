@@ -1,3 +1,4 @@
+local couchdbExporter = import 'databases/couchdb/couchdb-exporter.libsonnet';
 local couchdb = import 'databases/couchdb/couchdb.libsonnet';
 local mariadb = import 'databases/mariadb/mariadb.libsonnet';
 local postgres = import 'databases/postgres/postgres.libsonnet';
@@ -11,4 +12,5 @@ u.Environment({
   valkeyExporter: valkeyExporter.new(),
   mariadb: mariadb.new(),
   couchdb: couchdb.new(),
+  couchdbExporter: couchdbExporter.new(),
 })

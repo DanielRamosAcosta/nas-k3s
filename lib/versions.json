@@ -199,6 +199,10 @@
     "image": "docker.io/apache/couchdb",
     "version": "3.5.3"
   },
+  "couchdbExporter": {
+    "image": "docker.io/gesellix/couchdb-prometheus-exporter",
+    "version": "v30.17.0"
+  },
   "curl": {
     "image": "docker.io/curlimages/curl",
     "version": "8.23.0"
