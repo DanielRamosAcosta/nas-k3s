@@ -113,7 +113,7 @@ data:
       - job_name: 'blackbox-http'
         metrics_path: /probe
         params:
-          module: [http_2xx]
+          module: [http_reachable]
         static_configs:
           - targets:
               - https://api.radarr.video        # caso LaLiga: rango Cloudflare 188.114.96.0/24
