@@ -16,6 +16,7 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
   local dataVolumeName = 'data',
 
   local createUserMigration = importstr './postgres.create-user.sh',
+  local createMonitoringUserMigration = importstr './postgres.create-monitoring-user.sh',
   local backupConfigContent = importstr './postgres.config.conf',
   local backupScript = importstr './postgres.backup.sh',
   local cleanupScript = importstr './postgres.cleanup.sh',
@@ -71,6 +72,29 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     userSeerr: self.createUser('seerr', secrets.userSeerr, self.createUserMigration, self.sealedSecret),
 
     createUserMigration: u.configMap.forFile('postgres.create-user.sh', createUserMigration),
+
+    // Rol 'monitoring' (GRANT pg_monitor) + BBDD 'monitoring' + tabla backup_log.
+    // El password del rol se reutiliza como DATA_SOURCE_PASS del postgres-exporter.
+    monitoringUserSecret: u.sealedSecret.forEnvNamed('postgres-monitoring-sealed-secret', secrets.monitoring),
+
+    createMonitoringUserMigration: u.configMap.forFile('postgres.create-monitoring-user.sh', createMonitoringUserMigration),
+
+    createMonitoringUserJob: k.batch.v1.job.new('postgres-create-monitoring-user') +
+                             k.batch.v1.job.spec.template.spec.withRestartPolicy('OnFailure') +
+                             k.batch.v1.job.spec.template.spec.withContainers([
+                               container.new('create-monitoring-user', u.image(versions.postgres.image, versions.postgres.version)) +
+                               container.withCommand(['/bin/bash', '/mnt/scripts/postgres.create-monitoring-user.sh']) +
+                               container.withEnv(
+                                 u.envVars.fromSealedSecret(self.monitoringUserSecret) +
+                                 u.envVars.fromSealedSecret(self.sealedSecret)
+                               ) +
+                               container.withVolumeMounts([
+                                 u.volumeMount.fromFile(self.createMonitoringUserMigration, '/mnt/scripts'),
+                               ]),
+                             ]) +
+                             k.batch.v1.job.spec.template.spec.withVolumes([
+                               u.volume.fromConfigMap(self.createMonitoringUserMigration),
+                             ]),
 
     // Backup scripts ConfigMaps
     backupScriptConfigMap: u.configMap.forFile('postgres.backup.sh', backupScript),
