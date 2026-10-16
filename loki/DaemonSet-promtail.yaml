@@ -13,6 +13,8 @@ spec:
   template:
     metadata:
       annotations:
+        prometheus.io/port: "9080"
+        prometheus.io/scrape: "true"
         reloader.stakater.com/auto: "true"
       labels:
         name: promtail
