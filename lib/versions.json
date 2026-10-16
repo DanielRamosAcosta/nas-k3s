@@ -71,6 +71,10 @@
     "image": "docker.io/ngosang/deluge-exporter",
     "version": "1.0.2"
   },
+  "redisExporter": {
+    "image": "docker.io/oliver006/redis_exporter",
+    "version": "v1.94.0"
+  },
   "kubeStateMetrics": {
     "image": "registry.k8s.io/kube-state-metrics/kube-state-metrics",
     "version": "v2.20.0"
