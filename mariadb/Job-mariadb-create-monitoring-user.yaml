@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  labels:
+    app: mariadb
+  name: mariadb-create-monitoring-user
+  namespace: databases
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - /bin/bash
+        - /mnt/scripts/mariadb.create-monitoring-user.sh
+        env:
+        - name: USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: USER_PASSWORD
+              name: mariadb-monitoring-sealed-secret
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: MYSQL_ROOT_PASSWORD
+              name: mariadb-sealed-secret
+        image: lscr.io/linuxserver/mariadb:11.4.8-r0-ls201
+        imagePullPolicy: IfNotPresent
+        name: create-monitoring-user
+        volumeMounts:
+        - mountPath: /mnt/scripts/mariadb.create-monitoring-user.sh
+          name: mariadb-create-monitoring-user-sh
+          subPath: mariadb.create-monitoring-user.sh
+      restartPolicy: OnFailure
+      volumes:
+      - configMap:
+          name: mariadb-create-monitoring-user-sh
+        name: mariadb-create-monitoring-user-sh
