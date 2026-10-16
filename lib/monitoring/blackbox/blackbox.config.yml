@@ -1,15 +1,18 @@
 modules:
-  # Sonda HTTP para detectar bloqueos del ISP: un RST/timeout del operador
-  # (caso LaLiga/SNI-DPI) deja probe_success=0. No seguimos redirects (medimos
-  # la respuesta directa) y aceptamos cualquier 2xx. fail_if_not_ssl queda en su
-  # default (false): no exigimos TLS, solo que el endpoint responda.
-  http_2xx:
+  # Sonda HTTP de ALCANZABILIDAD para detectar bloqueos del ISP (SNI-DPI, caso
+  # LaLiga). Semantica reachability: exito = recibi CUALQUIER respuesta HTTP
+  # (TLS + status), fallo = RST/timeout (el operador corto la conexion). Por eso
+  # valid_status_codes cubre un set amplio de codigos (2xx..5xx): un 404 es
+  # alcanzable, no un bloqueo. No seguimos redirects (medimos la respuesta
+  # directa); fail_if_not_ssl: false (no exigimos TLS, solo que responda).
+  http_reachable:
     prober: http
     http:
       preferred_ip_protocol: ip4
       ip_protocol_fallback: false
       follow_redirects: false
       fail_if_not_ssl: false
+      valid_status_codes: [200, 201, 202, 203, 204, 301, 302, 303, 307, 308, 400, 401, 403, 404, 405, 429, 500, 502, 503, 504]
   # Sonda DNS para detectar secuestro/bloqueo de resolvers (DoH 1.1.1.1):
   # query A contra el resolver objetivo; si el ISP lo intercepta, falla.
   dns:
