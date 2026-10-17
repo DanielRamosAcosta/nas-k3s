@@ -1,7 +1,9 @@
 apiVersion: v1
 data:
-  DON_TORRENT_BASE_URL: https://dontorrent.meme
+  DON_TORRENT_BASE_URL: https://dontorrent.channel
+  DON_TORRENT_TOR_PROXY: http://tor-proxy.arr.svc.cluster.local:8118
   DON_TORRENT_USE_ONION: "false"
+  DON_TORRENT_USE_TOR: "true"
   MARCIANO_TORRENT_BASE_URL: https://marcianotorrent.net
   REQUEST_TIMEOUT_MS: "120000"
 kind: ConfigMap
