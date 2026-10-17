@@ -26,23 +26,17 @@ local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet'
     service: k.util.serviceFor(self.deployment),
 
     config: u.configMap.forEnv(self.deployment, {
-      DON_TORRENT_BASE_URL: 'https://dontorrent.meme',
+      // DonTorrent sale por Tor (exit node de clearnet, NO el .onion — su hidden
+      // service dejó de resolver: "No more HSDir available to query"). El clearnet
+      // está bloqueado por SNI-DPI del ISP (RST en el ClientHello), pero el circuito
+      // Tor evita el DPI. norznab aprende el dominio en caliente siguiendo los 301
+      // (dontorrent rota de dominio periódicamente).
+      DON_TORRENT_BASE_URL: 'https://dontorrent.channel',
+      DON_TORRENT_USE_TOR: 'true',
+      DON_TORRENT_TOR_PROXY: 'http://tor-proxy.arr.svc.cluster.local:8118',
+      DON_TORRENT_USE_ONION: 'false',
       MARCIANO_TORRENT_BASE_URL: 'https://marcianotorrent.net',
       REQUEST_TIMEOUT_MS: '120000',
-      // DonTorrent por clearnet: el hidden service .onion dejó de resolver
-      // ("No more HSDir available to query") y el dominio clearnet es alcanzable
-      // directo (dontorrent.review redirige 301 a dontorrent.meme).
-      DON_TORRENT_USE_ONION: 'false',
-      // Config anterior vía Tor .onion — recuperar si el clearnet vuelve a estar
-      // bloqueado por SNI-DPI del ISP y el hidden service vuelve a resolver:
-      //   DON_TORRENT_BASE_URL: 'https://dontorrent.review',
-      //   DON_TORRENT_USE_ONION: 'true',
-      //   DON_TORRENT_TOR_PROXY: 'http://tor-proxy.arr.svc.cluster.local:8118',
-      // Proxy vía gluetun desactivado temporalmente — el tráfico sale directo por la red del NAS.
-      // HTTP_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
-      // HTTPS_PROXY: 'http://gluetun.system.svc.cluster.local:8888',
-      // NO_PROXY: 'localhost,127.0.0.1,.svc.cluster.local',
-      // NODE_USE_ENV_PROXY: '1',
     }),
 
     sealedSecret: u.sealedSecret.forEnv(self.deployment, secrets.norznab),
