@@ -221,7 +221,7 @@
   },
   "mcRouter": {
     "image": "docker.io/itzg/mc-router",
-    "version": "1.48.0"
+    "version": "1.49.0"
   },
   "mcBackup": {
     "image": "docker.io/itzg/mc-backup",
