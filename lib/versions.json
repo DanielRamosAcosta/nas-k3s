@@ -77,7 +77,7 @@
   },
   "mysqldExporter": {
     "image": "quay.io/prometheus/mysqld-exporter",
-    "version": "v0.20.0"
+    "version": "v0.21.0"
   },
   "postgresExporter": {
     "image": "quay.io/prometheuscommunity/postgres-exporter",
