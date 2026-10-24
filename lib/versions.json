@@ -73,7 +73,7 @@
   },
   "redisExporter": {
     "image": "docker.io/oliver006/redis_exporter",
-    "version": "v1.94.0"
+    "version": "v1.96.0"
   },
   "mysqldExporter": {
     "image": "quay.io/prometheus/mysqld-exporter",
