@@ -89,7 +89,7 @@
   },
   "blackboxExporter": {
     "image": "quay.io/prometheus/blackbox-exporter",
-    "version": "v0.29.0"
+    "version": "v0.29.1"
   },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
