@@ -18,6 +18,12 @@
   ],
   "packageRules": [
     {
+      "description": "Automerge digest and patch bumps once CI passes",
+      "matchUpdateTypes": ["digest", "patch"],
+      "automerge": true,
+      "platformAutomerge": true
+    },
+    {
       "description": "Group immich server and ML images",
       "matchPackageNames": [
         "ghcr.io/immich-app/immich-server",
