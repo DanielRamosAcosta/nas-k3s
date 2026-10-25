@@ -113,7 +113,7 @@
   },
   "synapse": {
     "image": "ghcr.io/element-hq/synapse",
-    "version": "v1.163.0"
+    "version": "v1.163.2"
   },
   "mautrixWhatsapp": {
     "image": "dock.mau.dev/mautrix/whatsapp",
