@@ -133,7 +133,7 @@
   },
   "slskd": {
     "image": "slskd/slskd",
-    "version": "0.26.1"
+    "version": "0.26.2"
   },
   "deluge": {
     "image": "docker.io/linuxserver/deluge",
