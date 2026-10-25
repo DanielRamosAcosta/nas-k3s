@@ -33,7 +33,7 @@
   },
   "loki": {
     "image": "docker.io/grafana/loki",
-    "version": "3.7.8"
+    "version": "3.7.9"
   },
   "promtail": {
     "image": "docker.io/grafana/promtail",
