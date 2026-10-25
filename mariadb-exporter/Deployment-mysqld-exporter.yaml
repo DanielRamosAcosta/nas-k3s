@@ -22,7 +22,7 @@ spec:
       containers:
       - args:
         - --config.my-cnf=/etc/mysqld-exporter/my.cnf
-        image: quay.io/prometheus/mysqld-exporter:v0.20.0
+        image: quay.io/prometheus/mysqld-exporter:v0.21.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
