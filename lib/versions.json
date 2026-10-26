@@ -145,7 +145,7 @@
   },
   "invidiousCompanion": {
     "image": "quay.io/invidious/invidious-companion",
-    "version": "2026.09.19-bb3b37f"
+    "version": "2026.10.18-fcb0456"
   },
   "beets": {
     "image": "lscr.io/linuxserver/beets",
