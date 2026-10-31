@@ -127,6 +127,10 @@
     "image": "ghcr.io/hotio/radarr",
     "version": "release-6.4.4.10685"
   },
+  "prowlarr": {
+    "image": "ghcr.io/hotio/prowlarr",
+    "version": "release-2.7.0.5723"
+  },
   "lidarr": {
     "image": "ghcr.io/hotio/lidarr",
     "version": "release-3.1.6.5079"

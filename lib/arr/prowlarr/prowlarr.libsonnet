@@ -1,0 +1,39 @@
+local u = import '../../utils.libsonnet';
+local versions = import '../../versions.json';
+local k = import 'github.com/grafana/jsonnet-libs/ksonnet-util/kausal.libsonnet';
+
+{
+  local deployment = k.apps.v1.deployment,
+  local container = k.core.v1.container,
+  local containerPort = k.core.v1.containerPort,
+  local volumeMount = k.core.v1.volumeMount,
+
+  new():: {
+    deployment: deployment.new('prowlarr', replicas=1, containers=[
+                  container.new('prowlarr', u.image(versions.prowlarr.image, versions.prowlarr.version)) +
+                  container.withPorts([
+                    containerPort.new('http', 9696),
+                  ]) +
+                  container.withEnv(
+                    u.envVars.fromConfigMap(self.configEnv)
+                  ) +
+                  container.withVolumeMounts([
+                    volumeMount.new('config', '/config'),
+                  ]) +
+                  u.probes.http('/ping', 9696),
+                ]) +
+                deployment.spec.template.spec.withVolumes([
+                  u.volume.fromHostPath('config', '/data/arr/prowlarr'),
+                ]),
+
+    service: k.util.serviceFor(self.deployment),
+
+    configEnv: u.configMap.forEnv(self.deployment, {
+      PUID: '1000',
+      PGID: '100',
+      UMASK: '002',
+      TZ: 'Atlantic/Canary',
+      PROWLARR__LOG__CONSOLEFORMAT: 'Clef',
+    }),
+  },
+}
