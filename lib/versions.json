@@ -153,7 +153,7 @@
   },
   "smtpRelay": {
     "image": "boky/postfix",
-    "version": "v5.1.0"
+    "version": "5.2.0"
   },
   "gluetun": {
     "image": "ghcr.io/qdm12/gluetun",
