@@ -41,11 +41,12 @@ data:
     \     text: \"{{ .Result.title }}\"\n      filters:\n        - name: regexp\n
     \         args: \"\\\\b(S\\\\d+(?:E\\\\d+)?)\\\\b\"\n    category:\n      text:
     \"{{ if .Result.category_is_tv_show }}TV{{ else }}Movies{{ end }}\"\n    infohash:\n
-    \     selector: url\n      filters:\n        - name: regexp\n          args: \"/([a-f0-9]{40})\"\n
-    \   seeders:\n      selector: title\n      filters:\n        - name: regexp\n
-    \         args: \"\U0001F464 (\\\\d+)\"\n    leechers:\n      text: \"0\"\n    size:\n
-    \     selector: title\n      filters:\n        - name: regexp\n          args:
-    \"\U0001F4BE (\\\\d+(?:\\\\.\\\\d+)? [KMGT]B)\"\n"
+    \     # En modo P2P (debrid_provider=none) Torrentio devuelve el hash en el campo\n
+    \     # `infoHash` directamente (sin campo `url`, que solo existe con debrid).\n
+    \     selector: infoHash\n    seeders:\n      selector: title\n      filters:\n
+    \       - name: regexp\n          args: \"\U0001F464 (\\\\d+)\"\n    leechers:\n
+    \     text: \"0\"\n    size:\n      selector: title\n      filters:\n        -
+    name: regexp\n          args: \"\U0001F4BE (\\\\d+(?:\\\\.\\\\d+)? [KMGT]B)\"\n"
 kind: ConfigMap
 metadata:
   labels:
