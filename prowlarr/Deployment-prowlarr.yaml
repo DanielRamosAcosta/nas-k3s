@@ -73,7 +73,24 @@ spec:
         volumeMounts:
         - mountPath: /config
           name: config
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - mkdir -p /config/Definitions/Custom && cp /src/torrentio.yml /config/Definitions/Custom/torrentio.yml
+        image: busybox:1.38.0
+        imagePullPolicy: IfNotPresent
+        name: install-definitions
+        volumeMounts:
+        - mountPath: /config
+          name: config
+        - mountPath: /src/torrentio.yml
+          name: torrentio-yml
+          subPath: torrentio.yml
       volumes:
       - hostPath:
           path: /data/arr/prowlarr
         name: config
+      - configMap:
+          name: torrentio-yml
+        name: torrentio-yml

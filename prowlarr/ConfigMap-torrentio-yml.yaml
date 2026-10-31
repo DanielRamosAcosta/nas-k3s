@@ -1,0 +1,54 @@
+apiVersion: v1
+data:
+  torrentio.yml: "---\nid: torrentio\nname: Torrentio\ndescription: \"Torrentio Indexer\"\nlanguage:
+    en-US\ntype: public\nencoding: UTF-8\nfollowredirect: false\ntestlinktorrent:
+    false\nrequestDelay: 2\nlinks:\n  - https://torrentio.strem.fun/\n\ncaps:\n  categories:\n
+    \   Movies: Movies\n    TV: TV\n\n  modes:\n    search: [q]\n    movie-search:
+    [q, imdbid]\n    tv-search: [q, imdbid, season, ep]\n  allowrawsearch: false\n\nsettings:\n
+    \ - name: default_opts\n    type: text\n    label: Torrentio Options\n    default:
+    \"providers=eztv,rarbg,1337x,thepiratebay,kickasstorrents,torrentgalaxy,magnetdl,horriblesubs,nyaasi,tokyotosho,anidex,rutor,rutracker,comando,bludv,torrent9,ilcorsaronero,mejortorrent,wolfmax4k,cinecalidad,besttorrents|sort=qualitysize|qualityfilter=scr,cam\"\n
+    \ - name: rdkey_label\n    type: info\n    label: Real-Debrid API Key Required\n
+    \ - name: debrid_provider_key\n    type: text\n    label: Debrid provider API
+    Key\n    default: \"\"\n  - name: debrid_provider\n    type: select\n    label:
+    Debrid provider\n    default: none\n    options:\n      none: None\n      realdebrid:
+    Real-Debrid\n      alldebrid: AllDebrid\n      premiumize: Premiumize\n      debridlink:
+    Debridlink\n      offcloud: Offcloud\n      putio: Put.io\n      torbox: Torbox\n
+    \ - name: validation_label\n    type: info\n    label: Validation settings optional\n
+    \ - name: validate_imdb_movie_label\n    type: info\n    label: The following
+    help to validate an indexer in Sonarr by confirming that the show returns results\n
+    \ - name: validate_imdb_movie\n    type: text\n    label: IMDB ID of Movie to
+    use for Radarr validation (must exist in indexer)\n    default: \"tt0137523\"
+    # Fight Club\n  - name: validate_imdb_tv\n    type: text\n    label: IMDB ID TV
+    show to use for Sonarr validation (must exist in indexer)\n    default: \"tt9288030\"
+    # Reacher S02E01\n\nsearch:\n  headers:\n    User-Agent:\n      [\n        \"Mozilla/5.0
+    (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0\",\n
+    \     ]\n  paths:\n    - path: \"{{ if .Query.IMDBID }}{{ .Config.default_opts
+    }}|{{ .Config.debrid_provider }}={{ .Config.debrid_provider_key }}/stream/movie/{{
+    .Query.IMDBID }}.json{{ else }}providers=rarbg,1337x|sort=size|qualityfilter=brremux,hdrall,dolbyvision,4k,720p,480p,other,scr,cam,unknown|{{
+    .Config.debrid_provider }}={{ .Config.debrid_provider_key }}/stream/movie/{{ .Config.validate_imdb_movie
+    }}.json{{ end }}\"\n      method: get\n      response:\n        type: json\n        noResultsMessage:
+    '\"streams\": []'\n      categories: [Movies]\n    - path: \"{{ if .Query.IMDBID
+    }}{{ .Config.default_opts }}{{else}}providers=rarbg,1337x|sort=size|qualityfilter=brremux,hdrall,dolbyvision,4k,720p,480p,other,scr,cam,unknown{{
+    end }}|{{ .Config.debrid_provider }}={{ .Config.debrid_provider_key }}/stream/series/{{
+    if .Query.IMDBID }}{{ .Query.IMDBID}}{{ else }}{{ .Config.validate_imdb_tv }}{{
+    end }}:{{ if .Query.Season }}{{ .Query.Season }}{{ else }}1{{ end }}:{{ if .Query.Ep
+    }}{{ .Query.Ep }}{{ else }}1{{ end }}.json\"\n      method: get\n      response:\n
+    \       type: json\n        noResultsMessage: '\"streams\": []'\n      categories:
+    [TV]\n\n  rows:\n    selector: streams\n    missingAttributeEqualsNoResults: true\n\n
+    \ fields:\n    title:\n      selector: title\n      filters:\n        - name:
+    split\n          args: [\"\\n\", 0]\n    year:\n      selector: title\n      filters:\n
+    \       - name: regexp\n          args: \"(\\\\b(19|20)\\\\d\\\\d\\\\b)\"\n    category_is_tv_show:\n
+    \     text: \"{{ .Result.title }}\"\n      filters:\n        - name: regexp\n
+    \         args: \"\\\\b(S\\\\d+(?:E\\\\d+)?)\\\\b\"\n    category:\n      text:
+    \"{{ if .Result.category_is_tv_show }}TV{{ else }}Movies{{ end }}\"\n    infohash:\n
+    \     selector: url\n      filters:\n        - name: regexp\n          args: \"/([a-f0-9]{40})\"\n
+    \   seeders:\n      selector: title\n      filters:\n        - name: regexp\n
+    \         args: \"\U0001F464 (\\\\d+)\"\n    leechers:\n      text: \"0\"\n    size:\n
+    \     selector: title\n      filters:\n        - name: regexp\n          args:
+    \"\U0001F4BE (\\\\d+(?:\\\\.\\\\d+)? [KMGT]B)\"\n"
+kind: ConfigMap
+metadata:
+  labels:
+    app: prowlarr
+  name: torrentio-yml
+  namespace: arr

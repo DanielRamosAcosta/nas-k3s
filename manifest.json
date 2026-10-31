@@ -333,6 +333,7 @@
     "postgres/Service-postgres.yaml": "environments/databases/main.jsonnet",
     "postgres/StatefulSet-postgres.yaml": "environments/databases/main.jsonnet",
     "prowlarr/ConfigMap-prowlarr-config-env.yaml": "environments/arr/main.jsonnet",
+    "prowlarr/ConfigMap-torrentio-yml.yaml": "environments/arr/main.jsonnet",
     "prowlarr/Deployment-prowlarr.yaml": "environments/arr/main.jsonnet",
     "prowlarr/Service-prowlarr.yaml": "environments/arr/main.jsonnet",
     "radarr/ConfigMap-radarr-config-env.yaml": "environments/arr/main.jsonnet",
