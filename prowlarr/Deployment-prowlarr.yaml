@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: prowlarr
+  name: prowlarr
+  namespace: arr
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: prowlarr
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: prowlarr
+    spec:
+      containers:
+      - env:
+        - name: PGID
+          valueFrom:
+            configMapKeyRef:
+              key: PGID
+              name: prowlarr-config-env
+        - name: PROWLARR__LOG__CONSOLEFORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: PROWLARR__LOG__CONSOLEFORMAT
+              name: prowlarr-config-env
+        - name: PUID
+          valueFrom:
+            configMapKeyRef:
+              key: PUID
+              name: prowlarr-config-env
+        - name: TZ
+          valueFrom:
+            configMapKeyRef:
+              key: TZ
+              name: prowlarr-config-env
+        - name: UMASK
+          valueFrom:
+            configMapKeyRef:
+              key: UMASK
+              name: prowlarr-config-env
+        image: ghcr.io/hotio/prowlarr:release-2.7.0.5723
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 9696
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: prowlarr
+        ports:
+        - containerPort: 9696
+          name: http
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /ping
+            port: 9696
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        volumeMounts:
+        - mountPath: /config
+          name: config
+      volumes:
+      - hostPath:
+          path: /data/arr/prowlarr
+        name: config

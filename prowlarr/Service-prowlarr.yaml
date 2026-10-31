@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: prowlarr
+    name: prowlarr
+  name: prowlarr
+  namespace: arr
+spec:
+  ports:
+  - name: prowlarr-http
+    port: 9696
+    targetPort: 9696
+  selector:
+    name: prowlarr

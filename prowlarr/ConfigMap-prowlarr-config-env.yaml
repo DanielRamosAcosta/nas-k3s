@@ -1,0 +1,13 @@
+apiVersion: v1
+data:
+  PGID: "100"
+  PROWLARR__LOG__CONSOLEFORMAT: Clef
+  PUID: "1000"
+  TZ: Atlantic/Canary
+  UMASK: "002"
+kind: ConfigMap
+metadata:
+  labels:
+    app: prowlarr
+  name: prowlarr-config-env
+  namespace: arr
