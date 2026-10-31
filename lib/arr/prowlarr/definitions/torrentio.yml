@@ -105,10 +105,9 @@ search:
     category:
       text: "{{ if .Result.category_is_tv_show }}TV{{ else }}Movies{{ end }}"
     infohash:
-      selector: url
-      filters:
-        - name: regexp
-          args: "/([a-f0-9]{40})"
+      # En modo P2P (debrid_provider=none) Torrentio devuelve el hash en el campo
+      # `infoHash` directamente (sin campo `url`, que solo existe con debrid).
+      selector: infoHash
     seeders:
       selector: title
       filters:
