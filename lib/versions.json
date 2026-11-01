@@ -165,7 +165,7 @@
   },
   "norznab": {
     "image": "ghcr.io/danielramosacosta/norznab",
-    "version": "main-a0ca064"
+    "version": "main-8f2d0ee"
   },
   "torProxy": {
     "image": "docker.io/osminogin/tor-simple",
