@@ -1,0 +1,108 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: laliga-proxy
+  name: laliga-proxy
+  namespace: arr
+spec:
+  minReadySeconds: 10
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      name: laliga-proxy
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        reloader.stakater.com/auto: "true"
+      labels:
+        name: laliga-proxy
+    spec:
+      containers:
+      - env:
+        - name: LALIGA_PROXY_BLOCK_CONFIRM
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_BLOCK_CONFIRM
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_BLOCK_THRESHOLD
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_BLOCK_THRESHOLD
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_FAIL_MODE
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_FAIL_MODE
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_HEALTH_LISTEN
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_HEALTH_LISTEN
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_LISTEN
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_LISTEN
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_LOG_FORMAT
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_LOG_FORMAT
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_LOG_LEVEL
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_LOG_LEVEL
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_POLL_INTERVAL
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_POLL_INTERVAL
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_UNBLOCK_CONFIRM
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_UNBLOCK_CONFIRM
+              name: laliga-proxy-config-env
+        - name: LALIGA_PROXY_UPSTREAM
+          valueFrom:
+            configMapKeyRef:
+              key: LALIGA_PROXY_UPSTREAM
+              name: laliga-proxy-config-env
+        image: ghcr.io/danielramosacosta/laliga-proxy:main-9aa66d5
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 15
+          periodSeconds: 30
+          timeoutSeconds: 5
+        name: laliga-proxy
+        ports:
+        - containerPort: 8888
+          name: http-proxy
+        - containerPort: 9090
+          name: health
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /healthz
+            port: 9090
+            scheme: HTTP
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 5
+        resources:
+          limits:
+            cpu: 200m
+            memory: 64Mi
+          requests:
+            cpu: 10m
+            memory: 16Mi

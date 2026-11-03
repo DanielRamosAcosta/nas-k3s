@@ -1,0 +1,18 @@
+apiVersion: v1
+data:
+  LALIGA_PROXY_BLOCK_CONFIRM: "1"
+  LALIGA_PROXY_BLOCK_THRESHOLD: "0.5"
+  LALIGA_PROXY_FAIL_MODE: keep
+  LALIGA_PROXY_HEALTH_LISTEN: 0.0.0.0:9090
+  LALIGA_PROXY_LISTEN: 0.0.0.0:8888
+  LALIGA_PROXY_LOG_FORMAT: json
+  LALIGA_PROXY_LOG_LEVEL: info
+  LALIGA_PROXY_POLL_INTERVAL: "30"
+  LALIGA_PROXY_UNBLOCK_CONFIRM: "3"
+  LALIGA_PROXY_UPSTREAM: gluetun.system.svc.cluster.local:8888
+kind: ConfigMap
+metadata:
+  labels:
+    app: laliga-proxy
+  name: laliga-proxy-config-env
+  namespace: arr
