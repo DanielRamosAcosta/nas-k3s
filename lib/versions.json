@@ -167,6 +167,10 @@
     "image": "ghcr.io/danielramosacosta/norznab",
     "version": "main-8f2d0ee"
   },
+  "laligaProxy": {
+    "image": "ghcr.io/danielramosacosta/laliga-proxy",
+    "version": "main-9aa66d5"
+  },
   "torProxy": {
     "image": "docker.io/osminogin/tor-simple",
     "version": "latest"

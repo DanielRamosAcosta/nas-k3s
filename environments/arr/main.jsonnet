@@ -1,5 +1,6 @@
 local deluge = import 'arr/deluge/deluge.libsonnet';
 local jdownloader = import 'arr/jdownloader/jdownloader.libsonnet';
+local laligaProxy = import 'arr/laliga-proxy/laliga-proxy.libsonnet';
 local lidarr = import 'arr/lidarr/lidarr.libsonnet';
 local norznab = import 'arr/norznab/norznab.libsonnet';
 local prowlarr = import 'arr/prowlarr/prowlarr.libsonnet';
@@ -19,4 +20,5 @@ u.Environment({
   jdownloader: jdownloader.new(),
   norznab: norznab.new(),
   torProxy: torProxy.new(),
+  laligaProxy: laligaProxy.new(),
 })
