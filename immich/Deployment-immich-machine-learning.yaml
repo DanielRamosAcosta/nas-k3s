@@ -33,7 +33,7 @@ spec:
             configMapKeyRef:
               key: TRANSFORMERS_CACHE
               name: immich-machine-learning-config-env
-        image: ghcr.io/immich-app/immich-machine-learning:v3.3.5
+        image: ghcr.io/immich-app/immich-machine-learning:v3.3.6
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
