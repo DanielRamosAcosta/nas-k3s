@@ -26,7 +26,7 @@ spec:
             configMapKeyRef:
               key: REDIS_ADDR
               name: redis-exporter-config-env
-        image: docker.io/oliver006/redis_exporter:v1.94.0
+        image: docker.io/oliver006/redis_exporter:v1.97.0
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 3
