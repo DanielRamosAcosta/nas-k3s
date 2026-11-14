@@ -41,7 +41,7 @@
   },
   "victoriametrics": {
     "image": "victoriametrics/victoria-metrics",
-    "version": "v1.154.1-enterprise"
+    "version": "v1.156.0-enterprise"
   },
   "nodeExporter": {
     "image": "quay.io/prometheus/node-exporter",
@@ -73,7 +73,7 @@
   },
   "redisExporter": {
     "image": "docker.io/oliver006/redis_exporter",
-    "version": "v1.94.0"
+    "version": "v1.97.0"
   },
   "mysqldExporter": {
     "image": "quay.io/prometheus/mysqld-exporter",
@@ -93,7 +93,7 @@
   },
   "cloudflare": {
     "image": "docker.io/favonia/cloudflare-ddns",
-    "version": "1.17.1"
+    "version": "1.18.0"
   },
   "grimmory": {
     "image": "grimmory/grimmory",
@@ -113,7 +113,7 @@
   },
   "synapse": {
     "image": "ghcr.io/element-hq/synapse",
-    "version": "v1.163.2"
+    "version": "v1.165.0"
   },
   "mautrixWhatsapp": {
     "image": "dock.mau.dev/mautrix/whatsapp",
@@ -145,11 +145,11 @@
   },
   "invidious": {
     "image": "quay.io/invidious/invidious",
-    "version": "2.20260804.1"
+    "version": "2.20261113.0"
   },
   "invidiousCompanion": {
     "image": "quay.io/invidious/invidious-companion",
-    "version": "2026.09.19-bb3b37f"
+    "version": "2026.11.07-f4cdf76"
   },
   "beets": {
     "image": "lscr.io/linuxserver/beets",
@@ -233,6 +233,6 @@
   },
   "mcBackup": {
     "image": "docker.io/itzg/mc-backup",
-    "version": "2026.10.3"
+    "version": "2026.11.0"
   }
 }
