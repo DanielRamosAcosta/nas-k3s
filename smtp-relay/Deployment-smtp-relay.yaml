@@ -63,7 +63,7 @@ spec:
             configMapKeyRef:
               key: RELAYHOST_USERNAME
               name: smtp-relay-config-env
-        image: boky/postfix:v5.1.0
+        image: boky/postfix:v5.2.1
         imagePullPolicy: IfNotPresent
         livenessProbe:
           exec:
