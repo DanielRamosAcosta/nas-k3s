@@ -45,7 +45,7 @@
   },
   "nodeExporter": {
     "image": "quay.io/prometheus/node-exporter",
-    "version": "v1.12.1"
+    "version": "v1.13.1"
   },
   "smartctlExporter": {
     "image": "quay.io/prometheuscommunity/smartctl-exporter",
