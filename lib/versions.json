@@ -125,7 +125,7 @@
   },
   "radarr": {
     "image": "ghcr.io/hotio/radarr",
-    "version": "release-6.4.4.10685"
+    "version": "release-7.0.3.10918"
   },
   "prowlarr": {
     "image": "ghcr.io/hotio/prowlarr",
