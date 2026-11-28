@@ -117,7 +117,7 @@
   },
   "mautrixWhatsapp": {
     "image": "dock.mau.dev/mautrix/whatsapp",
-    "version": "v0.2610.0"
+    "version": "v0.2611.0"
   },
   "sonarr": {
     "image": "ghcr.io/hotio/sonarr",
